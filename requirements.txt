@@ -1,0 +1,8 @@
+transformers
+spacy
+rouge-score
+pypdf2
+torch
+networkx
+numpy
+# Run after install: python -m spacy download en_core_web_sm
