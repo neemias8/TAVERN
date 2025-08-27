@@ -11,10 +11,10 @@ def load_chronology_xml(xml_path):
     tree = ET.parse(xml_path)
     root = tree.getroot()
     table = []
-    for event_elem in root.findall('event'):
+    for event_elem in root.findall('.//event'):  # Use .// to find events at any level
         event_dict = {
             'day': event_elem.find('day').text if event_elem.find('day') is not None else None,
-            'event': event_elem.find('event').text if event_elem.find('event') is not None else None,
+            'description': event_elem.find('description').text if event_elem.find('description') is not None else None,
             'when_where': event_elem.find('when_where').text if event_elem.find('when_where') is not None else None,
             'matthew': event_elem.find('matthew').text if event_elem.find('matthew') is not None else None,
             'mark': event_elem.find('mark').text if event_elem.find('mark') is not None else None,
@@ -47,11 +47,11 @@ def main():
     print("Stage 2: Alignments complete.")
     
     # Stage 3
-    enriched_events = run_gnn(all_events, chronology_table)
+    enriched_events, G, consolidated_events = run_gnn(all_events, chronology_table)
     print("Stage 3: GNN modeling complete.")
     
     # Stage 4
-    summary = generate_summary(enriched_events, annotated_docs, chronology_table)
+    summary = generate_summary(consolidated_events, G)
     print("Stage 4: Summary generated.")
     print(summary)
     

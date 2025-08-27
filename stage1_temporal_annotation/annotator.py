@@ -5,22 +5,34 @@ from utils.helpers import parse_gospel_xml
 nlp = spacy.load("en_core_web_sm")
 
 def annotate_document(doc_path, doc_id):
-    verses = parse_gospel_xml(doc_path)
+    verses_metadata = parse_gospel_xml(doc_path)
     annotations = []
     event_id = 0
-    for verse_idx, verse in enumerate(verses):
-        doc = nlp(verse)
+    for verse_idx, verse_data in enumerate(verses_metadata):
+        verse_text = verse_data['text']
+        chapter = verse_data['chapter']
+        verse_num = verse_data['verse']
+        
+        doc = nlp(verse_text)
         for token in doc:
             if token.pos_ == 'VERB':  # Events as verbs (ISO-TimeML inspired)
-                annotations.append({
-                    'id': f"{doc_id}_e{event_id}",
-                    'text': token.text,
-                    'verse_idx': verse_idx,
-                    'verse_ref': f"{verse_idx + 1}",  # Simplified ref; update if real chapter:verse available
-                    'type': 'EVENT',
-                    'relations': []
-                })
-                event_id += 1
+                sentence_text = token.sent.text.strip()
+                is_duplicate = any(
+                    ann['verse_idx'] == verse_idx and ann['text'] == sentence_text
+                    for ann in annotations if ann['type'] == 'EVENT'
+                )
+                if not is_duplicate:
+                    annotations.append({
+                        'id': f"{doc_id}_e{event_id}",
+                        'text': sentence_text,  # Use the whole sentence
+                        'verse_idx': verse_idx,
+                        'chapter': chapter,
+                        'verse': verse_num,
+                        'verse_ref': f"{chapter}:{verse_num}",  # Real chapter:verse reference
+                        'type': 'EVENT',
+                        'relations': []
+                    })
+                    event_id += 1
         for ent in doc.ents:
             if ent.label_ in ['DATE', 'TIME']:  # Times
                 annotations.append({
@@ -32,7 +44,7 @@ def annotate_document(doc_path, doc_id):
                 })
                 event_id += 1
         # Simple relations: Look for temporal words
-        if re.search(r'\bbefore\b', verse.lower()):
+        if re.search(r'\bbefore\b', verse_text.lower()):
             # Add BEFORE relation placeholder (filled later)
             pass
     return annotations
