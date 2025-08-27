@@ -1,0 +1,411 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<holy_week_chronology>
+  <section_title>The Last Week of the Ministry of Jesus</section_title>
+  <events>
+    <event>
+      <day>Saturday</day>
+      <description>Mary anoints Jesus</description>
+      <when_where>Bethany, 6 days before the Passover (Saturday)</when_where>
+      <matthew>26:6-13</matthew>
+      <mark>14:3-9</mark>
+      <luke/>
+      <john>12:1-8</john>
+    </event>
+    <event>
+      <day>Saturday</day>
+      <description>The plan to kill Lazarus</description>
+      <when_where/>
+      <matthew/>
+      <mark/>
+      <luke/>
+      <john>12:9-11</john>
+    </event>
+    <event>
+      <day>Palm Sunday</day>
+      <description>The people come out to meet Jesus</description>
+      <when_where>Palm Sunday</when_where>
+      <matthew/>
+      <mark/>
+      <luke/>
+      <john>12:12-13</john>
+    </event>
+    <event>
+      <day>Palm Sunday</day>
+      <description>Jesus sends for the donkey's colt</description>
+      <when_where>passing the Mount of Olives</when_where>
+      <matthew>21:1-7</matthew>
+      <mark>11:1-7</mark>
+      <luke>19:29-35</luke>
+      <john/>
+    </event>
+    <event>
+      <day>Palm Sunday</day>
+      <description>The Triumphal Entry</description>
+      <when_where/>
+      <matthew>21:8-9</matthew>
+      <mark>11:8-10</mark>
+      <luke>19:36-40</luke>
+      <john>12:14-16</john>
+    </event>
+    <event>
+      <day>Palm Sunday</day>
+      <description>Predicts destruction of Jerusalem</description>
+      <when_where>Jerusalem</when_where>
+      <matthew/>
+      <mark/>
+      <luke>19:41-44</luke>
+      <john/>
+    </event>
+    <event>
+      <day>Palm Sunday</day>
+      <description>Jesus is recognized</description>
+      <when_where/>
+      <matthew>21:10-11</matthew>
+      <mark/>
+      <luke/>
+      <john>12:17-19</john>
+    </event>
+    <event>
+      <day>Palm Sunday</day>
+      <description>Return to Bethany</description>
+      <when_where>Bethany</when_where>
+      <matthew>21:17</matthew>
+      <mark>11:11</mark>
+      <luke/>
+      <john/>
+    </event>
+    <event>
+      <day>Monday</day>
+      <description>The fig tree without fruit</description>
+      <when_where>On the way</when_where>
+      <matthew>21:18-19a</matthew>
+      <mark>11:12-14</mark>
+      <luke/>
+      <john/>
+    </event>
+    <event>
+      <day>Monday</day>
+      <description>Jesus clears the temple, second time</description>
+      <when_where>Jerusalem, in the temple</when_where>
+      <matthew>21:12-13</matthew>
+      <mark>11:15-17</mark>
+      <luke>19:45-46</luke>
+      <john/>
+    </event>
+    <event>
+      <day>Monday</day>
+      <description>His enemies continue planning</description>
+      <when_where/>
+      <matthew/>
+      <mark>11:18</mark>
+      <luke>19:47-48</luke>
+      <john/>
+    </event>
+    <event>
+      <day>Monday</day>
+      <description>The children praise Jesus</description>
+      <when_where/>
+      <matthew>21:14-16</matthew>
+      <mark/>
+      <luke/>
+      <john/>
+    </event>
+    <event>
+      <day>Monday</day>
+      <description>They go out of the city</description>
+      <when_where>To where??</when_where>
+      <matthew/>
+      <mark>11:19</mark>
+      <luke/>
+      <john/>
+    </event>
+    <event>
+      <day>Tuesday morning</day>
+      <description>The fig tree dries up</description>
+      <when_where>On the way</when_where>
+      <matthew>21:19b-22</matthew>
+      <mark>11:20-26</mark>
+      <luke/>
+      <john/>
+    </event>
+    <event>
+      <day>Tuesday morning</day>
+      <description>The authority of Jesus questioned</description>
+      <when_where>In Jerusalem</when_where>
+      <matthew>21:23-27</matthew>
+      <mark>11:27-33</mark>
+      <luke>20:1-8</luke>
+      <john/>
+    </event>
+    <event>
+      <day>Tuesday morning</day>
+      <description>Parable of the two sons</description>
+      <when_where/>
+      <matthew>21:28-32</matthew>
+      <mark/>
+      <luke/>
+      <john/>
+    </event>
+    <event>
+      <day>Tuesday morning</day>
+      <description>Parable of the tenants</description>
+      <when_where/>
+      <matthew>21:33-41</matthew>
+      <mark>12:1-9</mark>
+      <luke>20:9-16</luke>
+      <john/>
+    </event>
+    <event>
+      <day>Tuesday morning</day>
+      <description>The stone the builders rejected</description>
+      <when_where/>
+      <matthew>21:42-44</matthew>
+      <mark>12:10-11</mark>
+      <luke>20:17-18</luke>
+      <john/>
+    </event>
+    <event>
+      <day>Tuesday morning</day>
+      <description>Leaders are offended</description>
+      <when_where/>
+      <matthew>21:45-46</matthew>
+      <mark>12:12</mark>
+      <luke>20:19</luke>
+      <john/>
+    </event>
+    <event>
+      <day>Tuesday morning</day>
+      <description>Parable of the wedding banquet</description>
+      <when_where/>
+      <matthew>22:1-14</matthew>
+      <mark/>
+      <luke/>
+      <john/>
+    </event>
+    <event>
+      <day>Tuesday</day>
+      <description>Jesus again predicts his death</description>
+      <when_where/>
+      <matthew/>
+      <mark/>
+      <luke/>
+      <john>12:20-36a</john>
+    </event>
+    <event>
+      <day>Tuesday afternoon</day>
+      <description>Completion of his public ministry</description>
+      <when_where/>
+      <matthew/>
+      <mark/>
+      <luke/>
+      <john>12:36b</john>
+    </event>
+    <event>
+      <day>Tuesday afternoon</day>
+      <description>He reminds disciples of crucifixion</description>
+      <when_where>Two days before Passover/Unleavened Bread</when_where>
+      <matthew>26:1-2</matthew>
+      <mark/>
+      <luke/>
+      <john/>
+    </event>
+    <event>
+      <day>Tuesday afternoon</day>
+      <description>The plot against Jesus</description>
+      <when_where/>
+      <matthew>26:3-5</matthew>
+      <mark>14:1-2</mark>
+      <luke>22:1-2</luke>
+      <john/>
+    </event>
+    <event>
+      <day>Tuesday afternoon</day>
+      <description>Judas agrees to betray Jesus</description>
+      <when_where/>
+      <matthew>26:14-16</matthew>
+      <mark>14:10-11</mark>
+      <luke>22:3-6</luke>
+      <john/>
+    </event>
+    <event>
+      <day>Wednesday</day>
+      <description>(Jesus rests?)</description>
+      <when_where/>
+      <matthew/>
+      <mark/>
+      <luke/>
+      <john/>
+    </event>
+    <event>
+      <day>Thursday</day>
+      <description>Preparations for the Lord's Supper</description>
+      <when_where>first day of Passover/Unleavened Bread</when_where>
+      <matthew>26:17-19</matthew>
+      <mark>14:12-16</mark>
+      <luke>22:7-13</luke>
+      <john/>
+    </event>
+    <event>
+      <day>The Lord's Supper</day>
+      <description>They recline at the table</description>
+      <when_where>The upper room, night</when_where>
+      <matthew>26:20</matthew>
+      <mark>14:17</mark>
+      <luke>22:14</luke>
+      <john/>
+    </event>
+    <event>
+      <day>The Lord's Supper</day>
+      <description>Jesus washes his disciples feet</description>
+      <when_where/>
+      <matthew/>
+      <mark/>
+      <luke/>
+      <john>13:1-17</john>
+    </event>
+    <event>
+      <day>The Lord's Supper</day>
+      <description>Institution of the Supper: the bread</description>
+      <when_where/>
+      <matthew>26:26</matthew>
+      <mark>14:22</mark>
+      <luke>22:19</luke>
+      <john>1 Co. 11:23-24</john>
+    </event>
+    <event>
+      <day>The Lord's Supper</day>
+      <description>Institution of the Supper: the wine</description>
+      <when_where/>
+      <matthew>26:27-28</matthew>
+      <mark>14:23-24</mark>
+      <luke>22:20</luke>
+      <john>1 Co. 11:25</john>
+    </event>
+    <event>
+      <day>In Gethsemane</day>
+      <description>They arrive at Gethsemane</description>
+      <when_where>Gethsemane</when_where>
+      <matthew>26:36-38</matthew>
+      <mark>14:32-34</mark>
+      <luke>22:40</luke>
+      <john>18:1</john>
+    </event>
+    <event>
+      <day>In Gethsemane</day>
+      <description>Judas betrays Jesus</description>
+      <when_where/>
+      <matthew>26:47-50</matthew>
+      <mark>14:43-45</mark>
+      <luke>22:47-48</luke>
+      <john>18:2-3</john>
+    </event>
+    <event>
+      <day>Trial before the Jewish Authorities</day>
+      <description>To Annas' and Caiaphas' house</description>
+      <when_where>Jerusalem</when_where>
+      <matthew>26:57</matthew>
+      <mark>14:53</mark>
+      <luke>22:54a</luke>
+      <john/>
+    </event>
+    <event>
+      <day>Friday, early morning</day>
+      <description>The Sanhedrin condemns Jesus</description>
+      <when_where/>
+      <matthew>27:1</matthew>
+      <mark>15:1a</mark>
+      <luke>22:66-71</luke>
+      <john/>
+    </event>
+    <event>
+      <day>Trial before Pilate</day>
+      <description>Before Pilate</description>
+      <when_where>The Praetorium</when_where>
+      <matthew>27:2</matthew>
+      <mark>15:1b</mark>
+      <luke>23:1-2</luke>
+      <john>18:28-32</john>
+    </event>
+    <event>
+      <day>Trial before Pilate</day>
+      <description>They lead him out to crucify him</description>
+      <when_where>In the Via Dolorosa</when_where>
+      <matthew>27:31</matthew>
+      <mark>15:20</mark>
+      <luke/>
+      <john>19:17</john>
+    </event>
+    <event>
+      <day>The Crucifixion</day>
+      <description>Jesus is crucified</description>
+      <when_where>Golgotha ("Place of the Skull"), 9:00 a.m. (Mk. 15:25)</when_where>
+      <matthew>27:33-35a</matthew>
+      <mark>15:22-24a</mark>
+      <luke>23:33</luke>
+      <john>19:18</john>
+    </event>
+    <event>
+      <day>The Crucifixion</day>
+      <description>The death of Jesus</description>
+      <when_where>3:00 p.m.</when_where>
+      <matthew>27:50</matthew>
+      <mark>15:37</mark>
+      <luke>23:46b</luke>
+      <john>19:30b</john>
+    </event>
+    <event>
+      <day>Jesus is buried</day>
+      <description>Joseph of Arimathea asks for body</description>
+      <when_where>Late afternoon</when_where>
+      <matthew>27:57-58</matthew>
+      <mark>15:42-45</mark>
+      <luke>23:50-52</luke>
+      <john>19:38</john>
+    </event>
+    <event>
+      <day>Jesus is buried</day>
+      <description>Jesus is buried</description>
+      <when_where>Before nightfall</when_where>
+      <matthew>27:59-60</matthew>
+      <mark>15:46</mark>
+      <luke>23:53-54</luke>
+      <john>19:39-42</john>
+    </event>
+    <event>
+      <day>Saturday</day>
+      <description>The guard before the tomb</description>
+      <when_where/>
+      <matthew>27:62-66</matthew>
+      <mark/>
+      <luke/>
+      <john/>
+    </event>
+    <event>
+      <day>The resurrection of Jesus Christ (Sunday)</day>
+      <description>The women go to the tomb</description>
+      <when_where>Mary Magdalene, Mary mother of James, Salome; still dark</when_where>
+      <matthew>28:1</matthew>
+      <mark>16:2-3</mark>
+      <luke>24:1</luke>
+      <john>20:1a</john>
+    </event>
+    <event>
+      <day>The resurrection of Jesus Christ (Sunday)</day>
+      <description>Jesus appears to Mary Magdalene</description>
+      <when_where/>
+      <matthew/>
+      <mark>16:9</mark>
+      <luke/>
+      <john>20:11-17</john>
+    </event>
+    <event>
+      <day>The resurrection of Jesus Christ (Sunday)</day>
+      <description>Jesus appears to the Eleven</description>
+      <when_where>Sunday evening</when_where>
+      <matthew/>
+      <mark>16:14</mark>
+      <luke>24:36-43</luke>
+      <john>20:19-20</john>
+    </event>
+  </events>
+</holy_week_chronology>

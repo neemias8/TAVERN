@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bible translation="English NIV">
   <testament name="New">
-    <book number="43">
+    <book name="John">
       <chapter number="12">
         <verse number="1">Six days before the Passover, Jesus arrived at Bethany, where Lazarus lived, whom Jesus had raised from the dead.</verse>
         <verse number="2">Here a dinner was given in Jesus' honor. Martha served, while Lazarus was among those reclining at the table with him.</verse>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bible translation="English NIV">
   <testament name="New">
-    <book number="42">
+    <book name="Luke">
       <chapter number="19">
         <verse number="29">As he approached Bethphage and Bethany at the hill called the Mount of Olives, he sent two of his disciples, saying to them,</verse>
         <verse number="30">"Go to the village ahead of you, and as you enter it, you will find a colt tied there, which no one has ever ridden. Untie it and bring it here.</verse>

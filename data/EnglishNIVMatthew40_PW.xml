@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bible translation="English NIV">
   <testament name="New">
-    <book number="40">
+    <book name="Matthew">
       <chapter number="21">
         <verse number="1">As they approached Jerusalem and came to Bethphage on the Mount of Olives, Jesus sent two disciples,</verse>
         <verse number="2">saying to them, "Go to the village ahead of you, and at once you will find a donkey tied there, with her colt by her. Untie them and bring them to me.</verse>

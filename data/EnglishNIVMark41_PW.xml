@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bible translation="English NIV">
   <testament name="New">
-    <book number="41">
+    <book name="Mark">
       <chapter number="11">
         <verse number="1">As they approached Jerusalem and came to Bethphage and Bethany at the Mount of Olives, Jesus sent two of his disciples,</verse>
         <verse number="2">saying to them, "Go to the village ahead of you, and just as you enter it, you will find a colt tied there, which no one has ever ridden. Untie it and bring it here.</verse>

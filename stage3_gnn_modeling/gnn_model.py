@@ -13,17 +13,15 @@ class SimpleGCN(nn.Module):
 
 def build_event_graph(events, chronology_table):
     G = create_graph(events)
-    # Add edges from alignments/relations
     for event in events:
         for rel in event['relations']:
             G.add_edge(event['id'], rel['to'], type=rel['type'])
     
-    # Add temporal edges from chronology order
+    # Add temporal edges from chronology order (sequential days/events)
     for i, row in enumerate(chronology_table[:-1]):
         next_row = chronology_table[i+1]
-        # Assume events in row i BEFORE next_row
-        current_events = [e['id'] for e in events if row['id'] in e.get('chrono_id', '')]
-        next_events = [e['id'] for e in events if next_row['id'] in e.get('chrono_id', '')]
+        current_events = [e['id'] for e in events if row['event'] in e['text']]  # Match by event description
+        next_events = [e['id'] for e in events if next_row['event'] in e['text']]
         for ce in current_events:
             for ne in next_events:
                 G.add_edge(ce, ne, type='BEFORE')

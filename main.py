@@ -1,10 +1,28 @@
 import os
+import xml.etree.ElementTree as ET
 from stage1_temporal_annotation.annotator import run_annotation
 from stage2_event_alignment.aligner import align_events
 from stage3_gnn_modeling.gnn_model import run_gnn
 from stage4_abstractive_generation.generator import generate_summary
 from stage5_evaluation.evaluator import evaluate_summary
-from utils.helpers import parse_chronology_pdf
+
+def load_chronology_xml(xml_path):
+    """Load the chronology from XML into list of dicts."""
+    tree = ET.parse(xml_path)
+    root = tree.getroot()
+    table = []
+    for event_elem in root.findall('event'):
+        event_dict = {
+            'day': event_elem.find('day').text if event_elem.find('day') is not None else None,
+            'event': event_elem.find('event').text if event_elem.find('event') is not None else None,
+            'when_where': event_elem.find('when_where').text if event_elem.find('when_where') is not None else None,
+            'matthew': event_elem.find('matthew').text if event_elem.find('matthew') is not None else None,
+            'mark': event_elem.find('mark').text if event_elem.find('mark') is not None else None,
+            'luke': event_elem.find('luke').text if event_elem.find('luke') is not None else None,
+            'john': event_elem.find('john').text if event_elem.find('john') is not None else None
+        }
+        table.append(event_dict)
+    return table
 
 def main():
     os.makedirs('outputs', exist_ok=True)
@@ -16,9 +34,9 @@ def main():
         'john': 'data/EnglishNIVJohn43_PW.xml'
     }
     
-    # Parse chronology PDF
-    chronology_table = parse_chronology_pdf('data/ChronologyOfTheFourGospels.pdf')
-    print("Chronology parsed.")
+    # Load chronology from XML
+    chronology_table = load_chronology_xml('data/ChronologyOfTheFourGospels_PW.xml')
+    print("Chronology loaded from XML.")
     
     # Stage 1
     annotated_docs = run_annotation(docs)

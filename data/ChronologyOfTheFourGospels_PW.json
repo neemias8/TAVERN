@@ -1,0 +1,410 @@
+{
+  "section_title": "The Last Week of the Ministry of Jesus",
+  "events": [
+    {
+      "day": "Saturday",
+      "event": "Mary anoints Jesus",
+      "when_where": "Bethany, 6 days before the Passover (Saturday)",
+      "matthew": "26:6-13",
+      "mark": "14:3-9",
+      "luke": null,
+      "john": "12:1-8"
+    },
+    {
+      "day": "Saturday",
+      "event": "The plan to kill Lazarus",
+      "when_where": null,
+      "matthew": null,
+      "mark": null,
+      "luke": null,
+      "john": "12:9-11"
+    },
+    {
+      "day": "Palm Sunday",
+      "event": "The people come out to meet Jesus",
+      "when_where": "Palm Sunday",
+      "matthew": null,
+      "mark": null,
+      "luke": null,
+      "john": "12:12-13"
+    },
+    {
+      "day": "Palm Sunday",
+      "event": "Jesus sends for the donkey's colt",
+      "when_where": "passing the Mount of Olives",
+      "matthew": "21:1-7",
+      "mark": "11:1-7",
+      "luke": "19:29-35",
+      "john": null
+    },
+    {
+      "day": "Palm Sunday",
+      "event": "The Triumphal Entry",
+      "when_where": null,
+      "matthew": "21:8-9",
+      "mark": "11:8-10",
+      "luke": "19:36-40",
+      "john": "12:14-16"
+    },
+    {
+      "day": "Palm Sunday",
+      "event": "Predicts destruction of Jerusalem",
+      "when_where": "Jerusalem",
+      "matthew": null,
+      "mark": null,
+      "luke": "19:41-44",
+      "john": null
+    },
+    {
+      "day": "Palm Sunday",
+      "event": "Jesus is recognized",
+      "when_where": null,
+      "matthew": "21:10-11",
+      "mark": null,
+      "luke": null,
+      "john": "12:17-19"
+    },
+    {
+      "day": "Palm Sunday",
+      "event": "Return to Bethany",
+      "when_where": "Bethany",
+      "matthew": "21:17",
+      "mark": "11:11",
+      "luke": null,
+      "john": null
+    },
+    {
+      "day": "Monday",
+      "event": "The fig tree without fruit",
+      "when_where": "On the way",
+      "matthew": "21:18-19a",
+      "mark": "11:12-14",
+      "luke": null,
+      "john": null
+    },
+    {
+      "day": "Monday",
+      "event": "Jesus clears the temple, second time",
+      "when_where": "Jerusalem, in the temple",
+      "matthew": "21:12-13",
+      "mark": "11:15-17",
+      "luke": "19:45-46",
+      "john": null
+    },
+    {
+      "day": "Monday",
+      "event": "His enemies continue planning",
+      "when_where": null,
+      "matthew": null,
+      "mark": "11:18",
+      "luke": "19:47-48",
+      "john": null
+    },
+    {
+      "day": "Monday",
+      "event": "The children praise Jesus",
+      "when_where": null,
+      "matthew": "21:14-16",
+      "mark": null,
+      "luke": null,
+      "john": null
+    },
+    {
+      "day": "Monday",
+      "event": "They go out of the city",
+      "when_where": "To where??",
+      "matthew": null,
+      "mark": "11:19",
+      "luke": null,
+      "john": null
+    },
+    {
+      "day": "Tuesday morning",
+      "event": "The fig tree dries up",
+      "when_where": "On the way",
+      "matthew": "21:19b-22",
+      "mark": "11:20-26",
+      "luke": null,
+      "john": null
+    },
+    {
+      "day": "Tuesday morning",
+      "event": "The authority of Jesus questioned",
+      "when_where": "In Jerusalem",
+      "matthew": "21:23-27",
+      "mark": "11:27-33",
+      "luke": "20:1-8",
+      "john": null
+    },
+    {
+      "day": "Tuesday morning",
+      "event": "Parable of the two sons",
+      "when_where": null,
+      "matthew": "21:28-32",
+      "mark": null,
+      "luke": null,
+      "john": null
+    },
+    {
+      "day": "Tuesday morning",
+      "event": "Parable of the tenants",
+      "when_where": null,
+      "matthew": "21:33-41",
+      "mark": "12:1-9",
+      "luke": "20:9-16",
+      "john": null
+    },
+    {
+      "day": "Tuesday morning",
+      "event": "The stone the builders rejected",
+      "when_where": null,
+      "matthew": "21:42-44",
+      "mark": "12:10-11",
+      "luke": "20:17-18",
+      "john": null
+    },
+    {
+      "day": "Tuesday morning",
+      "event": "Leaders are offended",
+      "when_where": null,
+      "matthew": "21:45-46",
+      "mark": "12:12",
+      "luke": "20:19",
+      "john": null
+    },
+    {
+      "day": "Tuesday morning",
+      "event": "Parable of the wedding banquet",
+      "when_where": null,
+      "matthew": "22:1-14",
+      "mark": null,
+      "luke": null,
+      "john": null
+    },
+    {
+      "day": "Tuesday",
+      "event": "Jesus again predicts his death",
+      "when_where": null,
+      "matthew": null,
+      "mark": null,
+      "luke": null,
+      "john": "12:20-36a"
+    },
+    {
+      "day": "Tuesday afternoon",
+      "event": "Completion of his public ministry",
+      "when_where": null,
+      "matthew": null,
+      "mark": null,
+      "luke": null,
+      "john": "12:36b"
+    },
+    {
+      "day": "Tuesday afternoon",
+      "event": "He reminds disciples of crucifixion",
+      "when_where": "Two days before Passover/Unleavened Bread",
+      "matthew": "26:1-2",
+      "mark": null,
+      "luke": null,
+      "john": null
+    },
+    {
+      "day": "Tuesday afternoon",
+      "event": "The plot against Jesus",
+      "when_where": null,
+      "matthew": "26:3-5",
+      "mark": "14:1-2",
+      "luke": "22:1-2",
+      "john": null
+    },
+    {
+      "day": "Tuesday afternoon",
+      "event": "Judas agrees to betray Jesus",
+      "when_where": null,
+      "matthew": "26:14-16",
+      "mark": "14:10-11",
+      "luke": "22:3-6",
+      "john": null
+    },
+    {
+      "day": "Wednesday",
+      "event": "(Jesus rests?)",
+      "when_where": null,
+      "matthew": null,
+      "mark": null,
+      "luke": null,
+      "john": null
+    },
+    {
+      "day": "Thursday",
+      "event": "Preparations for the Lord's Supper",
+      "when_where": "first day of Passover/Unleavened Bread",
+      "matthew": "26:17-19",
+      "mark": "14:12-16",
+      "luke": "22:7-13",
+      "john": null
+    },
+    {
+      "day": "The Lord's Supper",
+      "event": "They recline at the table",
+      "when_where": "The upper room, night",
+      "matthew": "26:20",
+      "mark": "14:17",
+      "luke": "22:14",
+      "john": null
+    },
+    {
+      "day": "The Lord's Supper",
+      "event": "Jesus washes his disciples feet",
+      "when_where": null,
+      "matthew": null,
+      "mark": null,
+      "luke": null,
+      "john": "13:1-17"
+    },
+    {
+      "day": "The Lord's Supper",
+      "event": "Institution of the Supper: the bread",
+      "when_where": null,
+      "matthew": "26:26",
+      "mark": "14:22",
+      "luke": "22:19",
+      "john": "1 Co. 11:23-24"
+    },
+    {
+      "day": "The Lord's Supper",
+      "event": "Institution of the Supper: the wine",
+      "when_where": null,
+      "matthew": "26:27-28",
+      "mark": "14:23-24",
+      "luke": "22:20",
+      "john": "1 Co. 11:25"
+    },
+    {
+      "day": "In Gethsemane",
+      "event": "They arrive at Gethsemane",
+      "when_where": "Gethsemane",
+      "matthew": "26:36-38",
+      "mark": "14:32-34",
+      "luke": "22:40",
+      "john": "18:1"
+    },
+    {
+      "day": "In Gethsemane",
+      "event": "Judas betrays Jesus",
+      "when_where": null,
+      "matthew": "26:47-50",
+      "mark": "14:43-45",
+      "luke": "22:47-48",
+      "john": "18:2-3"
+    },
+    {
+      "day": "Trial before the Jewish Authorities",
+      "event": "To Annas' and Caiaphas' house",
+      "when_where": "Jerusalem",
+      "matthew": "26:57",
+      "mark": "14:53",
+      "luke": "22:54a",
+      "john": null
+    },
+    {
+      "day": "Friday, early morning",
+      "event": "The Sanhedrin condemns Jesus",
+      "when_where": null,
+      "matthew": "27:1",
+      "mark": "15:1a",
+      "luke": "22:66-71",
+      "john": null
+    },
+    {
+      "day": "Trial before Pilate",
+      "event": "Before Pilate",
+      "when_where": "The Praetorium",
+      "matthew": "27:2",
+      "mark": "15:1b",
+      "luke": "23:1-2",
+      "john": "18:28-32"
+    },
+    {
+      "day": "Trial before Pilate",
+      "event": "They lead him out to crucify him",
+      "when_where": "In the Via Dolorosa",
+      "matthew": "27:31",
+      "mark": "15:20",
+      "luke": null,
+      "john": "19:17"
+    },
+    {
+      "day": "The Crucifixion",
+      "event": "Jesus is crucified",
+      "when_where": "Golgotha (\"Place of the Skull\"), 9:00 a.m. (Mk. 15:25)",
+      "matthew": "27:33-35a",
+      "mark": "15:22-24a",
+      "luke": "23:33",
+      "john": "19:18"
+    },
+    {
+      "day": "The Crucifixion",
+      "event": "The death of Jesus",
+      "when_where": "3:00 p.m.",
+      "matthew": "27:50",
+      "mark": "15:37",
+      "luke": "23:46b",
+      "john": "19:30b"
+    },
+    {
+      "day": "Jesus is buried",
+      "event": "Joseph of Arimathea asks for body",
+      "when_where": "Late afternoon",
+      "matthew": "27:57-58",
+      "mark": "15:42-45",
+      "luke": "23:50-52",
+      "john": "19:38"
+    },
+    {
+      "day": "Jesus is buried",
+      "event": "Jesus is buried",
+      "when_where": "Before nightfall",
+      "matthew": "27:59-60",
+      "mark": "15:46",
+      "luke": "23:53-54",
+      "john": "19:39-42"
+    },
+    {
+      "day": "Saturday",
+      "event": "The guard before the tomb",
+      "when_where": null,
+      "matthew": "27:62-66",
+      "mark": null,
+      "luke": null,
+      "john": null
+    },
+    {
+      "day": "The resurrection of Jesus Christ (Sunday)",
+      "event": "The women go to the tomb",
+      "when_where": "Mary Magdalene, Mary mother of James, Salome; still dark",
+      "matthew": "28:1",
+      "mark": "16:2-3",
+      "luke": "24:1",
+      "john": "20:1a"
+    },
+    {
+      "day": "The resurrection of Jesus Christ (Sunday)",
+      "event": "Jesus appears to Mary Magdalene",
+      "when_where": null,
+      "matthew": null,
+      "mark": "16:9",
+      "luke": null,
+      "john": "20:11-17"
+    },
+    {
+      "day": "The resurrection of Jesus Christ (Sunday)",
+      "event": "Jesus appears to the Eleven",
+      "when_where": "Sunday evening",
+      "matthew": null,
+      "mark": "16:14",
+      "luke": "24:36-43",
+      "john": "20:19-20"
+    }
+  ]
+}

@@ -16,6 +16,7 @@ def annotate_document(doc_path, doc_id):
                     'id': f"{doc_id}_e{event_id}",
                     'text': token.text,
                     'verse_idx': verse_idx,
+                    'verse_ref': f"{verse_idx + 1}",  # Simplified ref; update if real chapter:verse available
                     'type': 'EVENT',
                     'relations': []
                 })
@@ -26,6 +27,7 @@ def annotate_document(doc_path, doc_id):
                     'id': f"{doc_id}_t{event_id}",
                     'text': ent.text,
                     'verse_idx': verse_idx,
+                    'verse_ref': f"{verse_idx + 1}",
                     'type': 'TIME'
                 })
                 event_id += 1

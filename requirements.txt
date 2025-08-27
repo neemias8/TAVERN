@@ -1,7 +1,6 @@
 transformers
 spacy
 rouge-score
-pypdf2
 torch
 networkx
 numpy
