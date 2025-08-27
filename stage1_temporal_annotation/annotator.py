@@ -1,4 +1,5 @@
 import spacy
+import re
 from utils.helpers import parse_gospel_xml
 
 nlp = spacy.load("en_core_web_sm")
