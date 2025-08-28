@@ -13,6 +13,7 @@ def load_chronology_xml(xml_path):
     table = []
     for event_elem in root.findall('.//event'):  # Use .// to find events at any level
         event_dict = {
+            'id': event_elem.get('id'),  # Capture the event ID if present
             'day': event_elem.find('day').text if event_elem.find('day') is not None else None,
             'description': event_elem.find('description').text if event_elem.find('description') is not None else None,
             'when_where': event_elem.find('when_where').text if event_elem.find('when_where') is not None else None,
