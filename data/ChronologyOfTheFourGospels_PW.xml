@@ -125,7 +125,7 @@
       <when_where/>
       <matthew/>
       <mark/>
-      <luke>(21:37-38)</luke>
+      <luke>21:37-38</luke>
       <john/>
     </event>
     <event id="15">
@@ -251,7 +251,7 @@
       <when_where/>
       <matthew>23:37-39</matthew>
       <mark/>
-      <luke>[13:34-35]</luke>
+      <luke>13:34-35</luke>
       <john/>
     </event>
     <event id="29">
@@ -323,7 +323,7 @@
       <when_where/>
       <matthew>24:28</matthew>
       <mark/>
-      <luke>[17:37]</luke>
+      <luke/>
       <john/>
     </event>
     <event id="37">
@@ -359,7 +359,7 @@
       <when_where/>
       <matthew>24:37-39</matthew>
       <mark/>
-      <luke>[17:26-27]</luke>
+      <luke/>
       <john/>
     </event>
     <event id="41">
@@ -368,7 +368,7 @@
       <when_where/>
       <matthew>24:40-43</matthew>
       <mark/>
-      <luke>[17:34-36]</luke>
+      <luke/>
       <john/>
     </event>
     <event id="42">
@@ -567,7 +567,7 @@
       <matthew>26:26</matthew>
       <mark>14:22</mark>
       <luke>22:19</luke>
-      <john>1 Co. 11:23-24</john>
+      <john/>
     </event>
     <event id="64">
       <day>The Lord's Supper (Fourth Passover)</day>
@@ -576,7 +576,7 @@
       <matthew>26:27-28</matthew>
       <mark>14:23-24</mark>
       <luke>22:20</luke>
-      <john>1 Co. 11:25</john>
+      <john/>
     </event>
     <event id="65">
       <day>The Lord's Supper (Fourth Passover)</day>
@@ -918,7 +918,7 @@
       <matthew>27:3-10</matthew>
       <mark/>
       <luke/>
-      <john>Acts 1:18-19</john>
+      <john/>
     </event>
     <event id="103">
       <day>Trial before Pilate</day>
@@ -1286,7 +1286,7 @@
       <when_where/>
       <matthew/>
       <mark/>
-      <luke>23:56a</luke>
+      <luke>23:56</luke>
       <john/>
     </event>
     <event id="144">
@@ -1295,24 +1295,6 @@
       <when_where/>
       <matthew>27:62-66</matthew>
       <mark/>
-      <luke/>
-      <john/>
-    </event>
-    <event id="145">
-      <day>Saturday</day>
-      <description>The women rest</description>
-      <when_where/>
-      <matthew/>
-      <mark/>
-      <luke>23:56b</luke>
-      <john/>
-    </event>
-    <event id="146">
-      <day>Saturday</day>
-      <description>The women buy more spices</description>
-      <when_where>After the Sabbath. Saturday evening?</when_where>
-      <matthew/>
-      <mark>16:1</mark>
       <luke/>
       <john/>
     </event>
