@@ -1,8 +1,19 @@
-import spacy
 import re
 from utils.helpers import parse_gospel_xml
 
-nlp = spacy.load("en_core_web_sm")
+# Try to import spaCy and load a model; fallback to None if unavailable
+nlp = None
+try:
+    import spacy
+    try:
+        nlp = spacy.load("en_core_web_lg")
+    except Exception:
+        try:
+            nlp = spacy.load("en_core_web_sm")
+        except Exception:
+            nlp = None
+except Exception:
+    nlp = None
 
 def annotate_document(doc_path, doc_id):
     verses_metadata = parse_gospel_xml(doc_path)
@@ -12,7 +23,23 @@ def annotate_document(doc_path, doc_id):
         verse_text = verse_data['text']
         chapter = verse_data['chapter']
         verse_num = verse_data['verse']
-        
+
+        if nlp is None:
+            # Fallback: one EVENT per verse (no NLP dependencies)
+            annotations.append({
+                'id': f"{doc_id}_e{event_id}",
+                'text': verse_text.strip(),
+                'verse_idx': verse_idx,
+                'chapter': chapter,
+                'verse': verse_num,
+                'verse_ref': f"{chapter}:{verse_num}",
+                'type': 'EVENT',
+                'relations': []
+            })
+            event_id += 1
+            continue
+
+        # With spaCy: extract sentences anchored by verbs
         doc = nlp(verse_text)
         for token in doc:
             if token.pos_ == 'VERB':  # Events as verbs (ISO-TimeML inspired)

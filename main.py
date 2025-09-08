@@ -1,10 +1,12 @@
 import os
+import sys
+import platform
 import xml.etree.ElementTree as ET
 from stage1_temporal_annotation.annotator import run_annotation
 from stage2_event_alignment.aligner import align_events
 from stage3_gnn_modeling.gnn_model import run_gnn
 from stage4_abstractive_generation.generator import generate_summary
-from stage5_evaluation.evaluator import evaluate_summary
+from stage5_evaluation.evaluator import evaluate_summary, save_scores, scores_to_dict
 
 def load_chronology_xml(xml_path):
     """Load the chronology from XML into list of dicts."""
@@ -26,6 +28,17 @@ def load_chronology_xml(xml_path):
     return table
 
 def main():
+    # Ensure UTF-8 stdout/stderr to avoid UnicodeEncodeError on Windows consoles
+    try:
+        sys.stdout.reconfigure(encoding='utf-8', errors='ignore')
+        sys.stderr.reconfigure(encoding='utf-8', errors='ignore')
+    except Exception:
+        pass
+    try:
+        if platform.system() == 'Windows':
+            os.system('chcp 65001 >NUL')
+    except Exception:
+        pass
     os.makedirs('outputs', exist_ok=True)
     
     docs = {
@@ -59,6 +72,12 @@ def main():
     # Stage 5
     scores = evaluate_summary(summary)
     print("Stage 5: ROUGE scores:", scores)
+    # Persist metrics in outputs as JSON (UTF-8)
+    try:
+        out_metrics = save_scores(scores, out_path='outputs/rouge.json')
+        print(f"Saved ROUGE metrics to {out_metrics}")
+    except Exception as e:
+        print(f"Warning: Failed to save ROUGE metrics: {e}")
 
 if __name__ == "__main__":
     main()

@@ -1,7 +1,4 @@
-from utils.helpers import simple_word_embedding, cosine_similarity
-from transformers import BartTokenizer
-
-tokenizer = BartTokenizer.from_pretrained('facebook/bart-base')
+from utils.helpers import simple_word_embedding, cosine_similarity, parse_verse_range
 
 def align_events(annotated_docs, chronology_table, threshold=0.7):
     all_events = []
@@ -9,9 +6,10 @@ def align_events(annotated_docs, chronology_table, threshold=0.7):
         for anno in annos:
             if anno['type'] == 'EVENT':
                 anno['doc_id'] = doc_id
-                anno['embedding'] = simple_word_embedding(anno['text'], tokenizer)
+                # Lightweight, deterministic embedding
+                anno['embedding'] = simple_word_embedding(anno['text'])
                 all_events.append(anno)
-    
+
     alignments = {}
     # Use chronology table (from XML) to align parallels
     for row in chronology_table:
@@ -26,11 +24,31 @@ def align_events(annotated_docs, chronology_table, threshold=0.7):
         if len(active_docs) > 1:  # At least two Gospels cover this event
             parallel_events = []
             for doc, ref in active_docs.items():
-                # Find events in annotated_docs that match ref (e.g., chapter:verse)
-                # Assume verse_ref is now a string like "21:1-7" - update annotator if needed
-                matched = [e for e in all_events if e['doc_id'] == doc and ref == e.get('verse_ref', '')]
+                parsed = parse_verse_range(ref)
+                if not parsed:
+                    continue
+                sc, sv, ec, ev, sp, ep = parsed
+                def in_range(e):
+                    if e['doc_id'] != doc:
+                        return False
+                    ch = e.get('chapter'); vs = e.get('verse')
+                    if ch is None or vs is None:
+                        return False
+                    if sc == ec:
+                        if ch != sc:
+                            return False
+                        return sv <= vs <= ev
+                    # Cross-chapter
+                    if ch < sc or ch > ec:
+                        return False
+                    if ch == sc and vs < sv:
+                        return False
+                    if ch == ec and vs > ev:
+                        return False
+                    return True
+                matched = [e for e in all_events if in_range(e)]
                 parallel_events.extend(matched)
-            
+
             for i, e1 in enumerate(parallel_events):
                 for e2 in parallel_events[i+1:]:
                     sim = cosine_similarity(e1['embedding'], e2['embedding'])
