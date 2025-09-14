@@ -4,5 +4,7 @@ rouge-score
 torch
 networkx
 numpy
+bert-score
 # Run after install: python -m spacy download en_core_web_sm 
 # and pip install huggingface_hub[hf_xet]
+nltk

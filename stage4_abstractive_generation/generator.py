@@ -1,25 +1,76 @@
+import os
 import networkx as nx
 import torch
-from transformers import LEDForConditionalGeneration, LEDTokenizer
-
-# Lazy-load model/tokenizer to avoid import-time failures and allow fallback
+import numpy as np
+from transformers import LEDForConditionalGeneration, LEDTokenizer, pipeline
+from utils.helpers import simple_word_embedding
 _led_model = None
 _led_tokenizer = None
 
+def _ensure_hf_cache():
+    """Ensure a local Hugging Face cache directory is set and exists.
+
+    Honors existing envs; otherwise defaults to ./hf_cache.
+    Returns the base cache directory path.
+    """
+    base = os.environ.get('HF_HOME') or os.environ.get('TRANSFORMERS_CACHE')
+    if not base:
+        base = os.path.join(os.getcwd(), 'hf_cache')
+        os.environ.setdefault('HF_HOME', base)
+    # Sub-caches for transformers and datasets
+    os.environ.setdefault('TRANSFORMERS_CACHE', os.path.join(base, 'transformers'))
+    os.environ.setdefault('HF_DATASETS_CACHE', os.path.join(base, 'datasets'))
+    os.environ.setdefault('XDG_CACHE_HOME', base)
+    try:
+        os.makedirs(os.environ['TRANSFORMERS_CACHE'], exist_ok=True)
+        os.makedirs(os.environ['HF_DATASETS_CACHE'], exist_ok=True)
+    except Exception:
+        pass
+    return base
 def _ensure_led():
+    # Ensure a local cache is configured before any downloads
+    _ensure_hf_cache()
+    use_env = os.environ.get("TAVERN_USE_PRIMERA","" ).lower()
+    if use_env in ("0","false","no","off"):
+        return None, None
+    local_dir = os.environ.get("TAVERN_PRIMERA_LOCAL_DIR", "").strip()
+    model_override = os.environ.get("TAVERN_PRIMERA_MODEL","" ).strip()
+    model_names = []
+    if local_dir:
+        model_names.append(local_dir)
+    if model_override:
+        model_names.append(model_override)
+    model_names += ["allenai/PRIMERA","allenai/led-base-16384"]
     global _led_model, _led_tokenizer
     if _led_model is not None and _led_tokenizer is not None:
         return _led_model, _led_tokenizer
-    try:
-        _led_model = LEDForConditionalGeneration.from_pretrained('allenai/led-base-16384')
-        _led_tokenizer = LEDTokenizer.from_pretrained('allenai/led-base-16384')
-        return _led_model, _led_tokenizer
-    except Exception:
-        # Keep as None to trigger heuristic fallback
-        _led_model = None
-        _led_tokenizer = None
-        return None, None
-
+    last_err = None
+    for name in model_names:
+        try:
+            model = LEDForConditionalGeneration.from_pretrained(name, cache_dir=os.environ.get("TRANSFORMERS_CACHE", None))
+            tokenizer = LEDTokenizer.from_pretrained(name, cache_dir=os.environ.get("TRANSFORMERS_CACHE", None))
+            # Ensure <doc-sep> is a special token and resize embeddings
+            try:
+                added = tokenizer.add_special_tokens({"additional_special_tokens": ["<doc-sep>"]})
+                if added and added > 0:
+                    model.resize_token_embeddings(len(tokenizer))
+            except Exception:
+                pass
+            # Optionally reduce attention window to mitigate padding/memory
+            try:
+                aw = getattr(model.config, "attention_window", None)
+                if isinstance(aw, (list, tuple)) and len(aw) > 0:
+                    model.config.attention_window = [512] * len(aw)
+            except Exception:
+                pass
+            _led_model, _led_tokenizer = model, tokenizer
+            return _led_model, _led_tokenizer
+        except Exception as e:
+            last_err = e
+            continue
+    _led_model = None
+    _led_tokenizer = None
+    return None, None
 def clean_final_text(text):
     """Final cleaning to remove remaining artifacts and normalize text."""
     import re
@@ -111,12 +162,36 @@ def consolidate_event_with_primera(text, num_accounts):
         # For PRIMERA, we don't need a complex prompt - just the documents
         # PRIMERA was trained to understand multi-document input with <doc-sep>
         
-        # Tokenize the clean text directly
-        inputs = tokenizer(clean_text, return_tensors="pt", max_length=4096, truncation=True, padding=True)
+        # Tokenize the clean text directly, padding aligned to attention window
+        attn_win = None
+        try:
+            aw = getattr(model.config, 'attention_window', None)
+            if isinstance(aw, (list, tuple)) and len(aw) > 0:
+                attn_win = int(aw[0])
+            elif isinstance(aw, int):
+                attn_win = aw
+        except Exception:
+            attn_win = None
+        if attn_win is None or attn_win <= 0:
+            attn_win = 512
+        inputs = tokenizer(
+            clean_text,
+            return_tensors="pt",
+            max_length=4096,
+            truncation=True,
+            padding=True,
+            pad_to_multiple_of=attn_win,
+        )
         input_ids = inputs["input_ids"]
         attention_mask = inputs.get("attention_mask", None)
-        # Configure global attention (at least first token)
+        # Configure global attention: first token and <doc-sep> tokens
         global_attention_mask = torch.zeros_like(input_ids)
+        try:
+            doc_sep_id = tokenizer.convert_tokens_to_ids('<doc-sep>')
+            if doc_sep_id is not None and doc_sep_id >= 0:
+                global_attention_mask = global_attention_mask.masked_fill(input_ids.eq(doc_sep_id), 1)
+        except Exception:
+            pass
         global_attention_mask[:, 0] = 1
         
         # Generate consolidated version with better parameters
@@ -127,10 +202,11 @@ def consolidate_event_with_primera(text, num_accounts):
                 global_attention_mask=global_attention_mask,
                 max_length=420,  # a bit shorter to reduce redundancy
                 min_length=80,
-                num_beams=3,
-                length_penalty=1.0,
+                num_beams=4,
+                length_penalty=1.05,
                 repetition_penalty=1.15,
                 no_repeat_ngram_size=3,
+                encoder_no_repeat_ngram_size=3,
                 do_sample=False,  # Deterministic for consistency
                 early_stopping=True,
                 forced_bos_token_id=tokenizer.bos_token_id,
@@ -165,15 +241,29 @@ def consolidate_event_with_primera(text, num_accounts):
         # Fallback: split by docs and consolidate heuristically
         cleaned = clean_malformed_separators(text)
         parts = [p.strip() for p in cleaned.split('<doc-sep>') if p.strip()]
+        # Try BART/DistilBART summarization first (if available)
+        try:
+            summarizer = _ensure_bart()
+            if summarizer is not None:
+                inp = cleaned
+                if len(inp) > 4000:
+                    inp = inp[:4000]
+                out = summarizer(inp, max_length=240, min_length=80, do_sample=False, num_beams=4, truncation=True)
+                cand = out[0]['summary_text'] if isinstance(out, list) and out else ''
+                if cand:
+                    return reduce_redundancy(cand)
+        except Exception as _e:
+            print(f"BART fallback failed: {_e}")
+        # Fallback to extractive selection
+        try:
+            if parts:
+                summary = _extractive_consolidate(parts, max_sentences=6, alpha=0.7)
+                return reduce_redundancy(summary)
+        except Exception:
+            pass
         if len(parts) > 1:
             return reduce_redundancy(consolidate_long_text(parts))
         return reduce_redundancy(cleaned)
-
-def consolidate_long_text(texts, similarity_threshold=0.8):
-    """Fallback consolidation using sentence-level deduplication."""
-    import re
-    
-    # Split all texts into sentences
     all_sentences = []
     for text in texts:
         sentences = re.split(r'[.!?]+', text)
@@ -228,18 +318,17 @@ def generate_summary(consolidated_events, G):
             num_sources = event_data.get('num_source_texts', 1)
             
             if raw_text:
-                # Apply PRIMERA consolidation if multiple sources
+                # Apply PRIMERA consolidation if multiple sources with explicit doc separators
                 if num_sources > 1 and '<doc-sep>' in raw_text:
                     print(f"Consolidating event {i+1} with {num_sources} accounts using PRIMERA...")
                     consolidated_text = consolidate_event_with_primera(raw_text, num_sources)
                     print(f"Added event {i+1}: {consolidated_text[:100]}...")
+                    # Reduce redundancy only when we truly merged multiple accounts
+                    consolidated_text = reduce_redundancy(consolidated_text)
                 else:
-                    # Single source, clean but use as-is
-                    consolidated_text = clean_malformed_separators(raw_text)
+                    # Single chosen account: preserve integral text as-is (no summarization/reduction)
+                    consolidated_text = raw_text.strip()
                     print(f"Added event {i+1}: {consolidated_text[:100]}...")
-                
-                # Extra pass to reduce redundancy and clean artifacts
-                consolidated_text = reduce_redundancy(consolidated_text)
                 
                 # Format with event number
                 event_section = f"{i+1} {consolidated_text}"
@@ -258,3 +347,97 @@ def generate_summary(consolidated_events, G):
         f.write(consolidated_narrative)
     
     return consolidated_narrative
+
+
+
+def _extractive_consolidate(texts, max_sentences=6, alpha=0.7):
+    """Heuristic extractive consolidation across multiple documents.
+
+    - Splits texts into sentences, embeds with a lightweight hashing embedding,
+      ranks by centroid similarity with MMR diversity, and returns top sentences.
+    - alpha controls balance between relevance (to centroid) and diversity.
+    """
+    import re
+    sents = []
+    for d_idx, tx in enumerate(texts):
+        parts = re.split(r'[.!?]+', tx)
+        for p in parts:
+            s = (p or '').strip()
+            if len(s) > 10:
+                sents.append((s, d_idx))
+    if not sents:
+        return ' '.join(t.strip() for t in texts if t and t.strip())
+    # Deduplicate early by Jaccard
+    def _j(a,b):
+        A=set(a.lower().split()); B=set(b.lower().split())
+        return (len(A&B)/len(A|B)) if A and B else 0.0
+    uniq=[]; seen=[]
+    for s,_d in sents:
+        if not any(_j(s,x)>=0.85 for x in seen):
+            uniq.append((s,_d)); seen.append(s)
+        if len(uniq) > 200:
+            break
+    sents = uniq
+    # Embeddings
+    vecs = []
+    for s,_ in sents:
+        try:
+            v = simple_word_embedding(s, dim=300)
+        except Exception:
+            v = np.zeros(300, dtype=np.float32)
+        vecs.append(v)
+    vecs = np.stack(vecs, axis=0)
+    # Centroid
+    centroid = vecs.mean(axis=0)
+    def _cos(a,b):
+        na=np.linalg.norm(a); nb=np.linalg.norm(b)
+        return float(np.dot(a,b)/(na*nb)) if na>0 and nb>0 else 0.0
+    scores = np.array([_cos(v, centroid) for v in vecs])
+    # MMR selection
+    selected_idx=[]; candidate_idx=list(range(len(sents)))
+    while candidate_idx and len(selected_idx) < max_sentences:
+        best=None; best_val=-1e9
+        for i in candidate_idx:
+            rel = scores[i]
+            div = 0.0
+            if selected_idx:
+                div = max(_cos(vecs[i], vecs[j]) for j in selected_idx)
+            val = alpha*rel - (1.0-alpha)*div
+            if val > best_val:
+                best_val=val; best=i
+        selected_idx.append(best)
+        candidate_idx.remove(best)
+    # Preserve chronological order by original occurrence across docs
+    selected = [sents[i][0] for i in selected_idx]
+    # Try to sort by earliest appearance in concatenated docs
+    order = { s: idx for idx,s in enumerate([x for t in texts for x in re.split(r'[.!?]+', t) if (x or '').strip()]) }
+    selected.sort(key=lambda s: order.get(s, 1e9))
+    out = '. '.join(selected)
+    if out and not out.endswith('.'):
+        out += '.'
+    return out
+
+
+
+# Lazy-load BART/DistiBART summarizer for fallback
+_bart_summarizer = None
+
+def _ensure_bart():
+    global _bart_summarizer
+    use_env = os.environ.get('TAVERN_USE_BART', '').lower()
+    if use_env in ('0','false','no','off'):
+        return None
+    if _bart_summarizer is not None:
+        return _bart_summarizer
+    try:
+        _ensure_hf_cache()
+        local_dir = os.environ.get('TAVERN_BART_LOCAL_DIR', '').strip()
+        model_name = local_dir or os.environ.get('TAVERN_BART_MODEL', 'sshleifer/distilbart-cnn-12-6')
+        device = 0 if torch.cuda.is_available() else -1
+        _bart_summarizer = pipeline('summarization', model=model_name, device=device)
+        return _bart_summarizer
+    except Exception:
+        _bart_summarizer = None
+        return None
+
+

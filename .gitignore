@@ -1,0 +1,31 @@
+# Python cache and environments
+__pycache__/
+*.py[cod]
+.venv/
+.env/
+
+# IDE/settings
+.vscode/
+.idea/
+
+# Model/cache directories
+hf_cache/
+cache/
+models/
+
+# Large model files
+*.bin
+*.safetensors
+*.pt
+*.ckpt
+*.onnx
+
+# Outputs and logs
+outputs/
+*.log
+run.log
+run2.log
+
+# OS files
+Thumbs.db
+.DS_Store

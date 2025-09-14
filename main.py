@@ -6,7 +6,7 @@ from stage1_temporal_annotation.annotator import run_annotation
 from stage2_event_alignment.aligner import align_events
 from stage3_gnn_modeling.gnn_model import run_gnn
 from stage4_abstractive_generation.generator import generate_summary
-from stage5_evaluation.evaluator import evaluate_summary, save_scores, scores_to_dict
+from stage5_evaluation.evaluator import evaluate_summary, save_scores, scores_to_dict, evaluate_bertscore, save_bertscore, evaluate_meteor, save_meteor, evaluate_kendalls_tau, save_kendalls_tau
 
 def load_chronology_xml(xml_path):
     """Load the chronology from XML into list of dicts."""
@@ -61,7 +61,7 @@ def main():
     print("Stage 2: Alignments complete.")
     
     # Stage 3
-    enriched_events, G, consolidated_events = run_gnn(all_events, chronology_table)
+    enriched_events, G, consolidated_events = run_gnn(all_events, chronology_table, docs=docs)
     print("Stage 3: GNN modeling complete.")
     
     # Stage 4
@@ -70,14 +70,43 @@ def main():
     print(summary)
     
     # Stage 5
-    scores = evaluate_summary(summary)
-    print("Stage 5: ROUGE scores:", scores)
+    # ROUGE against Golden Sample
+    rouge_scores = evaluate_summary(summary, reference_path='data/Golden_Sample.txt')
+    print("Stage 5: ROUGE scores:", rouge_scores)
+    
     # Persist metrics in outputs as JSON (UTF-8)
     try:
-        out_metrics = save_scores(scores, out_path='outputs/rouge.json')
+        out_metrics = save_scores(rouge_scores, out_path='outputs/rouge.json')
         print(f"Saved ROUGE metrics to {out_metrics}")
     except Exception as e:
         print(f"Warning: Failed to save ROUGE metrics: {e}")
 
+    # BERTScore against Golden Sample
+    try:
+        bert = evaluate_bertscore(summary, reference_path='data/Golden_Sample.txt', lang='en', rescale_with_baseline=True)
+        print("Stage 5: BERTScore:", bert)
+        out_bs = save_bertscore(bert, out_path='outputs/bertscore.json')
+        print(f"Saved BERTScore to {out_bs}")
+    except Exception as e:
+        print(f"Warning: Failed to compute/save BERTScore: {e}")
+
+
+    # METEOR against Golden Sample
+    try:
+        meteor = evaluate_meteor(summary, reference_path='data/Golden_Sample.txt')
+        print("Stage 5: METEOR:", meteor)
+        out_meteor = save_meteor(meteor, out_path='outputs/meteor.json')
+        print(f"Saved METEOR to {out_meteor}")
+    except Exception as e:
+        print(f"Warning: Failed to compute/save METEOR: {e}")
+
+    # Kendall's Tau for event ordering
+    try:
+        kt = evaluate_kendalls_tau(consolidated_events, G)
+        print("Stage 5: Kendall's Tau:", kt)
+        out_kt = save_kendalls_tau(kt, out_path='outputs/kendall_tau.json')
+        print(f"Saved Kendall's Tau to {out_kt}")
+    except Exception as e:
+        print(f"Warning: Failed to compute/save Kendall's Tau: {e}")
 if __name__ == "__main__":
     main()

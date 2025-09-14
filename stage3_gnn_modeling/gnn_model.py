@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import networkx as nx
 from utils.helpers import create_graph, parse_verse_range
+from utils.helpers import parse_gospel_xml
 
 def split_text_intelligently(text, part):
     """Split text into two halves, preferring natural breakpoints like sentences."""
@@ -73,7 +74,39 @@ def _dedup_and_cap(text_list, cap=8, threshold=0.6):
 
 ## parse_verse_range moved to utils.helpers for reuse
 
-def consolidate_and_build_graph(events, chronology_table):
+def _build_verse_text_maps(docs):
+    """Build a mapping (gospel, chapter, verse) -> full verse text using the XML files.
+
+    docs: dict like {'matthew': path, 'mark': path, 'luke': path, 'john': path}
+    returns: dict[(str,int,int)] -> str
+    """
+    verse_text_map = {}
+    if not docs:
+        return verse_text_map
+    for gospel, path in docs.items():
+        try:
+            verses = parse_gospel_xml(path)
+            for v in verses:
+                ch = v.get('chapter'); vs = v.get('verse'); tx = (v.get('text') or '').strip()
+                if ch and vs and tx:
+                    verse_text_map[(gospel, ch, vs)] = tx
+        except Exception:
+            # If parsing fails for any gospel, leave it empty; we fallback to annotations
+            pass
+    return verse_text_map
+
+def _slice_text_by_part(text, part):
+    """Return first ('a') or second ('b') half of a text, preferring sentence boundaries.
+
+    This is a heuristic to approximate verse parts when references include a/b suffix.
+    """
+    if not text or part not in ('a', 'b'):
+        return text
+    first = split_text_intelligently(text, 'first')
+    second = split_text_intelligently(text, 'second')
+    return first if part == 'a' else second
+
+def consolidate_and_build_graph(events, chronology_table, docs=None):
     """Consolidate events from multiple gospels into enriched macro-events using chronology table."""
     
     print(f"Total events received: {len(events)}")
@@ -103,13 +136,15 @@ def consolidate_and_build_graph(events, chronology_table):
     if chronology_table:
         print(f"Sample chronology entry: {chronology_table[0]}")
     
+    # Pre-build verse text maps if doc paths are provided
+    verse_text_map = _build_verse_text_maps(docs)
+
     for i, row in enumerate(chronology_table):  # Process ALL events
         description = row.get('description', f'Event {i}')
         print(f"\nProcessing chronology row {i}: {description}")
         
-        # Collect texts per gospel to build at most 4 docs (one per gospel)
-        gospel_texts = {g: [] for g in gospels}
-        gospel_seen_texts = {g: set() for g in gospels}  # prevent duplicates per gospel
+        # Collect full verse text per gospel (integral text per account)
+        gospel_full_texts = {g: '' for g in gospels}
         event_ids_in_macro = []
         
         for gospel in gospels:
@@ -152,61 +187,78 @@ def consolidate_and_build_graph(events, chronology_table):
                                     max_verse = max(max_verse, key[2])
                             verse_end = max_verse if max_verse > 0 else verse_start
                         
+                        # Build integral text for this gospel across the verses
+                        collected_texts = []
                         for verse in range(verse_start, verse_end + 1):
                             key = (gospel, chapter, verse)
+                            # Gather event IDs for traceability
                             events_in_verse = gospel_events_by_verse.get(key, [])
+                            if events_in_verse:
+                                # Decide if we need to filter this verse's events by a/b for original_events only
+                                def filter_by_part(evts, part):
+                                    if not evts or not part:
+                                        return evts
+                                    n = len(evts)
+                                    if n == 1:
+                                        return evts  # nothing to split
+                                    mid = (n + 1) // 2
+                                    return (evts[:mid] if part == 'a' else evts[mid:])
 
-                            if not events_in_verse:
-                                continue
+                                selected = events_in_verse
+                                # Single-verse case with suffix
+                                if (start_chapter == end_chapter and start_verse == end_verse and
+                                    chapter == start_chapter and verse == start_verse and (start_part or end_part)):
+                                    part = start_part or end_part
+                                    selected = filter_by_part(events_in_verse, part)
+                                else:
+                                    # Range boundaries with suffixes
+                                    if chapter == start_chapter and verse == start_verse and start_part:
+                                        selected = filter_by_part(events_in_verse, start_part)
+                                    if chapter == end_chapter and verse == end_verse and end_part:
+                                        selected = filter_by_part(selected, end_part)
 
-                            # Decide if we need to filter this verse by a/b suffix
-                            def filter_by_part(evts, part):
-                                if not evts or not part:
-                                    return evts
-                                n = len(evts)
-                                if n == 1:
-                                    return evts  # nothing to split
-                                mid = (n + 1) // 2
-                                return (evts[:mid] if part == 'a' else evts[mid:])
+                                for event in selected:
+                                    event_ids_in_macro.append(event['id'])
 
-                            selected = events_in_verse
-                            # Single-verse case with suffix
-                            if (start_chapter == end_chapter and start_verse == end_verse and
-                                chapter == start_chapter and verse == start_verse and (start_part or end_part)):
-                                part = start_part or end_part
-                                selected = filter_by_part(events_in_verse, part)
-                            else:
-                                # Range boundaries with suffixes
-                                if chapter == start_chapter and verse == start_verse and start_part:
-                                    selected = filter_by_part(events_in_verse, start_part)
-                                if chapter == end_chapter and verse == end_verse and end_part:
-                                    selected = filter_by_part(selected, end_part)
+                            # Collect full verse text from XML map if available
+                            verse_text = verse_text_map.get(key, '')
+                            if verse_text:
+                                # Apply a/b slicing on boundaries if necessary
+                                if (start_chapter == end_chapter and start_verse == end_verse and
+                                    chapter == start_chapter and verse == start_verse and (start_part or end_part)):
+                                    part = start_part or end_part
+                                    verse_text_use = _slice_text_by_part(verse_text, part)
+                                else:
+                                    verse_text_use = verse_text
+                                    if chapter == start_chapter and verse == start_verse and start_part:
+                                        verse_text_use = _slice_text_by_part(verse_text_use, start_part)
+                                    if chapter == end_chapter and verse == end_verse and end_part:
+                                        verse_text_use = _slice_text_by_part(verse_text_use, end_part)
+                                if verse_text_use:
+                                    collected_texts.append(verse_text_use.strip())
 
-                            for event in selected:
-                                event_text = event.get('text', '').strip()
-                                if event_text and len(event_text) > 10:
-                                    # Deduplicate per gospel
-                                    if event_text not in gospel_seen_texts[gospel]:
-                                        gospel_texts[gospel].append(event_text)
-                                        gospel_seen_texts[gospel].add(event_text)
-                                        event_ids_in_macro.append(event['id'])
-                                        print(f"    Added: {event_text[:50]}...")
+                        # Join collected verse texts for this gospel account
+                        if collected_texts:
+                            # Ensure a clean single-space separation
+                            gospel_full_texts[gospel] = ' '.join(collected_texts).strip()
                 else:
                     print(f"  Could not parse verse reference: {verse_ref}")
         
-        # Create consolidated event if we have content
-        docs = []
-        for g in gospels:
-            if gospel_texts[g]:
-                # Deduplicate and cap sentences per gospel to reduce redundancy
-                cleaned = _dedup_and_cap(gospel_texts[g], cap=8, threshold=0.6)
-                if cleaned:
-                    docs.append(' '.join(cleaned))
+        # Create consolidated event according to user's policy:
+        # - If only one gospel reports the event, use its full text as-is (integral)
+        # - If multiple report, choose only the longest account
+        active_accounts = [(g, t) for g, t in gospel_full_texts.items() if t]
+        if active_accounts:
+            if len(active_accounts) == 1:
+                chosen_gospel, chosen_text = active_accounts[0]
+                consolidated_text = chosen_text
+                chosen = chosen_gospel
+            else:
+                # Pick the longest by character length
+                chosen_gospel, chosen_text = max(active_accounts, key=lambda x: len(x[1]))
+                consolidated_text = chosen_text
+                chosen = chosen_gospel
 
-        if docs:
-            # Join the per-gospel documents with PRIMERA/LED separator
-            consolidated_text = ' <doc-sep> '.join(docs)
-            
             consolidated_event = {
                 'id': f'macro_{i}',
                 'text': consolidated_text,
@@ -214,12 +266,12 @@ def consolidate_and_build_graph(events, chronology_table):
                 'original_events': event_ids_in_macro,
                 'chronology_index': i,
                 'type': 'CONSOLIDATED_EVENT',
-                # number of accounts (gospels) contributing to this macro event
-                'num_source_texts': len(docs)
+                'num_source_texts': 1,  # we include only one account per instruction
+                'source_gospels': [g for g, t in active_accounts],
+                'chosen_gospel': chosen
             }
             consolidated_events.append(consolidated_event)
-            total_snippets = sum(len(gospel_texts[g]) for g in gospels)
-            print(f"  Created macro_{i}: {description} ({len(docs)} accounts, {total_snippets} snippets)")
+            print(f"  Created macro_{i}: {description} (chosen account: {chosen})")
         else:
             print(f"  No events found for macro_{i}: {description}")
     
@@ -238,8 +290,8 @@ def consolidate_and_build_graph(events, chronology_table):
     
     return consolidated_events, G
 
-def run_gnn(events, chronology_table, embed_dim=768):  # Match BART embed size
-    consolidated_events, G = consolidate_and_build_graph(events, chronology_table)
+def run_gnn(events, chronology_table, embed_dim=768, docs=None):  # Match BART embed size
+    consolidated_events, G = consolidate_and_build_graph(events, chronology_table, docs=docs)
     
     # Create node features for consolidated events
     node_features = torch.randn(len(G.nodes), embed_dim)
