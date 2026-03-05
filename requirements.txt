@@ -1,10 +1,10 @@
-transformers
-spacy
-rouge-score
-torch
-networkx
-numpy
-bert-score
-# Run after install: python -m spacy download en_core_web_sm 
-# and pip install huggingface_hub[hf_xet]
-nltk
+networkx>=3.0
+numpy>=1.24
+spacy>=3.7
+scipy>=1.11
+sentence-transformers>=2.2
+# Optional – GPU-accelerated GNN
+# torch>=2.0
+
+# Download the spaCy model after installing:
+#   python -m spacy download en_core_web_sm

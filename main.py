@@ -1,112 +1,228 @@
+"""
+TAVERN — Temporal Analysis of Verse-Event Relations in Narratives
+=================================================================
+End-to-end pipeline runner.
+
+Usage
+-----
+    python main.py [--docs <path>] [--chronology <csv>] [--output <dir>]
+
+Arguments
+---------
+--docs          Directory containing Gospel XML files (default: data/)
+--chronology    Path to the Aschmann harmony CSV (default: data/chronology.csv)
+--output        Output directory for results (default: output/)
+"""
+
+import argparse
+import json
 import os
 import sys
-import platform
-import xml.etree.ElementTree as ET
+import time
+from pathlib import Path
+
+# ---------------------------------------------------------------------------
+# Stage imports
+# ---------------------------------------------------------------------------
 from stage1_temporal_annotation.annotator import run_annotation
 from stage2_event_alignment.aligner import align_events
-from stage3_gnn_modeling.gnn_model import run_gnn
-from stage4_abstractive_generation.generator import generate_summary
-from stage5_evaluation.evaluator import evaluate_summary, save_scores, scores_to_dict, evaluate_bertscore, save_bertscore, evaluate_meteor, save_meteor, evaluate_kendalls_tau, save_kendalls_tau
+from stage3_gnn_modeling.gnn_model import build_temporal_graph, encode_graph
+from stage4_abstractive_generation.generator import generate_narrative
+from stage5_evaluation.evaluator import evaluate
 
-def load_chronology_xml(xml_path):
-    """Load the chronology from XML into list of dicts."""
-    tree = ET.parse(xml_path)
-    root = tree.getroot()
-    table = []
-    for event_elem in root.findall('.//event'):  # Use .// to find events at any level
-        event_dict = {
-            'id': event_elem.get('id'),  # Capture the event ID if present
-            'day': event_elem.find('day').text if event_elem.find('day') is not None else None,
-            'description': event_elem.find('description').text if event_elem.find('description') is not None else None,
-            'when_where': event_elem.find('when_where').text if event_elem.find('when_where') is not None else None,
-            'matthew': event_elem.find('matthew').text if event_elem.find('matthew') is not None else None,
-            'mark': event_elem.find('mark').text if event_elem.find('mark') is not None else None,
-            'luke': event_elem.find('luke').text if event_elem.find('luke') is not None else None,
-            'john': event_elem.find('john').text if event_elem.find('john') is not None else None
-        }
-        table.append(event_dict)
-    return table
 
-def main():
-    # Ensure UTF-8 stdout/stderr to avoid UnicodeEncodeError on Windows consoles
+# ---------------------------------------------------------------------------
+# Helpers
+# ---------------------------------------------------------------------------
+
+def _load_chronology(csv_path: str):
+    """Load the Aschmann harmony CSV as a list of dicts."""
     try:
-        sys.stdout.reconfigure(encoding='utf-8', errors='ignore')
-        sys.stderr.reconfigure(encoding='utf-8', errors='ignore')
-    except Exception:
-        pass
-    try:
-        if platform.system() == 'Windows':
-            os.system('chcp 65001 >NUL')
-    except Exception:
-        pass
-    os.makedirs('outputs', exist_ok=True)
-    
-    docs = {
-        'matthew': 'data/EnglishNIVMatthew40_PW.xml',
-        'mark': 'data/EnglishNIVMark41_PW.xml',
-        'luke': 'data/EnglishNIVLuke42_PW.xml',
-        'john': 'data/EnglishNIVJohn43_PW.xml'
-    }
-    
-    # Load chronology from XML
-    chronology_table = load_chronology_xml('data/ChronologyOfTheFourGospels_PW.xml')
-    print("Chronology loaded from XML.")
-    
-    # Stage 1
+        import csv
+        rows = []
+        with open(csv_path, newline='', encoding='utf-8') as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                rows.append(dict(row))
+        return rows
+    except FileNotFoundError:
+        return []
+    except Exception as exc:
+        print(f"  Warning: could not load chronology ({exc})")
+        return []
+
+
+def _discover_docs(docs_dir: str) -> dict:
+    """Return {doc_id: file_path} for all *.xml files under docs_dir."""
+    p = Path(docs_dir)
+    docs = {}
+    if p.is_dir():
+        for xml_file in sorted(p.glob('*.xml')):
+            doc_id = xml_file.stem.lower()
+            docs[doc_id] = str(xml_file)
+    return docs
+
+
+def _print_section(title: str, width: int = 60) -> None:
+    print(f"\n{'=' * width}")
+    print(f"  {title}")
+    print('=' * width)
+
+
+def _print_metrics(metrics: dict) -> None:
+    """Pretty-print the evaluation metrics dict."""
+    col_w = 38
+    for key, val in metrics.items():
+        if isinstance(val, float):
+            print(f"  {key:<{col_w}} {val:.4f}")
+        else:
+            print(f"  {key:<{col_w}} {val}")
+
+
+# ---------------------------------------------------------------------------
+# Pipeline
+# ---------------------------------------------------------------------------
+
+def run_pipeline(
+        docs_dir: str = 'data',
+        chronology_path: str = 'data/chronology.csv',
+        output_dir: str = 'output',
+        save_outputs: bool = True,
+) -> dict:
+    """Execute the full TAVERN pipeline and return the evaluation metrics."""
+
+    os.makedirs(output_dir, exist_ok=True)
+    t_start = time.time()
+
+    # ------------------------------------------------------------------
+    # Stage 1 — Temporal Annotation
+    # ------------------------------------------------------------------
+    _print_section('Stage 1 — ISO-TimeML Temporal Annotation')
+    docs = _discover_docs(docs_dir)
+    if not docs:
+        print(f'  No XML files found in "{docs_dir}". '
+              'Please add Gospel XML files and re-run.')
+        return {}
+
+    print(f'  Documents: {", ".join(docs.keys())}')
     annotated_docs = run_annotation(docs)
-    print("Stage 1: Annotations complete.")
-    
-    # Stage 2
-    all_events, alignments = align_events(annotated_docs, chronology_table)
-    print("Stage 2: Alignments complete.")
-    
-    # Stage 3
-    enriched_events, G, consolidated_events = run_gnn(all_events, chronology_table, docs=docs)
-    print("Stage 3: GNN modeling complete.")
-    
-    # Stage 4
-    summary = generate_summary(consolidated_events, G)
-    print("Stage 4: Summary generated.")
-    print(summary)
-    
-    # Stage 5
-    # ROUGE against Golden Sample
-    rouge_scores = evaluate_summary(summary, reference_path='data/Golden_Sample.txt')
-    print("Stage 5: ROUGE scores:", rouge_scores)
-    
-    # Persist metrics in outputs as JSON (UTF-8)
-    try:
-        out_metrics = save_scores(rouge_scores, out_path='outputs/rouge.json')
-        print(f"Saved ROUGE metrics to {out_metrics}")
-    except Exception as e:
-        print(f"Warning: Failed to save ROUGE metrics: {e}")
 
-    # BERTScore against Golden Sample
-    try:
-        bert = evaluate_bertscore(summary, reference_path='data/Golden_Sample.txt', lang='en', rescale_with_baseline=True)
-        print("Stage 5: BERTScore:", bert)
-        out_bs = save_bertscore(bert, out_path='outputs/bertscore.json')
-        print(f"Saved BERTScore to {out_bs}")
-    except Exception as e:
-        print(f"Warning: Failed to compute/save BERTScore: {e}")
+    if save_outputs:
+        _save_json(annotated_docs, output_dir, 'stage1_annotations.json')
+
+    total_events = sum(
+        sum(1 for a in anns if a['type'] == 'EVENT')
+        for anns in annotated_docs.values()
+    )
+    total_tlinks = sum(
+        sum(1 for a in anns if a['type'] == 'TLINK')
+        for anns in annotated_docs.values()
+    )
+    print(f'  Total: {total_events} EVENTs, {total_tlinks} TLINKs extracted')
+
+    # ------------------------------------------------------------------
+    # Stage 2 — Cross-Document Alignment
+    # ------------------------------------------------------------------
+    _print_section('Stage 2 — Cross-Document Event Alignment')
+    chronology = _load_chronology(chronology_path)
+    if chronology:
+        print(f'  Loaded chronology with {len(chronology)} entries')
+    else:
+        print('  No chronology loaded — using semantic alignment only')
+
+    alignments = align_events(annotated_docs, chronology=chronology)
+    if save_outputs:
+        _save_json(alignments, output_dir, 'stage2_alignments.json')
+
+    print(f'  Alignment groups: {len(alignments)}')
+
+    # ------------------------------------------------------------------
+    # Stage 3 — GNN Encoding
+    # ------------------------------------------------------------------
+    _print_section('Stage 3 — Relational GAT Graph Encoding')
+    nodes, edges = build_temporal_graph(annotated_docs, alignments)
+    print(f'  Graph: {len(nodes)} nodes, {len(edges)} edges')
+
+    embeddings = encode_graph(nodes, edges)
+    print(f'  Encoded {len(embeddings)} node embeddings')
+
+    if save_outputs:
+        _save_json(
+            {k: v.tolist() for k, v in embeddings.items()},
+            output_dir, 'stage3_embeddings.json'
+        )
+
+    # ------------------------------------------------------------------
+    # Stage 4 — Narrative Generation
+    # ------------------------------------------------------------------
+    _print_section('Stage 4 — Temporal Narrative Generation')
+    narrative = generate_narrative(annotated_docs, alignments, embeddings)
+    print(f'  Narrative: {len(narrative.split())} words, '
+          f'{narrative.count(chr(10) + chr(10)) + 1} paragraph(s)')
+    print()
+    # Print a short preview
+    preview = narrative[:500] + ('...' if len(narrative) > 500 else '')
+    for line in preview.splitlines():
+        print(f'  {line}')
+
+    if save_outputs:
+        narrative_path = os.path.join(output_dir, 'stage4_narrative.txt')
+        with open(narrative_path, 'w', encoding='utf-8') as f:
+            f.write(narrative)
+        print(f'  Saved narrative to {narrative_path}')
+
+    # ------------------------------------------------------------------
+    # Stage 5 — Evaluation
+    # ------------------------------------------------------------------
+    _print_section('Stage 5 — Evaluation')
+    metrics = evaluate(
+        annotated_docs=annotated_docs,
+        alignments=alignments,
+        generated_narrative=narrative,
+    )
+    _print_metrics(metrics)
+
+    if save_outputs:
+        _save_json(metrics, output_dir, 'stage5_metrics.json')
+
+    elapsed = time.time() - t_start
+    print(f'\n  Pipeline completed in {elapsed:.1f}s')
+
+    return metrics
 
 
-    # METEOR against Golden Sample
-    try:
-        meteor = evaluate_meteor(summary, reference_path='data/Golden_Sample.txt')
-        print("Stage 5: METEOR:", meteor)
-        out_meteor = save_meteor(meteor, out_path='outputs/meteor.json')
-        print(f"Saved METEOR to {out_meteor}")
-    except Exception as e:
-        print(f"Warning: Failed to compute/save METEOR: {e}")
+def _save_json(data, output_dir: str, filename: str) -> None:
+    path = os.path.join(output_dir, filename)
+    with open(path, 'w', encoding='utf-8') as f:
+        json.dump(data, f, indent=2, default=str)
+    print(f'  Saved {filename}')
 
-    # Kendall's Tau for event ordering
-    try:
-        kt = evaluate_kendalls_tau(consolidated_events, G)
-        print("Stage 5: Kendall's Tau:", kt)
-        out_kt = save_kendalls_tau(kt, out_path='outputs/kendall_tau.json')
-        print(f"Saved Kendall's Tau to {out_kt}")
-    except Exception as e:
-        print(f"Warning: Failed to compute/save Kendall's Tau: {e}")
-if __name__ == "__main__":
+
+# ---------------------------------------------------------------------------
+# Entry point
+# ---------------------------------------------------------------------------
+
+def main() -> None:
+    parser = argparse.ArgumentParser(
+        description='TAVERN — Temporal Analysis of Verse-Event Relations in Narratives'
+    )
+    parser.add_argument('--docs', default='data',
+                        help='Directory with Gospel XML files')
+    parser.add_argument('--chronology', default='data/chronology.csv',
+                        help='Path to Aschmann harmony CSV')
+    parser.add_argument('--output', default='output',
+                        help='Output directory')
+    parser.add_argument('--no-save', action='store_true',
+                        help='Do not save intermediate outputs')
+    args = parser.parse_args()
+
+    run_pipeline(
+        docs_dir=args.docs,
+        chronology_path=args.chronology,
+        output_dir=args.output,
+        save_outputs=not args.no_save,
+    )
+
+
+if __name__ == '__main__':
     main()

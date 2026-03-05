@@ -1,215 +1,275 @@
-from rouge_score import rouge_scorer
-import json
+"""
+TAVERN — Stage 5: Evaluation Suite
+====================================
+Computes evaluation metrics for TAVERN pipeline outputs.
+
+Metrics
+-------
+* **Temporal Ordering Accuracy (TOA)** — fraction of event pairs whose
+  predicted TLINK relation matches the gold standard.
+* **Temporal F1** — precision/recall/F1 over predicted vs gold TLINK types.
+* **Entity Coverage** — fraction of named entities in the gold corpus
+  covered by the generated narrative.
+* **Narrative Coherence Score (NCS)** — average consecutive-sentence
+  cosine similarity in the generated text (proxy for fluency).
+* **Adjacent Pair Accuracy (APA)** — accuracy on adjacent (narrative-order)
+  event pairs only.
+* **Redundancy Ratio (RR)** — fraction of near-duplicate sentences in the
+  generated narrative (lower is better).
+"""
+
+from __future__ import annotations
+
 import re
-from typing import List, Optional
+from itertools import combinations
+from typing import Any, Dict, List, Optional, Tuple
 
-def evaluate_summary(generated_summary, reference_path='data/reference_summary.txt'):
-    with open(reference_path, 'r', encoding='utf-8') as f:
-        reference = f.read().strip()
-    scorer = rouge_scorer.RougeScorer(['rouge1', 'rouge2', 'rougeL'], use_stemmer=True)
-    scores = scorer.score(reference, generated_summary)
-    return scores
+import numpy as np
 
-def evaluate_bertscore(generated_summary, reference_path='data/Golden_Sample.txt', lang='en', rescale_with_baseline=True):
-    """Compute BERTScore (P/R/F1) against a reference file.
+from utils.helpers import get_embedding, cosine_similarity
 
-    Returns a dict with precision, recall, f1 as floats.
+# ---------------------------------------------------------------------------
+# Temporal ordering accuracy
+# ---------------------------------------------------------------------------
+
+def temporal_ordering_accuracy(
+        predicted_tlinks: List[Dict[str, Any]],
+        gold_tlinks: List[Dict[str, Any]],
+) -> float:
+    """Fraction of predicted TLINKs that match the gold on (eventID, relatedToEvent).
+
+    Only evaluates pairs that appear in both predicted and gold sets.
     """
-    with open(reference_path, 'r', encoding='utf-8') as f:
-        reference = f.read().strip()
-    # Lazy import to avoid dependency at import-time if unused
-    from bert_score import score as bertscore_score
-    P, R, F1 = bertscore_score([generated_summary], [reference], lang=lang, rescale_with_baseline=rescale_with_baseline)
-    return {
-        'precision': float(P.mean().item()),
-        'recall': float(R.mean().item()),
-        'f1': float(F1.mean().item())
+    gold_map: Dict[Tuple, str] = {}
+    for tl in gold_tlinks:
+        key = (tl.get('eventID', ''), tl.get('relatedToEvent', ''))
+        if key[0] and key[1]:
+            gold_map[key] = tl.get('relType', '')
+
+    if not gold_map:
+        return 0.0
+
+    correct = 0
+    evaluated = 0
+    for tl in predicted_tlinks:
+        key = (tl.get('eventID', ''), tl.get('relatedToEvent', ''))
+        if key in gold_map:
+            evaluated += 1
+            if tl.get('relType', '') == gold_map[key]:
+                correct += 1
+
+    return correct / evaluated if evaluated > 0 else 0.0
+
+
+# ---------------------------------------------------------------------------
+# Temporal F1
+# ---------------------------------------------------------------------------
+
+def temporal_f1(
+        predicted_tlinks: List[Dict[str, Any]],
+        gold_tlinks: List[Dict[str, Any]],
+) -> Dict[str, float]:
+    """Precision, recall, and F1 over predicted vs gold TLINKs.
+
+    A predicted TLINK is a true positive iff (eventID, relatedToEvent, relType)
+    all match the gold.
+    """
+    gold_set = {
+        (tl.get('eventID', ''), tl.get('relatedToEvent', ''), tl.get('relType', ''))
+        for tl in gold_tlinks
+        if tl.get('eventID') and tl.get('relatedToEvent')
+    }
+    pred_set = {
+        (tl.get('eventID', ''), tl.get('relatedToEvent', ''), tl.get('relType', ''))
+        for tl in predicted_tlinks
+        if tl.get('eventID') and tl.get('relatedToEvent')
     }
 
-def scores_to_dict(scores):
-    """Convert rouge_score Scores to a plain dict of floats."""
-    out = {}
-    for k, v in scores.items():
-        try:
-            out[k] = {
-                'precision': float(v.precision),
-                'recall': float(v.recall),
-                'f1': float(v.fmeasure),
-            }
-        except Exception:
-            # Already a dict or unexpected type
-            try:
-                out[k] = {
-                    'precision': float(v.get('precision', 0.0)),
-                    'recall': float(v.get('recall', 0.0)),
-                    'f1': float(v.get('f1', 0.0)),
-                }
-            except Exception:
-                pass
-    return out
+    tp = len(pred_set & gold_set)
+    fp = len(pred_set - gold_set)
+    fn = len(gold_set - pred_set)
 
-def save_scores(scores, out_path='outputs/rouge.json'):
-    """Save ROUGE scores to JSON (UTF-8)."""
-    data = scores_to_dict(scores)
-    with open(out_path, 'w', encoding='utf-8') as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
-    return out_path
+    precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0
+    recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0
+    f1 = (2 * precision * recall / (precision + recall)
+          if (precision + recall) > 0 else 0.0)
 
-def save_bertscore(scores, out_path='outputs/bertscore.json'):
-    """Save BERTScore metrics (P/R/F1) to JSON (UTF-8)."""
-    # scores is already a plain dict of floats
-    with open(out_path, 'w', encoding='utf-8') as f:
-        json.dump(scores, f, ensure_ascii=False, indent=2)
-    return out_path
+    return {'precision': precision, 'recall': recall, 'f1': f1,
+            'tp': tp, 'fp': fp, 'fn': fn}
 
 
-# -------------------- METEOR --------------------
+# ---------------------------------------------------------------------------
+# Entity coverage
+# ---------------------------------------------------------------------------
 
-def _ensure_wordnet(download: bool = True) -> bool:
-    '''Ensure NLTK WordNet (and OMW) are available; optionally download.'''
-    try:
-        import nltk
-        from nltk.corpus import wordnet as wn
-        try:
-            wn.synsets('test')
-            return True
-        except LookupError:
-            if download:
-                try:
-                    nltk.download('wordnet', quiet=True)
-                    nltk.download('omw-1.4', quiet=True)
-                    wn.synsets('test')
-                    return True
-                except Exception:
-                    return False
-            return False
-    except Exception:
-        return False
+def entity_coverage(
+        gold_annotations: List[Dict[str, Any]],
+        generated_narrative: str,
+) -> float:
+    """Fraction of named entities (from gold EVENTs) covered by the narrative.
 
-def _simple_tokenize(text: str) -> List[str]:
-    '''Lightweight tokenizer (letters/digits underscore), lowercased.'''
-    if not text:
-        return []
-    return re.findall(r'\w+', text.lower())
+    Uses a capitalised-word heuristic for entity detection.
+    """
+    def _entities(text: str) -> set:
+        return {w.rstrip('.,;:') for w in re.findall(r'\b[A-Z][a-z]+\b', text)}
 
-def evaluate_meteor(generated_summary: str, reference_path: str = 'data/Golden_Sample.txt'):
-    '''Compute METEOR between generated text and a reference file.
+    gold_entities: set = set()
+    for ann in gold_annotations:
+        if ann.get('type') == 'EVENT':
+            gold_entities |= _entities(ann.get('text', ''))
 
-    Uses NLTK's implementation with simple regex tokenization to avoid
-    requiring NLTK's punkt models. Returns a dict: { 'meteor': float }.'''
-    with open(reference_path, 'r', encoding='utf-8') as f:
-        reference = f.read().strip()
+    if not gold_entities:
+        return 1.0  # Nothing to cover
 
-    # Ensure WordNet corpora (optional) for synonym matches
-    _ensure_wordnet(download=True)
+    narrative_entities = _entities(generated_narrative)
+    covered = gold_entities & narrative_entities
+    return len(covered) / len(gold_entities)
 
-    # Lazy import to avoid hard dependency if unused
-    try:
-        from nltk.translate.meteor_score import meteor_score as nltk_meteor_score
-    except Exception as e:
-        raise RuntimeError(f'NLTK METEOR not available: {e}')
 
-    ref_tokens = _simple_tokenize(reference)
-    hyp_tokens = _simple_tokenize(generated_summary)
-    score = float(nltk_meteor_score([ref_tokens], hyp_tokens)) if hyp_tokens else 0.0
-    return { 'meteor': score }
+# ---------------------------------------------------------------------------
+# Narrative coherence score
+# ---------------------------------------------------------------------------
 
-def save_meteor(scores, out_path='outputs/meteor.json'):
-    '''Save METEOR score to JSON (UTF-8).'''
-    with open(out_path, 'w', encoding='utf-8') as f:
-        json.dump(scores, f, ensure_ascii=False, indent=2)
-    return out_path
-# ---------------- Kendall's Tau (ordering) ----------------
+def narrative_coherence_score(narrative: str) -> float:
+    """Average cosine similarity between consecutive sentences.
 
-def _kendalls_tau_fallback(x: List[int], y: List[int]) -> float:
-    '''Compute Kendall's Tau-b (without ties handling) as a fallback.
-
-    Assumes x and y are permutations of the same set; returns tau in [-1, 1].
-    '''
-    n = len(x)
-    if n < 2:
+    Higher values indicate more coherent / topically consistent text.
+    A score of 0.0 is returned for narratives with fewer than 2 sentences.
+    """
+    sentences = [s.strip() for s in re.split(r'(?<=[.!?])\s+', narrative)
+                 if len(s.strip()) > 10]
+    if len(sentences) < 2:
         return 0.0
-    # Build order maps
-    rank_y = { val: i for i, val in enumerate(y) }
-    # Count concordant/discordant pairs
-    concordant = 0
-    discordant = 0
-    for i in range(n):
-        for j in range(i + 1, n):
-            xi, xj = x[i], x[j]
-            yi, yj = rank_y[xi], rank_y[xj]
-            if (xj - xi) * (yj - yi) > 0:
-                concordant += 1
-            else:
-                discordant += 1
-    denom = concordant + discordant
-    if denom == 0:
+
+    similarities = []
+    for s1, s2 in zip(sentences, sentences[1:]):
+        e1 = get_embedding(s1)
+        e2 = get_embedding(s2)
+        similarities.append(cosine_similarity(e1, e2))
+
+    return float(np.mean(similarities))
+
+
+# ---------------------------------------------------------------------------
+# Adjacent Pair Accuracy
+# ---------------------------------------------------------------------------
+
+def adjacent_pair_accuracy(
+        predicted_tlinks: List[Dict[str, Any]],
+        gold_tlinks: List[Dict[str, Any]],
+) -> float:
+    """Accuracy restricted to adjacent (narrative-order) event pairs.
+
+    Considers only TLINKs with ``source == 'narrative_order'`` in the
+    predicted set, matched against gold TLINKs.
+    """
+    adjacent_pred = [
+        tl for tl in predicted_tlinks
+        if tl.get('source') == 'narrative_order'
+    ]
+    return temporal_ordering_accuracy(adjacent_pred, gold_tlinks)
+
+
+# ---------------------------------------------------------------------------
+# Redundancy Ratio
+# ---------------------------------------------------------------------------
+
+def redundancy_ratio(
+        narrative: str,
+        similarity_threshold: float = 0.85,
+) -> float:
+    """Fraction of sentences that are near-duplicates of an earlier sentence.
+
+    Two sentences are considered near-duplicates if their cosine similarity
+    exceeds *similarity_threshold*.
+
+    Returns 0.0 for narratives with fewer than 2 sentences.
+    """
+    sentences = [s.strip() for s in re.split(r'(?<=[.!?])\s+', narrative)
+                 if len(s.strip()) > 10]
+    if len(sentences) < 2:
         return 0.0
-    return (concordant - discordant) / denom
 
-def evaluate_kendalls_tau(consolidated_events: List[dict], G=None):
-    '''Compute Kendall's Tau between predicted event order and chronology.
+    embeddings = [get_embedding(s) for s in sentences]
+    redundant = 0
 
-    - If a graph G is provided (NetworkX DiGraph), uses topological sort as the
-      predicted order. Otherwise, uses the order of consolidated_events.
-    - Each consolidated event must have a unique integer chronology_index.
+    for i in range(1, len(sentences)):
+        for j in range(i):
+            sim = cosine_similarity(embeddings[i], embeddings[j])
+            if sim >= similarity_threshold:
+                redundant += 1
+                break  # Count each sentence at most once
 
-    Returns dict: { 'tau': float, 'p_value': Optional[float], 'n': int }
-    '''
-    # Resolve predicted order of events
-    predicted_ids: List[str] = []
-    idx_by_id = {}
-    if consolidated_events:
-        idx_by_id = { ev['id']: ev.get('chronology_index') for ev in consolidated_events if 'id' in ev }
-
-    if G is not None:
-        try:
-            # Lazy import to avoid hard dependency at import-time
-            import networkx as nx  # noqa: F401
-            predicted_ids = list(G.nodes())
-            # If graph is directed and a DAG, try topological order
-            try:
-                predicted_ids = list(nx.topological_sort(G))
-            except Exception:
-                # Keep insertion order of nodes
-                pass
-        except Exception:
-            # Fallback to consolidated_events order
-            predicted_ids = [ev['id'] for ev in consolidated_events if 'id' in ev]
-    else:
-        predicted_ids = [ev['id'] for ev in consolidated_events if 'id' in ev]
-
-    # Map to chronology indices
-    pred_indices = []
-    for eid in predicted_ids:
-        ci = idx_by_id.get(eid)
-        if isinstance(ci, int):
-            pred_indices.append(ci)
-
-    # Ensure we have a clean permutation 0..n-1 if possible
-    if not pred_indices:
-        return { 'tau': 0.0, 'p_value': None, 'n': 0 }
-
-    gold_indices = sorted(pred_indices)
-
-    # Try SciPy first, fallback otherwise
-    tau = None
-    p_value: Optional[float] = None
-    try:
-        from scipy.stats import kendalltau
-        r = kendalltau(pred_indices, gold_indices)
-        tau = float(getattr(r, 'correlation', getattr(r, 'statistic', 0.0)))
-        p_value = float(getattr(r, 'pvalue', None)) if hasattr(r, 'pvalue') else None
-    except Exception:
-        tau = float(_kendalls_tau_fallback(pred_indices, gold_indices))
-        p_value = None
-
-    return { 'tau': tau, 'p_value': p_value, 'n': len(pred_indices) }
-
-def save_kendalls_tau(scores, out_path='outputs/kendall_tau.json'):
-    '''Save Kendall's Tau result to JSON (UTF-8).'''
-    with open(out_path, 'w', encoding='utf-8') as f:
-        json.dump(scores, f, ensure_ascii=False, indent=2)
-    return out_path
+    return redundant / len(sentences)
 
 
+# ---------------------------------------------------------------------------
+# Composite evaluation
+# ---------------------------------------------------------------------------
+
+def evaluate(
+        annotated_docs: Dict[str, List[Dict[str, Any]]],
+        alignments: List[Dict[str, Any]],
+        generated_narrative: str,
+        gold_tlinks: Optional[List[Dict[str, Any]]] = None,
+) -> Dict[str, Any]:
+    """Run the full TAVERN evaluation suite.
+
+    Parameters
+    ----------
+    annotated_docs : dict
+        ``{doc_id: [annotation_dict, ...]}``, output of Stage 1.
+    alignments : list of dict
+        Cross-document alignments, output of Stage 2.
+    generated_narrative : str
+        Output of Stage 4.
+    gold_tlinks : list of dict or None
+        Ground-truth TLINKs for supervised metrics. If ``None``, supervised
+        metrics (TOA, F1, APA) are skipped.
+
+    Returns
+    -------
+    dict
+        Metric name → value.
+    """
+    # Gather predicted TLINKs
+    predicted_tlinks: List[Dict] = []
+    all_gold_annotations: List[Dict] = []
+
+    for doc_id, annotations in annotated_docs.items():
+        for ann in annotations:
+            if ann['type'] == 'TLINK':
+                predicted_tlinks.append(ann)
+            all_gold_annotations.append(ann)
+
+    results: Dict[str, Any] = {}
+
+    # Supervised metrics
+    if gold_tlinks:
+        results['temporal_ordering_accuracy'] = temporal_ordering_accuracy(
+            predicted_tlinks, gold_tlinks)
+        tf1 = temporal_f1(predicted_tlinks, gold_tlinks)
+        results['temporal_precision'] = tf1['precision']
+        results['temporal_recall'] = tf1['recall']
+        results['temporal_f1'] = tf1['f1']
+        results['adjacent_pair_accuracy'] = adjacent_pair_accuracy(
+            predicted_tlinks, gold_tlinks)
+
+    # Unsupervised metrics
+    results['entity_coverage'] = entity_coverage(
+        all_gold_annotations, generated_narrative)
+    results['narrative_coherence_score'] = narrative_coherence_score(
+        generated_narrative)
+    results['redundancy_ratio'] = redundancy_ratio(generated_narrative)
+
+    # Summary stats
+    total_events = sum(
+        sum(1 for a in anns if a['type'] == 'EVENT')
+        for anns in annotated_docs.values()
+    )
+    total_tlinks = len(predicted_tlinks)
+    results['total_events'] = total_events
+    results['total_tlinks'] = total_tlinks
+    results['total_alignments'] = len(alignments)
+
+    return results
