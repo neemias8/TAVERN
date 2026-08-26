@@ -125,6 +125,13 @@ class TavernConfig:
     use_closure: bool = True
     use_anchor_scaffold: bool = True
     use_graph_propagation: bool = True
+    # Stage 3 granularity (locked by the sweep of Section 10.4)
+    max_unit_verses: int = 6
+    entity_turnover: float = 0.60
+    max_episode_verses: int = 2
+    anchor_band: float = 4.0
+    gap_cost: float = 0.06
+    match_threshold: float = 0.34
     use_oracle_timeline: bool = False
     cascade_levels: tuple = (1, 2, 3, 4)
 

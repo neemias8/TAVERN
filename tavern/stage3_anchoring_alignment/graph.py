@@ -180,17 +180,26 @@ def build(structs: Dict[str, AnnotationStructure],
 
     # --- CONFLICT ---------------------------------------------------------
     for cf in induced.conflicts:
-        if cf.get("kind") == "ordering":
-            ca, cb = cf["clusters"]
-            ma, mb = clustering.by_id(ca), clustering.by_id(cb)
-            if ma is None or mb is None:
-                continue
-            for a in ma.members:
-                for b in mb.members:
-                    eg.g.add_edge(a, b, type="CONFLICT", weight=1.0,
-                                  asserted=1.0, level=1)
-                    eg.g.add_edge(b, a, type="CONFLICT", weight=1.0,
-                                  asserted=1.0, level=1)
+        if cf.get("kind") not in ("ordering", "unsatisfiable"):
+            continue
+        groups: List[List[str]] = []
+        for cid in (cf.get("clusters", ()) or ()):
+            cl = clustering.by_id(cid)
+            if cl is not None:
+                groups.append(list(cl.members))
+        uids = [u for u in (cf.get("units", ()) or ()) if u in units]
+        if uids:
+            groups.append(uids)
+        flat = [u for grp in groups for u in grp]
+        for x in range(len(flat)):
+            for y in range(x + 1, len(flat)):
+                a, b = flat[x], flat[y]
+                if a == b or not eg.g.has_node(a) or not eg.g.has_node(b):
+                    continue
+                eg.g.add_edge(a, b, type="CONFLICT", weight=1.0,
+                              asserted=1.0, level=1)
+                eg.g.add_edge(b, a, type="CONFLICT", weight=1.0,
+                              asserted=1.0, level=1)
     return eg
 
 

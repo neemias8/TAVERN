@@ -19,15 +19,24 @@ rather than from surface text alone:
     PAST mention is evidence of the prediction/fulfilment relation rather than
     of identity.
 
-Clusters are formed pairwise and then merged. The pairwise step is a
-band-constrained monotone sequence alignment rather than greedy nearest-
-neighbour matching, because the local partial orders of Section 6.3.3 are
-themselves evidence: two parallel accounts of a week do not cross each other
-wholesale, so an alignment that respects both documents' orders is preferred to
-one that does not. The band comes from the anchor scaffold, which is what makes
-the alignment tractable and is the role Section 6.4.1 assigns it. The merge
-carries the transitivity constraint that a cluster holds at most one unit per
-document.
+Clusters are formed by PROGRESSIVE PROFILE ALIGNMENT, not by independent
+pairwise matching. The local partial orders of Section 6.3.3 are themselves
+evidence: four parallel accounts of one week do not cross each other wholesale,
+so an alignment respecting every document's order is preferred to one that does
+not. Documents are added to a growing profile in decreasing order of length,
+each by a band-constrained monotone alignment against the profile built so far;
+the band comes from the anchor scaffold, which is the role Section 6.4.1
+assigns it.
+
+The reason for a profile rather than six pairwise alignments is not efficiency
+but consistency. Independent pairwise alignments need not agree, and merging
+them transitively produces clusters that violate the documents' own orders --
+which then appear as cycles in the cluster graph and are resolved arbitrarily.
+A profile is a single consistent ordered structure by construction, and its
+column order is a strong registration signal for the induction of
+Section 6.4.3. The transitivity constraint that a cluster holds at most one
+unit per document is enforced by the profile's shape rather than added
+afterwards.
 """
 from __future__ import annotations
 
@@ -51,15 +60,24 @@ WEIGHTS = {
 MATCH_THRESHOLD = 0.34
 
 #: Band half-width on the shared day axis. Pairs further apart than this are
-#: separated by an anchor and are not candidates.
-ANCHOR_BAND = 1.25
+#: separated by an anchor and are not candidates. The scaffold's day resolution
+#: is coarse relative to the density of the Passion day, so the band is set
+#: generously: its function is to exclude gross misalignment, not to decide it.
+ANCHOR_BAND = 4.0
 
-#: Gap cost in the alignment. Set below the threshold so that a weak match is
-#: never preferred to leaving both units unaligned.
-GAP_COST = 0.0
+#: Gap cost in the alignment. Small and positive: with free gaps the recursion
+#: is indifferent among equal-scoring paths, and an unmatched block of one
+#: document can land anywhere monotonicity permits. A small cost makes the
+#: alignment advance both sequences in proportion, which registers documents of
+#: unequal length against each other.
+GAP_COST = 0.06
 
 #: Predicates too frequent to discriminate; retained but down-weighted by IDF.
 _UBIQUITOUS_ENTITIES = {"JESUS", "DISCIPLES"}
+
+#: Largest span, in verses per document, that one candidate canonical event may
+#: cover. Bounds the episode merge below.
+MAX_EPISODE_VERSES = 2
 
 
 @dataclass
@@ -70,10 +88,25 @@ class Cluster:
     position: float = 0.0
     anchor_interval: int = -1
     registration: float = 0.0
+    profile_index: float = 0.0
 
     @property
     def size(self) -> int:
+        """Number of documents reporting this candidate canonical event."""
+        return len(self.books)
+
+    @property
+    def n_units(self) -> int:
         return len(self.members)
+
+    def spans(self, units) -> Dict[str, List[str]]:
+        """The cluster's contribution per document: a contiguous span of units,
+        in document order. This is the same shape as a canonical event, which
+        cites a verse range per Gospel."""
+        out: Dict[str, List[str]] = {}
+        for uid in self.members:
+            out.setdefault(units[uid].book, []).append(uid)
+        return out
 
 
 @dataclass
@@ -134,58 +167,174 @@ def cluster_units(timelines: Dict[str, LocalTimeline], scaffold: Scaffold,
     idf = PredicateIDF(list(units.values()))
     vectors = {uid: idf.vector(u) for uid, u in units.items()}
 
-    books = sorted(timelines)
-    matches: List[Tuple[float, str, str]] = []
-    for i in range(len(books)):
-        for j in range(i + 1, len(books)):
-            matches.extend(_align(timelines[books[i]], timelines[books[j]],
-                                  scaffold, vectors, embeddings))
+    # longest document first: the profile it seeds has the finest granularity,
+    # so later documents align to columns rather than forcing them to merge
+    books = sorted(timelines, key=lambda b: -len(timelines[b].units))
+    clustering = Clustering()
 
-    matches.sort(reverse=True)
+    profile: List[List[str]] = [[u.unit_id] for u in timelines[books[0]].units]
+    for book in books[1:]:
+        profile = _add_to_profile(profile, timelines[book].units, units,
+                                  scaffold, vectors, embeddings, clustering)
 
-    clustering = Clustering(pair_matches=len(matches))
-    parent: Dict[str, str] = {u: u for u in units}
-    bookset: Dict[str, Set[str]] = {u: {units[u].book} for u in units}
-    members: Dict[str, Set[str]] = {u: {u} for u in units}
+    profile = _merge_episodes(profile, units, timelines)
 
-    def find(x: str) -> str:
-        while parent[x] != x:
-            parent[x] = parent[parent[x]]
-            x = parent[x]
-        return x
-
-    for s, x, y in matches:
-        clustering.scores[(x, y)] = s
-        rx, ry = find(x), find(y)
-        if rx == ry or (bookset[rx] & bookset[ry]):
-            continue
-        parent[ry] = rx
-        bookset[rx] |= bookset[ry]
-        members[rx] |= members[ry]
-
-    groups: Dict[str, List[str]] = defaultdict(list)
-    for u in units:
-        groups[find(u)].append(u)
-
-    def cluster_position(group: Sequence[str]) -> float:
-        ps = [scaffold.position_of(u) for u in group]
-        ps = [p for p in ps if p is not None]
-        return sum(ps) / len(ps) if ps else 0.0
-
-    ordered = sorted(groups.values(), key=cluster_position)
-    for n, group in enumerate(ordered, start=1):
-        group.sort(key=lambda u: (books.index(units[u].book), u))
+    for n, column in enumerate(profile, start=1):
         cid = f"c{n:03d}"
-        ivs = [scaffold.interval_of(u) for u in group]
+        ivs = [scaffold.interval_of(u) for u in column]
         ivs = [v for v in ivs if v is not None]
-        cl = Cluster(cluster_id=cid, members=group,
-                     books={units[u].book for u in group},
-                     position=cluster_position(group),
-                     anchor_interval=min(ivs) if ivs else -1)
+        ps = [scaffold.position_of(u) for u in column]
+        ps = [p for p in ps if p is not None]
+        cl = Cluster(cluster_id=cid, members=list(column),
+                     books={units[u].book for u in column},
+                     position=(sum(ps) / len(ps)) if ps else 0.0,
+                     anchor_interval=min(ivs) if ivs else -1,
+                     profile_index=(n - 1) / max(1, len(profile) - 1))
         clustering.clusters.append(cl)
-        for u in group:
+        for u in column:
             clustering.cluster_of_unit[u] = cid
     return clustering
+
+
+def _merge_episodes(profile: List[List[str]], units: Dict[str, EventUnit],
+                    timelines: Dict[str, LocalTimeline]) -> List[List[str]]:
+    """Merge adjacent profile columns into candidate canonical events.
+
+    Alignment operates on event units, which are finer than the episodes a
+    harmony treats as single events: a canonical event covers a verse SPAN in
+    each document that reports it, not a single unit. Columns are therefore
+    merged while each document's contribution stays a contiguous run of its own
+    units, and the merge stops at the evidence that a new event has begun -- an
+    anchorable temporal expression, a pericope boundary, or the span bound of
+    `MAX_EPISODE_VERSES`.
+
+    A merged cluster holds at most one CONTIGUOUS SPAN per document, which is
+    the same shape as a canonical event and is what makes version selection
+    select an account rather than a fragment of one.
+    """
+    succ: Dict[str, Optional[str]] = {}
+    for tl in timelines.values():
+        for a, b in zip(tl.units, tl.units[1:]):
+            succ[a.unit_id] = b.unit_id
+        if tl.units:
+            succ[tl.units[-1].unit_id] = None
+
+    out: List[List[str]] = []
+    for column in profile:
+        if not out:
+            out.append(list(column))
+            continue
+        cur = out[-1]
+        if _mergeable(cur, column, units, succ):
+            cur.extend(column)
+        else:
+            out.append(list(column))
+    return out
+
+
+def _mergeable(cur: Sequence[str], nxt: Sequence[str],
+               units: Dict[str, EventUnit],
+               succ: Dict[str, Optional[str]]) -> bool:
+    last_of: Dict[str, str] = {}
+    verses_of: Dict[str, int] = {}
+    for uid in cur:
+        b = units[uid].book
+        last_of[b] = uid
+        verses_of[b] = verses_of.get(b, 0) + len(units[uid].verse_keys)
+
+    for uid in nxt:
+        u = units[uid]
+        # an anchorable temporal expression opens a new event
+        if u.anchorable_timex:
+            return False
+        prev = last_of.get(u.book)
+        if prev is not None:
+            if succ.get(prev) != uid:
+                return False                      # would break contiguity
+            if units[prev].pericope_id != u.pericope_id:
+                return False                      # pericope boundary
+            if verses_of.get(u.book, 0) + len(u.verse_keys) > MAX_EPISODE_VERSES:
+                return False
+    return True
+
+
+
+def _add_to_profile(profile: List[List[str]], new_units: Sequence[EventUnit],
+                    units: Dict[str, EventUnit], scaffold: Scaffold, vectors,
+                    embeddings, clustering: Clustering) -> List[List[str]]:
+    """Monotone alignment of one document's units against the profile.
+
+    A Needleman-Wunsch recursion in which the substitution score of a unit
+    against a profile column is the mean of its scores against that column's
+    members. Gaps are free in both directions: a column no document but one
+    describes is legitimate, and so is a unit no column matches.
+    """
+    m, k = len(profile), len(new_units)
+    if not k:
+        return profile
+    if not m:
+        return [[u.unit_id] for u in new_units]
+
+    NEG = -1e9
+    col_pos = []
+    for column in profile:
+        ps = [scaffold.position_of(u) for u in column]
+        ps = [p for p in ps if p is not None]
+        col_pos.append(sum(ps) / len(ps) if ps else None)
+    new_pos = [scaffold.position_of(u.unit_id) for u in new_units]
+
+    sub: Dict[Tuple[int, int], float] = {}
+
+    def substitution(i: int, j: int) -> float:
+        key = (i, j)
+        if key in sub:
+            return sub[key]
+        pa, pb = col_pos[i], new_pos[j]
+        if pa is not None and pb is not None and abs(pa - pb) > ANCHOR_BAND:
+            sub[key] = -1.0
+            return -1.0
+        vals = [score(units[mem], new_units[j], scaffold, vectors, embeddings)
+                for mem in profile[i]]
+        s = sum(vals) / len(vals) if vals else 0.0
+        sub[key] = s
+        return s
+
+    dp = [[0.0] * (k + 1) for _ in range(m + 1)]
+    ptr = [[0] * (k + 1) for _ in range(m + 1)]
+    for i in range(1, m + 1):
+        ptr[i][0] = 1
+    for j in range(1, k + 1):
+        ptr[0][j] = 2
+    for i in range(1, m + 1):
+        for j in range(1, k + 1):
+            s = substitution(i - 1, j - 1)
+            diag = dp[i - 1][j - 1] + (s if s >= MATCH_THRESHOLD else NEG)
+            up = dp[i - 1][j] - GAP_COST
+            left = dp[i][j - 1] - GAP_COST
+            best = max(diag, up, left)
+            dp[i][j] = best
+            ptr[i][j] = 0 if best == diag else (1 if best == up else 2)
+
+    merged: List[List[str]] = []
+    i, j = m, k
+    while i > 0 or j > 0:
+        d = ptr[i][j] if (i > 0 and j > 0) else (1 if i > 0 else 2)
+        if d == 0:
+            col = list(profile[i - 1]) + [new_units[j - 1].unit_id]
+            merged.append(col)
+            s = sub.get((i - 1, j - 1), 0.0)
+            for mem in profile[i - 1]:
+                clustering.scores[(mem, new_units[j - 1].unit_id)] = s
+            i -= 1
+            j -= 1
+        elif d == 1:
+            merged.append(list(profile[i - 1]))
+            i -= 1
+        else:
+            merged.append([new_units[j - 1].unit_id])
+            j -= 1
+    merged.reverse()
+    return merged
 
 
 # ---------------------------------------------------------------------------
@@ -329,3 +478,133 @@ def class_agreement(a: EventUnit, b: EventUnit) -> float:
     if not (a.classes or b.classes):
         return 0.0
     return len(a.classes & b.classes) / len(a.classes | b.classes)
+
+
+# ---------------------------------------------------------------------------
+def detect_order_conflicts(timelines: Dict[str, LocalTimeline],
+                           scaffold: Scaffold,
+                           embeddings=None) -> List[dict]:
+    """Ordering disagreements between sources, as alignment crossings.
+
+    The profile of `cluster_units` is monotone, so it cannot represent a
+    disagreement about order: where two documents cross, a monotone alignment
+    silently drops one of the competing matches. The crossings are therefore
+    recovered here, before that resolution is imposed.
+
+    For each pair of documents an UNCONSTRAINED one-to-one matching is computed
+    greedily by the same score and the same threshold the alignment uses. Any
+    inversion in that matching -- two matched pairs whose order is opposite in
+    the two documents -- is a pair of episodes the two sources place in
+    different relative order. This is the mechanism Section 6.3.2 describes:
+    disagreement is unsatisfiability, it needs no threshold of its own, it
+    cannot fail silently, and it names the specific episodes responsible.
+
+    The fig tree is the case the harmonisation literature discusses: Matthew has
+    the cursing, the withering and the cleansing of the temple in one order and
+    Mark in another, so no monotone alignment can accommodate all three.
+    """
+    units: Dict[str, EventUnit] = {}
+    for tl in timelines.values():
+        for u in tl.units:
+            units[u.unit_id] = u
+    idf = PredicateIDF(list(units.values()))
+    vectors = {uid: idf.vector(u) for uid, u in units.items()}
+
+    books = sorted(timelines)
+    out: List[dict] = []
+    for i in range(len(books)):
+        for j in range(i + 1, len(books)):
+            a, b = books[i], books[j]
+            out.extend(_pair_conflicts(timelines[a], timelines[b], scaffold,
+                                       vectors, embeddings))
+    return out
+
+
+def _pair_conflicts(ta: LocalTimeline, tb: LocalTimeline, scaffold: Scaffold,
+                    vectors, embeddings) -> List[dict]:
+    pos_a = {u.unit_id: i for i, u in enumerate(ta.units)}
+    pos_b = {u.unit_id: i for i, u in enumerate(tb.units)}
+
+    cands: List[Tuple[float, str, str]] = []
+    for ua in ta.units:
+        pa = scaffold.position_of(ua.unit_id)
+        for ub in tb.units:
+            pb = scaffold.position_of(ub.unit_id)
+            if pa is not None and pb is not None and abs(pa - pb) > ANCHOR_BAND:
+                continue
+            s = score(ua, ub, scaffold, vectors, embeddings)
+            if s >= MATCH_THRESHOLD:
+                cands.append((s, ua.unit_id, ub.unit_id))
+    # Mutually best pairs only. A match used as evidence of DISAGREEMENT must
+    # be one the content itself insists on, so each unit's best partner in the
+    # other document must be the unit whose best partner it is. This is
+    # threshold-free beyond the alignment's own threshold and it removes the
+    # incidental matches that a greedy pass admits.
+    best_a: Dict[str, Tuple[float, str]] = {}
+    best_b: Dict[str, Tuple[float, str]] = {}
+    for s, x, y in cands:
+        if x not in best_a or s > best_a[x][0]:
+            best_a[x] = (s, y)
+        if y not in best_b or s > best_b[y][0]:
+            best_b[y] = (s, x)
+    matched: List[Tuple[float, str, str]] = [
+        (s, x, y) for x, (s, y) in best_a.items()
+        if best_b.get(y, (0.0, None))[1] == x]
+
+    matched.sort(key=lambda m: pos_a[m[1]])
+    if len(matched) < 2:
+        return []
+
+    # The matches that a monotone alignment cannot accommodate are exactly
+    # those outside a maximum increasing subsequence of the second document's
+    # positions. Reporting the excluded matches rather than every inverted PAIR
+    # is what makes the count interpretable: it is the minimum number of
+    # episodes on which the two sources disagree, not the number of
+    # disagreeing pairs that follow from them.
+    seq = [pos_b[m[2]] for m in matched]
+    keep = _longest_increasing(seq)
+    kept = set(keep)
+    out: List[dict] = []
+    for i, m in enumerate(matched):
+        if i in kept:
+            continue
+        # the kept match this one crosses, for the report
+        partner = None
+        for k in keep:
+            if (k < i and seq[k] > seq[i]) or (k > i and seq[k] < seq[i]):
+                partner = k
+                break
+        if partner is None:
+            continue
+        out.append({
+            "kind": "ordering",
+            "scope": "inter-document",
+            "books": [ta.book, tb.book],
+            "units": [m[1], m[2], matched[partner][1], matched[partner][2]],
+            "scores": [round(m[0], 3), round(matched[partner][0], 3)],
+        })
+    return out
+
+
+def _longest_increasing(seq: Sequence[int]) -> List[int]:
+    """Indices of a longest strictly increasing subsequence."""
+    import bisect
+    tails: List[int] = []          # values
+    tails_idx: List[int] = []      # index in seq of each tail
+    back: List[int] = [-1] * len(seq)
+    for i, v in enumerate(seq):
+        j = bisect.bisect_left(tails, v)
+        if j == len(tails):
+            tails.append(v)
+            tails_idx.append(i)
+        else:
+            tails[j] = v
+            tails_idx[j] = i
+        back[i] = tails_idx[j - 1] if j else -1
+    out: List[int] = []
+    k = tails_idx[-1] if tails_idx else -1
+    while k >= 0:
+        out.append(k)
+        k = back[k]
+    out.reverse()
+    return out

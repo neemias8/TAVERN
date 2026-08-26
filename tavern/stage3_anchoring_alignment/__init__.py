@@ -18,7 +18,8 @@ from ..stage1_preprocessing.pericopes import PericopeLayer
 from ..stage2_temporal_annotation.model import AnnotationStructure
 from . import graph as graph_mod
 from . import scaffold as scaffold_mod
-from .event_coref import Clustering, cluster_units
+from .event_coref import (Clustering, cluster_units,
+                          detect_order_conflicts)
 from .global_timeline import InducedTimeline, induce
 from .local_timeline import LocalTimeline, segment_corpus
 
@@ -65,7 +66,9 @@ def run(structs: Dict[str, AnnotationStructure], corpus: Corpus,
                             enabled=cfg.use_anchor_scaffold)
     clustering = cluster_units(timelines, sc, embeddings)
     intra = [c for s in structs.values() for c in s.conflicts]
-    induced = induce(timelines, clustering, sc, intra)
+    crossings = detect_order_conflicts(timelines, sc, embeddings)
+    induced = induce(timelines, clustering, sc, intra + crossings,
+                     structs=structs)
     eg = graph_mod.build(structs, timelines, clustering, induced, sc,
                          embeddings)
     res = Stage3Result(timelines, sc, clustering, induced, eg)

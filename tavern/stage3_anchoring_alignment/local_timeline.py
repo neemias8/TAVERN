@@ -48,6 +48,7 @@ class EventUnit:
     eligible_ids: List[str] = field(default_factory=list)
     timex_ids: List[str] = field(default_factory=list)
     timex_preds: List[str] = field(default_factory=list)
+    anchorable_timex: bool = False
     signal_preds: Set[str] = field(default_factory=set)
     entities: Set[str] = field(default_factory=set)
     text: str = ""
@@ -170,6 +171,7 @@ def _build_unit(uid, book, pid, keys, struct, corpus, events_by_verse,
                 timex_by_verse, signals_by_verse, chains) -> EventUnit:
     event_ids, eligible, timexes, sig_preds, preds = [], [], [], set(), []
     timex_preds: List[str] = []
+    anchorable = False
     classes, types_, tenses, aspects, pos_tags = set(), set(), set(), set(), set()
     modal_types = set()
     depths = []
@@ -194,6 +196,8 @@ def _build_unit(uid, book, pid, keys, struct, corpus, events_by_verse,
             timexes.append(tx.xml_id)
             if tx.pred:
                 timex_preds.append(tx.pred)
+            if tx.anchorable:
+                anchorable = True
         for sg in signals_by_verse.get(k, []):
             sig_preds.add(sg.pred)
 
@@ -218,7 +222,7 @@ def _build_unit(uid, book, pid, keys, struct, corpus, events_by_verse,
     return EventUnit(
         unit_id=uid, book=book, pericope_id=pid, verse_keys=list(keys),
         event_ids=event_ids, eligible_ids=eligible, timex_ids=timexes,
-        timex_preds=timex_preds,
+        timex_preds=timex_preds, anchorable_timex=anchorable,
         signal_preds=sig_preds, entities=entities, text=text, preds=preds,
         classes=classes, types=types_, tenses=tenses, aspects=aspects,
         pos_tags=pos_tags,

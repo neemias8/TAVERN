@@ -34,6 +34,30 @@ class InducedTimeline:
     def position(self, cid: str) -> Optional[int]:
         return self.rank.get(cid)
 
+    def conflicted_clusters(self, clustering=None) -> List[Tuple[str, str]]:
+        """Cluster pairs implicated in an inter-document conflict.
+
+        Conflict records come in two shapes: unsatisfiability between a pair of
+        clusters, and an alignment crossing between four event units. Both are
+        reduced to cluster pairs here so that Stage 5 has one thing to consult.
+        """
+        out: List[Tuple[str, str]] = []
+        for c in self.conflicts:
+            if c.get("kind") not in ("ordering", "unsatisfiable"):
+                continue
+            cids = list(c.get("clusters", ()) or ())
+            if not cids and clustering is not None:
+                seen: List[str] = []
+                for uid in c.get("units", ()) or ():
+                    cid = clustering.cluster_of_unit.get(uid)
+                    if cid and cid not in seen:
+                        seen.append(cid)
+                cids = seen
+            for i in range(len(cids)):
+                for j in range(i + 1, len(cids)):
+                    out.append((cids[i], cids[j]))
+        return out
+
 
 #: Weight of one document's transitive precedence vote.
 DOCUMENT_VOTE = 1.0
@@ -48,11 +72,18 @@ def registration(timelines: Dict[str, LocalTimeline],
                  clustering: Clustering) -> Dict[str, float]:
     """Position of each cluster on a common narrative-progress axis.
 
-    Each document is registered onto [0, 1] by the relative position of its
-    units, and a cluster's coordinate is the mean over the documents in which it
-    appears. This is the completion rule for cluster pairs on which no document
-    supplies precedence evidence, and the tie-break for the topological sort.
+    The coordinate is the cluster's column index in the alignment profile of
+    Section 6.4.2, normalised to [0, 1]; where no profile is available it falls
+    back to the mean relative position of the cluster's units in their own
+    documents. This is the completion rule for cluster pairs on which no
+    document supplies precedence evidence, and the tie-break for the
+    topological sort.
     """
+    if clustering.clusters and any(c.profile_index for c in
+                                   clustering.clusters):
+        # the profile of Section 6.4.2 is already a consistent ordering of the
+        # candidate canonical events; its column index is the registration
+        return {c.cluster_id: c.profile_index for c in clustering.clusters}
     pos: Dict[str, List[float]] = defaultdict(list)
     for tl in timelines.values():
         n = max(1, len(tl.units) - 1)
@@ -123,9 +154,128 @@ def build_cluster_graph(timelines: Dict[str, LocalTimeline],
     return dict(weights), dict(support)
 
 
+def cluster_constraints(structs, timelines: Dict[str, LocalTimeline],
+                        clustering: Clustering, scaffold: Scaffold):
+    """Per-document Allen constraints between candidate canonical events.
+
+    Two sources, both evidence-backed:
+
+      * an asserted <TLINK> at cascade level 1, 2 or 3 between eligible events
+        lying in different clusters -- an explicit signal, an explicit temporal
+        expression, or an aspectual predicate;
+      * a day boundary between the two clusters' units on the shared day axis,
+        which the anchor chain of Section 6.2.5 asserts and which entails strict
+        precedence.
+
+    Level 4 is excluded deliberately: narrative adjacency is an assumption, and
+    a disagreement between two assumptions is not evidence that the sources
+    disagree.
+    """
+    from ..stage2_temporal_annotation.closure import allen_of, invert
+
+    out: Dict[Tuple[str, str], Dict[str, frozenset]] = defaultdict(dict)
+    support: Dict[Tuple[str, str], Dict[str, List[dict]]] = defaultdict(
+        lambda: defaultdict(list))
+
+    for book, struct in structs.items():
+        tl = timelines[book]
+        cof = {}
+        for uid, cid in clustering.cluster_of_unit.items():
+            cof[uid] = cid
+        for l in struct.tlinks:
+            if l.origin != "asserted" or l.level not in (1, 2, 3):
+                continue
+            a, b = l.source, l.target_id
+            if a not in struct.eligible or b not in struct.eligible:
+                continue
+            ua = tl.unit_of_event.get(a)
+            ub = tl.unit_of_event.get(b)
+            if not ua or not ub:
+                continue
+            ca, cb = cof.get(ua), cof.get(ub)
+            if not ca or not cb or ca == cb:
+                continue
+            key = (ca, cb) if ca < cb else (cb, ca)
+            rel = allen_of(l.rel_type)
+            if key != (ca, cb):
+                rel = invert(rel)
+            prev = out[key].get(book)
+            out[key][book] = (prev & rel) if prev else rel
+            support[key][book].append({"level": l.level, "rel": str(l.rel_type),
+                                       "confidence": l.confidence,
+                                       "signal": l.signal_id})
+
+        # day-boundary evidence
+        for ci in clustering.clusters:
+            pass
+    day_of = scaffold.day_of_unit
+    for book, tl in timelines.items():
+        by_cluster: Dict[str, List[str]] = defaultdict(list)
+        for u in tl.units:
+            cid = clustering.cluster_of_unit.get(u.unit_id)
+            if cid:
+                by_cluster[cid].append(u.unit_id)
+        cids = [c.cluster_id for c in clustering.clusters
+                if c.cluster_id in by_cluster]
+        for i in range(len(cids)):
+            for j in range(i + 1, len(cids)):
+                ca, cb = cids[i], cids[j]
+                da = {day_of.get(u) for u in by_cluster[ca]}
+                db = {day_of.get(u) for u in by_cluster[cb]}
+                da.discard(None)
+                db.discard(None)
+                if not da or not db:
+                    continue
+                if max(da) < min(db):
+                    rel = frozenset({"b"})
+                elif max(db) < min(da):
+                    rel = frozenset({"bi"})
+                else:
+                    continue
+                key = (ca, cb)
+                prev = out[key].get(book)
+                out[key][book] = (prev & rel) if prev else rel
+                support[key][book].append({"level": 2, "rel": "DAY_BOUNDARY",
+                                           "confidence": 0.85,
+                                           "signal": None})
+    return out, support
+
+
+def detect_conflicts(structs, timelines: Dict[str, LocalTimeline],
+                     clustering: Clustering, scaffold: Scaffold) -> List[dict]:
+    """Inter-document conflicts as unsatisfiability of the asserted relations.
+
+    Where two documents' evidence about the same pair of candidate canonical
+    events has an empty intersection, the sources disagree about the order of
+    events they both describe. This needs no threshold and cannot fail silently:
+    it identifies exactly the pair of relations responsible, and which document
+    asserted each.
+    """
+    constraints, support = cluster_constraints(structs, timelines, clustering,
+                                               scaffold)
+    conflicts: List[dict] = []
+    for key, per_book in constraints.items():
+        if len(per_book) < 2:
+            continue
+        acc = None
+        for rel in per_book.values():
+            acc = rel if acc is None else (acc & rel)
+        if acc:
+            continue
+        conflicts.append({
+            "kind": "unsatisfiable",
+            "scope": "inter-document",
+            "clusters": list(key),
+            "per_document": {b: sorted(r) for b, r in per_book.items()},
+            "support": {b: support[key][b] for b in per_book},
+        })
+    return conflicts
+
+
 def induce(timelines: Dict[str, LocalTimeline], clustering: Clustering,
            scaffold: Scaffold,
-           intra_conflicts: Optional[List[dict]] = None) -> InducedTimeline:
+           intra_conflicts: Optional[List[dict]] = None,
+           structs=None) -> InducedTimeline:
     tl = InducedTimeline()
     reg = registration(timelines, clustering)
     for c in clustering.clusters:
@@ -142,9 +292,13 @@ def induce(timelines: Dict[str, LocalTimeline], clustering: Clustering,
     tl.order = topological_sort(nodes, kept, scaffold, clustering, reg)
     tl.rank = {cid: i for i, cid in enumerate(tl.order)}
 
-    # conflict report: intra-document cycles from closure plus the arcs the
-    # feedback arc set removed (inter-document divergence)
+    # conflict report: intra-document cycles from closure, the relation pairs
+    # found unsatisfiable across documents, and the arcs the feedback arc set
+    # removed
     tl.conflicts = list(intra_conflicts or [])
+    if structs is not None:
+        tl.conflicts.extend(detect_conflicts(structs, timelines, clustering,
+                                             scaffold))
     for (a, b) in removed:
         rev = weights.get((b, a), 0.0)
         tl.conflicts.append({
