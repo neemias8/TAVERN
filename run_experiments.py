@@ -211,6 +211,15 @@ def degradation_table(res, ch) -> None:
               f"R-L={sub['rougeL']:.4f}  R-1={sub['rouge1']:.4f}  "
               f"len={sub['length']}")
         RESULTS.setdefault("substitution", {})[rule] = sub
+
+    if res.consolidation is not None:
+        sc = content_metrics.evaluate(res.consolidation.text, ref,
+                                      with_meteor=True, with_bertscore=False)
+        bk = res.consolidation.backbone
+        print(f"  Induced end to end, fusion '{bk}'".ljust(48)
+              + f"R-L={sc.rougeL:.4f}  R-1={sc.rouge1:.4f}  "
+                f"len={sc.length}")
+        RESULTS["induced_end_to_end"] = {"backbone": bk, **sc.as_row()}
     RESULTS["degradation"] = [
         {"label": p.label, "fraction": p.fraction, "runs": p.runs,
          "scores": p.scores} for p in curve]
@@ -226,6 +235,21 @@ def downstream_table(res, ch) -> None:
     conf = res.ordering_conflicts
 
     rows = {}
+
+    # the configuration the framework is for: per-event fusion, whichever
+    # backbone was requested. Reported first, and separately from the
+    # extractive rows, because the two are not the same kind of system.
+    if res.consolidation is not None:
+        bk = res.consolidation.backbone
+        sc = content_metrics.evaluate(res.consolidation.text, ref,
+                                      with_meteor=True, with_bertscore=False)
+        label = f"TAVERN, induced, fusion '{bk}'"
+        rows[label] = sc.as_row()
+        print(f"  {label:32s} R-1={sc.rouge1:.4f} R-2={sc.rouge2:.4f} "
+              f"R-L={sc.rougeL:.4f} "
+              f"MET={'n/a' if sc.meteor is None else round(sc.meteor, 4)} "
+              f"len={sc.length}")
+        print()
     for name, strat in (("TAVERN, induced (graph score)", "graph_score"),
                         ("  - graph propagation", "graph_score_flat"),
                         ("  Timeline+Longest rule", "longest"),
@@ -400,6 +424,16 @@ def main() -> int:
     ap.add_argument("--errors", action="store_true")
     ap.add_argument("--ablations", action="store_true")
     ap.add_argument("--tag", default="main")
+    ap.add_argument("--backbone", default="extractive",
+                    choices=("extractive", "union", "bart", "pegasus",
+                             "primera", "instruct", "ollama"),
+                    help="Stage 5 backbone for the TAVERN rows. 'extractive' "
+                         "keeps them comparable with the degradation curve, "
+                         "whose rows are extractive; an abstractive backbone "
+                         "measures the configuration the framework is actually "
+                         "for, and both are reported when given.")
+    ap.add_argument("--backbone-model", default="",
+                    help="override the checkpoint or Ollama model name")
     args = ap.parse_args()
 
     want = {k: getattr(args, k) for k in
@@ -408,9 +442,16 @@ def main() -> int:
     if args.all or not any(want.values()):
         want = {k: True for k in want}
 
-    cfg = TavernConfig(tag=args.tag)
-    print("Running stages 1-5 ...")
+    cfg = TavernConfig(tag=args.tag, backbone=args.backbone,
+                       backbone_model=args.backbone_model)
+    print(f"Running stages 1-5 (backbone '{args.backbone}') ...")
     res = pipeline.run(cfg, with_gnn=True, write=True)
+    if res.backbone_note:
+        print(f"  NOTE: {res.backbone_note}")
+    RESULTS["backbone"] = {"requested": args.backbone,
+                           "used": res.consolidation.backbone,
+                           "model": args.backbone_model or None,
+                           "note": res.backbone_note}
     ch = chrono_mod.load(res.corpus)
 
     if want["corpus"]:

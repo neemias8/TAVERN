@@ -105,7 +105,9 @@ def run(cfg: TavernConfig, with_gnn: bool = True, write: bool = True,
     if cfg.backbone_model:
         kw["model_name" if cfg.backbone != "ollama" else "model"] = \
             cfg.backbone_model
-    fuser, note = build_fuser(cfg.backbone, **kw)
+    fuser, note = build_fuser(cfg.backbone,
+                              cache_path=cfg.run_dir() / "fusion_cache.jsonl",
+                              **kw)
 
     cons = consolidate(
         stage3.induced, stage3.clustering, stage3.graph.node_units,
@@ -124,6 +126,8 @@ def run(cfg: TavernConfig, with_gnn: bool = True, write: bool = True,
         (out / "curation.json").write_text(
             _json.dumps({"backbone": cons.backbone,
                          "fallback_note": note,
+                         "cache": {"hits": getattr(fuser, "hits", 0),
+                                   "misses": getattr(fuser, "misses", 0)},
                          "events": cons.records}, indent=1),
             encoding="utf-8")
         from .stage2_temporal_annotation.serializer import (

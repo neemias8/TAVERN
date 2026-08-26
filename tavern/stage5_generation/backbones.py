@@ -376,14 +376,23 @@ REGISTRY = {
 }
 
 
-def build(name: str, **kw):
+def build(name: str, cache_path=None, **kw):
     """Instantiate a fuser, falling back with a stated reason.
 
     An unavailable backbone is not a silent downgrade: the caller is told which
     backbone was requested, why it could not be used, and what ran instead, so
     that no output is ever labelled abstractive when it is not.
+
+    `cache_path` wraps an abstractive backbone in `CachedFuser`, which makes a
+    long generation run resumable. The deterministic backbones are not cached:
+    recomputing them is cheaper than reading the cache.
     """
     from . import ExtractiveFuser
+
+    def _wrap(f):
+        if cache_path and getattr(f, "abstractive", False):
+            return CachedFuser(f, cache_path)
+        return f
 
     if name == "extractive":
         return ExtractiveFuser(), None
@@ -396,13 +405,76 @@ def build(name: str, **kw):
     if name == "ollama":
         fuser = cls(**kw)
         if fuser.available():
-            return fuser, None
+            return _wrap(fuser), None
         return UnionFuser(), (f"ollama daemon not reachable at "
                               f"{fuser.endpoint}; fell back to union")
     try:
         fuser = cls(**kw)
         fuser._load()
-        return fuser, None
+        return _wrap(fuser), None
     except Exception as exc:
         return UnionFuser(), (f"{name} unavailable ({type(exc).__name__}: "
                               f"{str(exc)[:120]}); fell back to union")
+
+
+# ---------------------------------------------------------------------------
+class CachedFuser:
+    """On-disk memoisation of fusions, keyed by content.
+
+    A generation run over this corpus is 248 model calls, and on a workstation
+    without an accelerator that is measured in hours. Interrupting it and losing
+    everything is the difference between a job someone will run and one they
+    will not, so every fusion is written out as it is produced and read back on
+    the next run.
+
+    The key is a digest of the backbone, the model name, the accounts and the
+    conflict flag, so a cache entry can only be reused for the identical call.
+    Changing the prompt, the model or the clustering therefore invalidates
+    exactly the entries it should and no others.
+    """
+
+    def __init__(self, inner, path):
+        import pathlib
+        self.inner = inner
+        self.name = getattr(inner, "name", "unknown")
+        self.instructable = getattr(inner, "instructable", False)
+        self.abstractive = getattr(inner, "abstractive", False)
+        self.path = pathlib.Path(path)
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+        self._cache: Dict[str, str] = {}
+        self.hits = 0
+        self.misses = 0
+        if self.path.exists():
+            for line in self.path.read_text(encoding="utf-8").splitlines():
+                if not line.strip():
+                    continue
+                try:
+                    rec = json.loads(line)
+                    self._cache[rec["key"]] = rec["text"]
+                except (json.JSONDecodeError, KeyError):
+                    continue
+
+    def _key(self, texts: Sequence[str], conflicted: bool) -> str:
+        import hashlib
+        h = hashlib.sha1()
+        h.update(self.name.encode())
+        h.update(str(getattr(self.inner, "model",
+                             getattr(self.inner, "model_name", ""))).encode())
+        h.update(b"\x00conflict" if conflicted else b"\x00plain")
+        for t in texts:
+            h.update(b"\x00")
+            h.update(t.encode("utf-8", "replace"))
+        return h.hexdigest()
+
+    def fuse(self, texts: Sequence[str], conflicted: bool = False,
+             context=None) -> str:
+        key = self._key(texts, conflicted)
+        if key in self._cache:
+            self.hits += 1
+            return self._cache[key]
+        text = self.inner.fuse(texts, conflicted=conflicted, context=context)
+        self._cache[key] = text
+        self.misses += 1
+        with open(self.path, "a", encoding="utf-8") as fh:
+            fh.write(json.dumps({"key": key, "text": text}) + "\n")
+        return text

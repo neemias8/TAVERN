@@ -227,12 +227,37 @@ Stage 4; without it the pipeline falls back to the unpropagated aggregation.
 
 ## Run
 
+### Everything at once
+
+```bash
+ollama pull gemma3:4b        # once
+python run_all.py            # or: run-all.bat  on Windows
+```
+
+`run_all.py` checks the environment and the corpus digests, measures **both**
+configurations — extractive, for comparability with the degradation curve, and
+abstractive, which is what the framework is for — regenerates the curation
+sheets, and packages everything into one `tavern_results_<stamp>.zip`.
+
+The generation run is 248 model calls and is **cached to disk as it goes**
+(`outputs/<tag>/fusion_cache.jsonl`), so an interrupted run resumes on the same
+command instead of starting over. Expect 40 min to a few hours end to end,
+depending on the accelerator.
+
+```bash
+python run_all.py --backbone union            # dry run, no model needed
+python run_all.py --skip-extractive           # if that run already exists
+python run_all.py --backbone primera --model allenai/PRIMERA
+```
+
+### One stage at a time
+
 ```bash
 # stages 1–5 only. Reads no chronology and no reference.
-python main.py
+python main.py --backbone ollama --backbone-model gemma3:4b
 
-# every measured table in the thesis  (~12 min on 2 cores)
-python run_experiments.py --all --tag main
+# the measured tables  (~12 min on 2 cores, plus generation if abstractive)
+python run_experiments.py --all --tag main --backbone extractive
 
 # subsets
 python run_experiments.py --timeline --errors
