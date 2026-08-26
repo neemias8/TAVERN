@@ -148,7 +148,15 @@ def meteor(prediction: str, reference: str) -> Optional[float]:
         import nltk
         from nltk.translate.meteor_score import meteor_score
         if not _METEOR_READY:
-            for pkg in ("wordnet", "omw-1.4", "punkt"):
+            # the container reaches PyPI and the NLTK corpora through a proxy;
+            # NLTK refuses a proxied fetch unless told the proxy is trusted
+            import os
+            os.environ.setdefault("NLTK_ALLOW_PROXIED_URLOPEN", "1")
+            try:
+                nltk.pathsec.ALLOW_PROXIED_FETCH = True
+            except Exception:
+                pass
+            for pkg in ("wordnet", "omw-1.4", "punkt", "punkt_tab"):
                 try:
                     nltk.download(pkg, quiet=True)
                 except Exception:

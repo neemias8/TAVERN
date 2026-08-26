@@ -157,6 +157,42 @@ def timeline_tables(res, ch) -> None:
                            "documented": rep.documented}
 
 
+def induced_event_order(res, ch) -> List[int]:
+    """Order the canonical events by the induced timeline alone.
+
+    Every canonical event is placed at the mean induced rank of the clusters
+    whose verses overlap it, weighted by the size of the overlap. Unlike the
+    one-to-one matching used for Kendall's tau, this places EVERY event,
+    including those whose best-matching cluster was claimed by a neighbour, and
+    it consults nothing but the induced timeline and the verse addresses. It is
+    what makes the substitution experiment a measurement of the ordering rather
+    than of the matching.
+    """
+    rank = res.stage3.induced.rank
+    units = res.units
+    cluster_keys = {}
+    for cl in res.stage3.clustering.clusters:
+        ks = set()
+        for m in cl.members:
+            ks |= set(units[m].verse_keys)
+        cluster_keys[cl.cluster_id] = ks
+
+    placed = []
+    for e in ch.events:
+        ek = set(e.all_keys)
+        if not ek:
+            continue
+        num = den = 0.0
+        for cid, ks in cluster_keys.items():
+            w = len(ek & ks)
+            if w and cid in rank:
+                num += w * rank[cid]
+                den += w
+        placed.append(((num / den) if den else len(rank), e.event_id))
+    placed.sort()
+    return [eid for _p, eid in placed]
+
+
 def degradation_table(res, ch) -> None:
     banner("Degradation curve and timeline substitution "
            "(Table tab:res-degradation)")
@@ -167,16 +203,7 @@ def degradation_table(res, ch) -> None:
         print(f"  {p.label:22s} R-L={s['rougeL']:.4f}  R-1={s['rouge1']:.4f}  "
               f"len={int(s['length'])}   (mean of {p.runs})")
 
-    matching, _q = timeline_eval.match_clusters_to_events(
-        ch, res.stage3.clustering, res.units)
-    inv = {cid: eid for eid, cid in matching.items()}
-    seq: List[int] = []
-    for cid in res.stage3.induced.order:
-        if cid in inv:
-            seq.append(inv[cid])
-    for e in ch.events:
-        if e.event_id not in seq:
-            seq.append(e.event_id)
+    seq = induced_event_order(res, ch)
 
     for rule in ("taeg", "longest"):
         sub = baselines.timeline_substitution(ch, ref, seq, rule=rule)

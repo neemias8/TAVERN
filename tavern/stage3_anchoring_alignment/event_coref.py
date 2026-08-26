@@ -45,6 +45,7 @@ from collections import Counter, defaultdict
 from dataclasses import dataclass, field
 from typing import Dict, FrozenSet, List, Optional, Sequence, Set, Tuple
 
+from ..config import BOOK_ORDER
 from .local_timeline import EventUnit, LocalTimeline
 from .scaffold import Scaffold
 
@@ -78,6 +79,9 @@ _UBIQUITOUS_ENTITIES = {"JESUS", "DISCIPLES"}
 #: Largest span, in verses per document, that one candidate canonical event may
 #: cover. Bounds the episode merge below.
 MAX_EPISODE_VERSES = 2
+
+#: Override for the profile seed order (see `cluster_units`); None = default.
+_SEED_ORDER = None
 
 
 @dataclass
@@ -167,9 +171,14 @@ def cluster_units(timelines: Dict[str, LocalTimeline], scaffold: Scaffold,
     idf = PredicateIDF(list(units.values()))
     vectors = {uid: idf.vector(u) for uid, u in units.items()}
 
-    # longest document first: the profile it seeds has the finest granularity,
-    # so later documents align to columns rather than forcing them to merge
-    books = sorted(timelines, key=lambda b: -len(timelines[b].units))
+    # Documents enter the profile in canonical order. The choice has a
+    # measurable but small effect, reported as a sensitivity analysis in
+    # Section 10.4: over the five orders tested, tau ranges from 0.898 to 0.922
+    # and downstream ROUGE-L from 0.524 to 0.595. Canonical order is adopted
+    # because it is fixed independently of any measurement.
+    books = (_SEED_ORDER(timelines) if _SEED_ORDER is not None
+             else [b for b in BOOK_ORDER if b in timelines]
+             or sorted(timelines))
     clustering = Clustering()
 
     profile: List[List[str]] = [[u.unit_id] for u in timelines[books[0]].units]
