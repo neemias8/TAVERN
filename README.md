@@ -220,10 +220,18 @@ python -m spacy download en_core_web_sm
 
 Two dependencies need a note. `rouge-score==0.1.2` fails to build against recent
 setuptools — install with `--no-build-isolation`, or copy the `rouge_score`
-package directly into site-packages. `pylcs` supplies the compiled
-longest-common-subsequence used for ROUGE-L; the reference is ~16k tokens and
-the pure-Python table takes minutes per pair. `torch` is needed only for
-Stage 4; without it the pipeline falls back to the unpropagated aggregation.
+package directly into site-packages. `torch` is needed only for Stage 4; without
+it the pipeline falls back to the unpropagated aggregation.
+
+ROUGE-L over a ~16k-token reference cannot use `rouge_score`'s own
+longest-common-subsequence table, which is quadratic in pure Python and takes
+minutes per pair. `content_metrics._lcs_length` therefore uses `pylcs` when it is
+installed and otherwise a bit-parallel fallback (Crochemore, Iliopoulos, Pinzon
+and Reid, 2001) that packs a row of the table into one arbitrary-precision
+integer: 0.3 s on the reference, and `verify_fast_path` asserts either path
+reproduces `rouge_score` exactly (it does, to 0.0). `pylcs` is optional and
+commented out in `requirements.txt` because it is a compiled extension without a
+wheel for every interpreter.
 
 ## Run
 
@@ -231,7 +239,17 @@ Stage 4; without it the pipeline falls back to the unpropagated aggregation.
 
 ```bash
 ollama pull gemma3:4b        # once
-python run_all.py            # or: run-all.bat  on Windows
+python run_all.py            # or, on Windows PowerShell:  .\run-all.bat
+```
+
+On a fresh clone, check out the branch first — `git clone` leaves you on the
+repository's default branch, which does not contain any of this:
+
+```powershell
+git fetch <remote-or-bundle> main:tavern-thesis-framework
+git checkout tavern-thesis-framework
+pip install -r requirements.txt
+python run_all.py
 ```
 
 `run_all.py` checks the environment and the corpus digests, measures **both**

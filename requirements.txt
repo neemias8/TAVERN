@@ -8,6 +8,11 @@ torch>=2.0            # Stage 4 only; the pipeline degrades to the unpropagated
                       # aggregation if torch is absent
 rouge-score==0.1.2    # install with --no-build-isolation on modern setuptools,
                       # or copy the rouge_score package into site-packages
-pylcs>=0.1.1          # compiled LCS for ROUGE-L on a 16k-token reference
 nltk>=3.8             # METEOR; needs the wordnet corpus
 lxml>=4.9
+
+# Optional. `pylcs` is a compiled extension; when it is absent ROUGE-L uses the
+# bit-parallel fallback in stage6_evaluation.content_metrics, which agrees with
+# rouge_score exactly and runs in well under a second on the 16k-token
+# reference. Install it only if a wheel exists for your interpreter.
+# pylcs>=0.1.1

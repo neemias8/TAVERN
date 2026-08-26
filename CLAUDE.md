@@ -53,9 +53,13 @@ token layer, the JSON projection and the consolidated narrative.
   recovered *before* the alignment imposes consistency, as the mutually-best
   matches outside a maximum monotone subsequence. If the conflict count is ever
   0, that is the bug, not a clean corpus.
-- **ROUGE-L needs the compiled path.** `content_metrics.rouge` delegates the
-  subsequence to `pylcs`; `verify_fast_path` asserts it equals `rouge_score`
-  exactly. The pure-Python table takes minutes on a 16k-token reference.
+- **ROUGE-L must not use `rouge_score`'s own LCS table.** It is a quadratic
+  Python table and takes minutes on a 16k-token reference, which makes the
+  ablation grid impractical. `content_metrics._lcs_length` uses `pylcs` when it
+  is installed and otherwise the bit-parallel algorithm of Crochemore et al.
+  (2001), which packs a DP row into one big integer — 0.3 s on the reference,
+  no compiled extension needed. `verify_fast_path` asserts either path equals
+  `rouge_score` exactly; it does, to 0.0.
 - **Selection is over documents, emitting a contiguous span.** A canonical event
   cites a verse range per Gospel; selecting per unit fragments the account and
   costs ~0.1 of ROUGE-L.

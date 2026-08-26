@@ -12,7 +12,7 @@ from __future__ import annotations
 import warnings
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Sequence
 
 from rouge_score import rouge_scorer
 
@@ -61,10 +61,7 @@ def rouge(prediction: str, reference: str, fast: bool = True) -> Dict[str, float
     routine; `verify_fast_path` asserts the two agree.
     """
     if fast:
-        try:
-            return _rouge_fast(prediction, reference)
-        except ImportError:
-            pass
+        return _rouge_fast(prediction, reference)
     s = _scorer().score(reference, prediction)
     return {"rouge1": s["rouge1"].fmeasure,
             "rouge2": s["rouge2"].fmeasure,
@@ -97,7 +94,6 @@ def _f1(match: int, n_pred: int, n_ref: int) -> float:
 
 
 def _rouge_fast(prediction: str, reference: str) -> Dict[str, float]:
-    import pylcs
     from collections import Counter
 
     pt = _tokens(prediction)
@@ -112,20 +108,57 @@ def _rouge_fast(prediction: str, reference: str) -> Dict[str, float]:
         match = sum(min(c, rc[g]) for g, c in pc.items())
         out[key] = _f1(match, sum(pc.values()), sum(rc.values()))
 
-    vocab: Dict[str, int] = {}
-    def encode(seq):
-        chars = []
-        for t in seq:
-            if t not in vocab:
-                # skip the surrogate range, which cannot appear in a str
-                idx = len(vocab)
-                vocab[t] = idx + (0x800 if idx < 0xD800 - 0x800 else 0x1000)
-            chars.append(chr(vocab[t]))
-        return "".join(chars)
-
-    lcs = pylcs.lcs_sequence_length(encode(pt), encode(rt))
-    out["rougeL"] = _f1(lcs, len(pt), len(rt))
+    out["rougeL"] = _f1(_lcs_length(pt, rt), len(pt), len(rt))
     return out
+
+
+def _lcs_length(a: Sequence[str], b: Sequence[str]) -> int:
+    """Length of the longest common subsequence.
+
+    Uses `pylcs` when it is installed. Otherwise falls back to the bit-parallel
+    algorithm of Crochemore, Iliopoulos, Pinzon and Reid (2001), which packs a
+    row of the dynamic-programming table into one arbitrary-precision integer
+    and advances it with two additions per token of the second sequence. That
+    is O(n*m/w) machine words instead of O(n*m) Python operations: on the
+    ~16,000-token reference it runs in seconds where the reference
+    implementation's table takes minutes, so the evaluation does not depend on
+    a compiled extension being available.
+    """
+    if not a or not b:
+        return 0
+    try:
+        import pylcs
+    except ImportError:
+        pass
+    else:
+        vocab: Dict[str, int] = {}
+
+        def encode(seq):
+            chars = []
+            for t in seq:
+                if t not in vocab:
+                    idx = len(vocab)
+                    # step around the surrogate range, which cannot appear in
+                    # a Python str
+                    vocab[t] = idx + (0x800 if idx < 0xD800 - 0x800 else 0x1000)
+                chars.append(chr(vocab[t]))
+            return "".join(chars)
+
+        return pylcs.lcs_sequence_length(encode(a), encode(b))
+
+    m = len(a)
+    match: Dict[str, int] = {}
+    for i, tok in enumerate(a):
+        match[tok] = match.get(tok, 0) | (1 << i)
+
+    full = (1 << m) - 1
+    v = full
+    zero = 0
+    for tok in b:
+        u = v & match.get(tok, zero)
+        v = ((v + u) | (v - u)) & full
+    # the number of zero bits in v is the LCS length
+    return m - bin(v).count("1")
 
 
 def verify_fast_path(prediction: str, reference: str,

@@ -56,13 +56,19 @@ def check_python() -> bool:
                       ("networkx", "pip install networkx"),
                       ("scipy", "pip install scipy"),
                       ("rouge_score", "pip install rouge-score --no-build-isolation"),
-                      ("pylcs", "pip install pylcs"),
+                      ("lxml", "pip install lxml"),
                       ("nltk", "pip install nltk")):
         try:
             __import__(mod)
         except ImportError:
             say(f"  MISSING  {mod:12s} -> {hint}")
             ok = False
+    try:
+        import pylcs                      # noqa: F401
+        say("  ok       pylcs (compiled LCS)")
+    except ImportError:
+        say("  absent   pylcs -> optional; ROUGE-L uses the pure-Python "
+            "bit-parallel fallback")
     try:
         import spacy
         spacy.load("en_core_web_sm")
