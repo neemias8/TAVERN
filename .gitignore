@@ -1,42 +1,5 @@
-# Python cache and environments
 __pycache__/
-*.py[cod]
-.venv/
-.env/
-
-# IDE/settings
-.vscode/
-.idea/
-
-# Model/cache directories (PRIMERA ~1.8GB, downloaded on first run)
-hf_cache/
-cache/
-models/
-*.cache/
-
-# HuggingFace / Transformers cache
-transformers/
-hub/
-blobs/
-snapshots/
-refs/
-
-# Large model files
-*.bin
-*.safetensors
-*.pt
-*.pth
-*.ckpt
-*.onnx
-*.h5
-*.msgpack
-
-# Outputs and logs
+*.pyc
 outputs/
-*.log
-run.log
-run2.log
-
-# OS files
-Thumbs.db
-.DS_Store
+.cache/
+models/

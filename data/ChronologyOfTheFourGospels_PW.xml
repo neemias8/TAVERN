@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.2" encoding="UTF-8"?>
 <holy_week_chronology>
   <section_title>The Last Week of the Ministry of Jesus</section_title>
   <events>
@@ -129,142 +129,142 @@
       <john/>
     </event>
     <event id="15">
-      <day>Tuesday morning</day>
+      <day>Tuesday</day>
       <description>The fig tree dries up</description>
-      <when_where>On the way</when_where>
+      <when_where>Morning, on the way</when_where>
       <matthew>21:19b-22</matthew>
       <mark>11:20-26</mark>
       <luke/>
       <john/>
     </event>
     <event id="16">
-      <day>Tuesday morning</day>
+      <day>Tuesday</day>
       <description>The authority of Jesus questioned</description>
-      <when_where>In Jerusalem</when_where>
+      <when_where>Morning, in Jerusalem</when_where>
       <matthew>21:23-27</matthew>
       <mark>11:27-33</mark>
       <luke>20:1-8</luke>
       <john/>
     </event>
     <event id="17">
-      <day>Tuesday morning</day>
+      <day>Tuesday</day>
       <description>Parable of the two sons</description>
-      <when_where/>
+      <when_where>Morning</when_where>
       <matthew>21:28-32</matthew>
       <mark/>
       <luke/>
       <john/>
     </event>
     <event id="18">
-      <day>Tuesday morning</day>
+      <day>Tuesday</day>
       <description>Parable of the tenants</description>
-      <when_where/>
+      <when_where>Morning</when_where>
       <matthew>21:33-41</matthew>
       <mark>12:1-9</mark>
       <luke>20:9-16</luke>
       <john/>
     </event>
     <event id="19">
-      <day>Tuesday morning</day>
+      <day>Tuesday</day>
       <description>The stone the builders rejected</description>
-      <when_where/>
+      <when_where>Morning</when_where>
       <matthew>21:42-44</matthew>
       <mark>12:10-11</mark>
       <luke>20:17-18</luke>
       <john/>
     </event>
     <event id="20">
-      <day>Tuesday morning</day>
+      <day>Tuesday</day>
       <description>Leaders are offended</description>
-      <when_where/>
+      <when_where>Morning</when_where>
       <matthew>21:45-46</matthew>
       <mark>12:12</mark>
       <luke>20:19</luke>
       <john/>
     </event>
     <event id="21">
-      <day>Tuesday morning</day>
+      <day>Tuesday</day>
       <description>Parable of the wedding banquet</description>
-      <when_where/>
+      <when_where>Morning</when_where>
       <matthew>22:1-14</matthew>
       <mark/>
       <luke/>
       <john/>
     </event>
     <event id="22">
-      <day>Tuesday morning</day>
+      <day>Tuesday</day>
       <description>Question about taxes</description>
-      <when_where/>
+      <when_where>Morning</when_where>
       <matthew>22:15-22</matthew>
       <mark>12:13-17</mark>
       <luke>20:20-26</luke>
       <john/>
     </event>
     <event id="23">
-      <day>Tuesday morning</day>
+      <day>Tuesday</day>
       <description>Question about the resurrection</description>
-      <when_where/>
+      <when_where>Morning</when_where>
       <matthew>22:23-33</matthew>
       <mark>12:18-27</mark>
       <luke>20:27-38</luke>
       <john/>
     </event>
     <event id="24">
-      <day>Tuesday morning</day>
+      <day>Tuesday</day>
       <description>The greatest commandment</description>
-      <when_where/>
+      <when_where>Morning</when_where>
       <matthew>22:34-40</matthew>
       <mark>12:28-34</mark>
       <luke>20:39-40</luke>
       <john/>
     </event>
     <event id="25">
-      <day>Tuesday morning</day>
+      <day>Tuesday</day>
       <description>Whose son is the Christ?</description>
-      <when_where/>
+      <when_where>Morning</when_where>
       <matthew>22:41-46</matthew>
       <mark>12:35-37</mark>
       <luke>20:41-44</luke>
       <john/>
     </event>
     <event id="26">
-      <day>Tuesday morning</day>
+      <day>Tuesday</day>
       <description>Jesus condemns pride</description>
-      <when_where/>
+      <when_where>Morning</when_where>
       <matthew>23:1-12</matthew>
       <mark>12:38-40</mark>
       <luke>20:45-47</luke>
       <john/>
     </event>
     <event id="27">
-      <day>Tuesday morning</day>
+      <day>Tuesday</day>
       <description>Seven woes</description>
-      <when_where/>
+      <when_where>Morning</when_where>
       <matthew>23:13-36</matthew>
       <mark/>
       <luke/>
       <john/>
     </event>
     <event id="28">
-      <day>Tuesday morning</day>
+      <day>Tuesday</day>
       <description>Lament about Jerusalem</description>
-      <when_where/>
+      <when_where>Morning</when_where>
       <matthew>23:37-39</matthew>
       <mark/>
       <luke>13:34-35</luke>
       <john/>
     </event>
     <event id="29">
-      <day>Tuesday morning</day>
+      <day>Tuesday</day>
       <description>The example of the poor widow</description>
-      <when_where/>
+      <when_where>Morning</when_where>
       <matthew/>
       <mark>12:41-44</mark>
       <luke>21:1-4</luke>
       <john/>
     </event>
     <event id="30">
-      <day>Teaching About the End of the Age: The Olivet Discourse</day>
+      <day>Tuesday</day>
       <description>The temple will be destroyed</description>
       <when_where>Leaving the temple</when_where>
       <matthew>24:1-2</matthew>
@@ -273,151 +273,151 @@
       <john/>
     </event>
     <event id="31">
-      <day>Teaching About the End of the Age: The Olivet Discourse</day>
+      <day>Tuesday</day>
       <description>The disciples ask questions</description>
-      <when_where/>
+      <when_where>Teaching About the End of the Age: The Olivet Discourse</when_where>
       <matthew>24:3</matthew>
       <mark>13:3-4</mark>
       <luke>21:7</luke>
       <john/>
     </event>
     <event id="32">
-      <day>Teaching About the End of the Age: The Olivet Discourse</day>
+      <day>Tuesday</day>
       <description>"See that no one leads you astray"</description>
-      <when_where/>
+      <when_where>Teaching About the End of the Age: The Olivet Discourse</when_where>
       <matthew>24:4-5</matthew>
       <mark>13:5-6</mark>
       <luke>21:8</luke>
       <john/>
     </event>
     <event id="33">
-      <day>Teaching About the End of the Age: The Olivet Discourse</day>
+      <day>Tuesday</day>
       <description>Wars and Persecution</description>
-      <when_where/>
+      <when_where>Teaching About the End of the Age: The Olivet Discourse</when_where>
       <matthew>24:6-14</matthew>
       <mark>13:7-13</mark>
       <luke>21:9-19</luke>
       <john/>
     </event>
     <event id="34">
-      <day>Teaching About the End of the Age: The Olivet Discourse</day>
+      <day>Tuesday</day>
       <description>Abomination and Tribulation</description>
-      <when_where/>
+      <when_where>Teaching About the End of the Age: The Olivet Discourse</when_where>
       <matthew>24:15-22</matthew>
       <mark>13:14-20</mark>
       <luke>21:20-24</luke>
       <john/>
     </event>
     <event id="35">
-      <day>Teaching About the End of the Age: The Olivet Discourse</day>
+      <day>Tuesday</day>
       <description>False Christs</description>
-      <when_where/>
+      <when_where>Teaching About the End of the Age: The Olivet Discourse</when_where>
       <matthew>24:23-27</matthew>
       <mark>13:21-23</mark>
       <luke/>
       <john/>
     </event>
     <event id="36">
-      <day>Teaching About the End of the Age: The Olivet Discourse</day>
+      <day>Tuesday</day>
       <description>The corpse and the vultures</description>
-      <when_where/>
+      <when_where>Teaching About the End of the Age: The Olivet Discourse</when_where>
       <matthew>24:28</matthew>
       <mark/>
       <luke/>
       <john/>
     </event>
     <event id="37">
-      <day>Teaching About the End of the Age: The Olivet Discourse</day>
+      <day>Tuesday</day>
       <description>The coming of the Son of Man</description>
-      <when_where/>
+      <when_where>Teaching About the End of the Age: The Olivet Discourse</when_where>
       <matthew>24:29-31</matthew>
       <mark>13:24-27</mark>
       <luke>21:25-28</luke>
       <john/>
     </event>
     <event id="38">
-      <day>Teaching About the End of the Age: The Olivet Discourse</day>
+      <day>Tuesday</day>
       <description>The Lesson of the Fig Tree</description>
-      <when_where/>
+      <when_where>Teaching About the End of the Age: The Olivet Discourse</when_where>
       <matthew>24:32-35</matthew>
       <mark>13:28-31</mark>
       <luke>21:29-33</luke>
       <john/>
     </event>
     <event id="39">
-      <day>Teaching About the End of the Age: The Olivet Discourse</day>
+      <day>Tuesday</day>
       <description>No One Knows That Day or Hour</description>
-      <when_where/>
+      <when_where>Teaching About the End of the Age: The Olivet Discourse</when_where>
       <matthew>24:36</matthew>
       <mark>13:32</mark>
       <luke/>
       <john/>
     </event>
     <event id="40">
-      <day>Teaching About the End of the Age: The Olivet Discourse</day>
+      <day>Tuesday</day>
       <description>As in the days of Noah</description>
-      <when_where/>
+      <when_where>Teaching About the End of the Age: The Olivet Discourse</when_where>
       <matthew>24:37-39</matthew>
       <mark/>
       <luke/>
       <john/>
     </event>
     <event id="41">
-      <day>Teaching About the End of the Age: The Olivet Discourse</day>
+      <day>Tuesday</day>
       <description>Some taken, some left</description>
-      <when_where/>
+      <when_where>Teaching About the End of the Age: The Olivet Discourse</when_where>
       <matthew>24:40-43</matthew>
       <mark/>
       <luke/>
       <john/>
     </event>
     <event id="42">
-      <day>Teaching About the End of the Age: The Olivet Discourse</day>
+      <day>Tuesday</day>
       <description>Keep watch</description>
-      <when_where/>
+      <when_where>Teaching About the End of the Age: The Olivet Discourse</when_where>
       <matthew>24:44-51</matthew>
       <mark>13:33-37</mark>
       <luke>21:34-36</luke>
       <john/>
     </event>
     <event id="43">
-      <day>Teaching About the End of the Age: The Olivet Discourse</day>
+      <day>Tuesday</day>
       <description>Parable of the ten virgins</description>
-      <when_where/>
+      <when_where>Teaching About the End of the Age: The Olivet Discourse</when_where>
       <matthew>25:1-13</matthew>
       <mark/>
       <luke/>
       <john/>
     </event>
     <event id="44">
-      <day>Teaching About the End of the Age: The Olivet Discourse</day>
+      <day>Tuesday</day>
       <description>Parable of the talents</description>
-      <when_where/>
+      <when_where>Teaching About the End of the Age: The Olivet Discourse</when_where>
       <matthew>25:14-30</matthew>
       <mark/>
       <luke/>
       <john/>
     </event>
     <event id="45">
-      <day>Teaching About the End of the Age: The Olivet Discourse</day>
+      <day>Tuesday</day>
       <description>The sheep and the goats</description>
-      <when_where/>
+      <when_where>Teaching About the End of the Age: The Olivet Discourse</when_where>
       <matthew>25:31-46</matthew>
       <mark/>
       <luke/>
       <john/>
     </event>
     <event id="46">
-      <day>Tuesday afternoon</day>
+      <day>Tuesday</day>
       <description>Jesus again predicts his death</description>
-      <when_where/>
+      <when_where>Afternoon</when_where>
       <matthew/>
       <mark/>
       <luke/>
       <john>12:20-36a</john>
     </event>
     <event id="47">
-      <day>Tuesday afternoon</day>
+      <day>Tuesday</day>
       <description>Completion of his public ministry</description>
       <when_where>Two days before Passover/Unleavened Bread</when_where>
       <matthew/>
@@ -426,34 +426,34 @@
       <john>12:36b</john>
     </event>
     <event id="48">
-      <day>Tuesday afternoon</day>
+      <day>Tuesday</day>
       <description>He reminds disciples of crucifixion</description>
-      <when_where/>
+      <when_where>Afternoon</when_where>
       <matthew>26:1-2</matthew>
       <mark/>
       <luke/>
       <john/>
     </event>
     <event id="49">
-      <day>Tuesday afternoon</day>
+      <day>Tuesday</day>
       <description>The plot against Jesus</description>
-      <when_where/>
+      <when_where>Afternoon</when_where>
       <matthew>26:3-5</matthew>
       <mark>14:1-2</mark>
       <luke>22:1-2</luke>
       <john/>
     </event>
     <event id="50">
-      <day>Tuesday afternoon</day>
+      <day>Tuesday</day>
       <description>Judas agrees to betray Jesus</description>
-      <when_where/>
+      <when_where>Afternoon</when_where>
       <matthew>26:14-16</matthew>
       <mark>14:10-11</mark>
       <luke>22:3-6</luke>
       <john/>
     </event>
     <event id="51">
-      <day>Summary of Ministry</day>
+      <day>Tuesday</day>
       <description>Unbelief of the Jews</description>
       <when_where/>
       <matthew/>
@@ -462,7 +462,7 @@
       <john>12:37-43</john>
     </event>
     <event id="52">
-      <day>Summary of Ministry</day>
+      <day>Tuesday</day>
       <description>Summary of Jesus' message</description>
       <when_where/>
       <matthew/>
@@ -489,7 +489,7 @@
       <john/>
     </event>
     <event id="55">
-      <day>The Lord's Supper (Fourth Passover)</day>
+      <day>Thursday</day>
       <description>They recline at the table</description>
       <when_where>The upper room, night</when_where>
       <matthew>26:20</matthew>
@@ -498,214 +498,214 @@
       <john/>
     </event>
     <event id="56">
-      <day>The Lord's Supper (Fourth Passover)</day>
+      <day>Thursday</day>
       <description>The importance of this supper</description>
-      <when_where/>
+      <when_where>The upper room, night</when_where>
       <matthew/>
       <mark/>
       <luke>22:15-16</luke>
       <john/>
     </event>
     <event id="57">
-      <day>The Lord's Supper (Fourth Passover)</day>
+      <day>Thursday</day>
       <description>Jesus washes his disciples feet</description>
-      <when_where/>
+      <when_where>The upper room, night</when_where>
       <matthew/>
       <mark/>
       <luke/>
       <john>13:1-17</john>
     </event>
     <event id="58">
-      <day>The Lord's Supper (Fourth Passover)</day>
+      <day>Thursday</day>
       <description>Jesus talks about his betrayer</description>
-      <when_where/>
+      <when_where>The upper room, night</when_where>
       <matthew>26:21</matthew>
       <mark>14:18</mark>
       <luke>22:21-22</luke>
       <john>13:18-21</john>
     </event>
     <event id="59">
-      <day>The Lord's Supper (Fourth Passover)</day>
+      <day>Thursday</day>
       <description>They ask who it is</description>
-      <when_where/>
+      <when_where>The upper room, night</when_where>
       <matthew>26:22-25</matthew>
       <mark>14:19-21</mark>
       <luke>22:23</luke>
       <john>13:22-25</john>
     </event>
     <event id="60">
-      <day>The Lord's Supper (Fourth Passover)</day>
+      <day>Thursday</day>
       <description>Jesus identifies the betrayer</description>
-      <when_where/>
+      <when_where>The upper room, night</when_where>
       <matthew/>
       <mark/>
       <luke/>
       <john>13:26-27a</john>
     </event>
     <event id="61">
-      <day>The Lord's Supper (Fourth Passover)</day>
+      <day>Thursday</day>
       <description>Judas leaves</description>
-      <when_where/>
+      <when_where>The upper room, night</when_where>
       <matthew/>
       <mark/>
       <luke/>
       <john>13:27b-30</john>
     </event>
     <event id="62">
-      <day>The Lord's Supper (Fourth Passover)</day>
+      <day>Thursday</day>
       <description>The new commandment</description>
-      <when_where/>
+      <when_where>The upper room, night</when_where>
       <matthew/>
       <mark/>
       <luke/>
       <john>13:31-35</john>
     </event>
     <event id="63">
-      <day>The Lord's Supper (Fourth Passover)</day>
+      <day>Thursday</day>
       <description>Institution of the Supper: the bread</description>
-      <when_where/>
+      <when_where>The upper room, night</when_where>
       <matthew>26:26</matthew>
       <mark>14:22</mark>
       <luke>22:19</luke>
       <john/>
     </event>
     <event id="64">
-      <day>The Lord's Supper (Fourth Passover)</day>
+      <day>Thursday</day>
       <description>Institution of the Supper: the wine</description>
-      <when_where/>
+      <when_where>The upper room, night</when_where>
       <matthew>26:27-28</matthew>
       <mark>14:23-24</mark>
       <luke>22:20</luke>
       <john/>
     </event>
     <event id="65">
-      <day>The Lord's Supper (Fourth Passover)</day>
+      <day>Thursday</day>
       <description>Jesus will not drink wine again</description>
-      <when_where/>
+      <when_where>The upper room, night</when_where>
       <matthew>26:29</matthew>
       <mark>14:25</mark>
       <luke>22:17-18</luke>
       <john/>
     </event>
     <event id="66">
-      <day>The Lord's Supper (Fourth Passover)</day>
+      <day>Thursday</day>
       <description>Greatness through service</description>
-      <when_where/>
+      <when_where>The upper room, night</when_where>
       <matthew/>
       <mark/>
       <luke>22:24-30</luke>
       <john/>
     </event>
     <event id="67">
-      <day>The Lord's Supper (Fourth Passover)</day>
+      <day>Thursday</day>
       <description>Jesus predicts Peter's denial</description>
-      <when_where/>
+      <when_where>The upper room, night</when_where>
       <matthew/>
       <mark/>
       <luke>22:31-34</luke>
       <john>13:36-38</john>
     </event>
     <event id="68">
-      <day>The Lord's Supper (Fourth Passover)</day>
+      <day>Thursday</day>
       <description>Jesus, the way to the Father</description>
-      <when_where/>
+      <when_where>The upper room, night</when_where>
       <matthew/>
       <mark/>
       <luke/>
       <john>14:1-14</john>
     </event>
     <event id="69">
-      <day>The Lord's Supper (Fourth Passover)</day>
+      <day>Thursday</day>
       <description>The promise of the Holy Spirit</description>
-      <when_where/>
+      <when_where>The upper room, night</when_where>
       <matthew/>
       <mark/>
       <luke/>
       <john>14:15-31a</john>
     </event>
     <event id="70">
-      <day>The Lord's Supper (Fourth Passover)</day>
+      <day>Thursday</day>
       <description>Purse, bag, and sword</description>
-      <when_where/>
+      <when_where>The upper room, night</when_where>
       <matthew/>
       <mark/>
       <luke>22:35-38</luke>
       <john/>
     </event>
     <event id="71">
-      <day>The Lord's Supper (Fourth Passover)</day>
+      <day>Thursday</day>
       <description>They go out to the Mount of Olives</description>
-      <when_where/>
+      <when_where>The upper room, night</when_where>
       <matthew>26:30</matthew>
       <mark>14:26</mark>
       <luke>22:39</luke>
       <john>14:31b</john>
     </event>
     <event id="72">
-      <day>The Lord's Supper (Fourth Passover)</day>
+      <day>Thursday</day>
       <description>Jesus predicts Peter's denial</description>
-      <when_where/>
+      <when_where>The upper room, night</when_where>
       <matthew>26:31-35</matthew>
       <mark>14:27-31</mark>
       <luke/>
       <john/>
     </event>
     <event id="73">
-      <day>The Lord's Supper (Fourth Passover)</day>
+      <day>Thursday</day>
       <description>"I am the true vine"</description>
-      <when_where/>
+      <when_where>The upper room, night</when_where>
       <matthew/>
       <mark/>
       <luke/>
       <john>15:1-17</john>
     </event>
     <event id="74">
-      <day>The Lord's Supper (Fourth Passover)</day>
+      <day>Thursday</day>
       <description>The hatred of the world</description>
-      <when_where/>
+      <when_where>The upper room, night</when_where>
       <matthew/>
       <mark/>
       <luke/>
       <john>15:18-16:4</john>
     </event>
     <event id="75">
-      <day>The Lord's Supper (Fourth Passover)</day>
+      <day>Thursday</day>
       <description>The work of the Holy Spirit</description>
-      <when_where/>
+      <when_where>The upper room, night</when_where>
       <matthew/>
       <mark/>
       <luke/>
       <john>16:5-15</john>
     </event>
     <event id="76">
-      <day>The Lord's Supper (Fourth Passover)</day>
+      <day>Thursday</day>
       <description>"Your sorrow will turn into joy"</description>
-      <when_where/>
+      <when_where>The upper room, night</when_where>
       <matthew/>
       <mark/>
       <luke/>
       <john>16:16-24</john>
     </event>
     <event id="77">
-      <day>The Lord's Supper (Fourth Passover)</day>
+      <day>Thursday</day>
       <description>"I have overcome the world"</description>
-      <when_where/>
+      <when_where>The upper room, night</when_where>
       <matthew/>
       <mark/>
       <luke/>
       <john>16:25-33</john>
     </event>
     <event id="78">
-      <day>The Lord's Supper (Fourth Passover)</day>
+      <day>Thursday</day>
       <description>The high priestly prayer</description>
-      <when_where/>
+      <when_where>The upper room, night</when_where>
       <matthew/>
       <mark/>
       <luke/>
       <john>17:1-26</john>
     </event>
     <event id="79">
-      <day>In Gethsemane</day>
+      <day>Thursday</day>
       <description>They arrive at Gethsemane</description>
       <when_where>Gethsemane</when_where>
       <matthew>26:36-38</matthew>
@@ -714,88 +714,88 @@
       <john>18:1</john>
     </event>
     <event id="80">
-      <day>In Gethsemane</day>
+      <day>Thursday</day>
       <description>Jesus prays in agony</description>
-      <when_where/>
+      <when_where>Gethsemane</when_where>
       <matthew>26:39</matthew>
       <mark>14:35-36</mark>
       <luke>22:41-45</luke>
       <john/>
     </event>
     <event id="81">
-      <day>In Gethsemane</day>
+      <day>Thursday</day>
       <description>Jesus prays the second time</description>
-      <when_where/>
+      <when_where>Gethsemane</when_where>
       <matthew>26:40-42</matthew>
       <mark>14:37-39</mark>
       <luke>22:46</luke>
       <john/>
     </event>
     <event id="82">
-      <day>In Gethsemane</day>
+      <day>Thursday</day>
       <description>Jesus prays the third time</description>
-      <when_where/>
+      <when_where>Gethsemane</when_where>
       <matthew>26:43-46</matthew>
       <mark>14:40-42</mark>
       <luke/>
       <john/>
     </event>
     <event id="83">
-      <day>In Gethsemane</day>
+      <day>Thursday</day>
       <description>Judas betrays Jesus</description>
-      <when_where/>
+      <when_where>Gethsemane</when_where>
       <matthew>26:47-50</matthew>
       <mark>14:43-45</mark>
       <luke>22:47-48</luke>
       <john>18:2-3</john>
     </event>
     <event id="84">
-      <day>In Gethsemane</day>
+      <day>Thursday</day>
       <description>Jesus asks for safety of disciples</description>
-      <when_where/>
+      <when_where>Gethsemane</when_where>
       <matthew/>
       <mark/>
       <luke/>
       <john>18:4-9</john>
     </event>
     <event id="85">
-      <day>In Gethsemane</day>
+      <day>Thursday</day>
       <description>Peter cuts off Malchus's ear</description>
-      <when_where/>
+      <when_where>Gethsemane</when_where>
       <matthew>26:51-54</matthew>
       <mark>14:46-47</mark>
       <luke>22:49-51</luke>
       <john>18:10-11</john>
     </event>
     <event id="86">
-      <day>In Gethsemane</day>
+      <day>Thursday</day>
       <description>Jesus questions manner of arrest</description>
-      <when_where/>
+      <when_where>Gethsemane</when_where>
       <matthew>26:55-56a</matthew>
       <mark>14:48-49</mark>
       <luke>22:52-53</luke>
       <john/>
     </event>
     <event id="87">
-      <day>In Gethsemane</day>
+      <day>Thursday</day>
       <description>Jesus is arrested, disciples flee</description>
-      <when_where/>
+      <when_where>Gethsemane</when_where>
       <matthew>26:56b</matthew>
       <mark>14:50</mark>
       <luke/>
       <john>18:12</john>
     </event>
     <event id="88">
-      <day>In Gethsemane</day>
+      <day>Thursday</day>
       <description>A young man flees naked (Mark??)</description>
-      <when_where/>
+      <when_where>Gethsemane</when_where>
       <matthew/>
       <mark>14:51-52</mark>
       <luke/>
       <john/>
     </event>
     <event id="89">
-      <day>Trial before the Jewish Authorities</day>
+      <day>Thursday</day>
       <description>To Annas' and Caiaphas' house</description>
       <when_where>Jerusalem</when_where>
       <matthew>26:57</matthew>
@@ -804,7 +804,7 @@
       <john/>
     </event>
     <event id="90">
-      <day>Trial before the Jewish Authorities</day>
+      <day>Thursday</day>
       <description>Before Annas first</description>
       <when_where/>
       <matthew/>
@@ -813,7 +813,7 @@
       <john>18:13-14</john>
     </event>
     <event id="91">
-      <day>Trial before the Jewish Authorities</day>
+      <day>Thursday</day>
       <description>Peter follows into the courtyard</description>
       <when_where/>
       <matthew>26:58</matthew>
@@ -822,7 +822,7 @@
       <john>18:15-16</john>
     </event>
     <event id="92">
-      <day>Trial before the Jewish Authorities</day>
+      <day>Thursday</day>
       <description>Peter denies Jesus the first time</description>
       <when_where/>
       <matthew>26:69-71a</matthew>
@@ -831,7 +831,7 @@
       <john>18:17-18</john>
     </event>
     <event id="93">
-      <day>Trial before the Jewish Authorities</day>
+      <day>Thursday</day>
       <description>A rooster crows (the first time)</description>
       <when_where/>
       <matthew/>
@@ -840,7 +840,7 @@
       <john/>
     </event>
     <event id="94">
-      <day>Trial before the Jewish Authorities</day>
+      <day>Thursday</day>
       <description>Trial before Annas</description>
       <when_where/>
       <matthew/>
@@ -849,7 +849,7 @@
       <john>18:19-24</john>
     </event>
     <event id="95">
-      <day>Trial before the Jewish Authorities</day>
+      <day>Thursday</day>
       <description>Trial before Caiaphas &amp; Sanhedrin</description>
       <when_where/>
       <matthew>26:59-66</matthew>
@@ -858,7 +858,7 @@
       <john/>
     </event>
     <event id="96">
-      <day>Trial before the Jewish Authorities</day>
+      <day>Thursday</day>
       <description>They beat and mock Jesus</description>
       <when_where/>
       <matthew>26:67-68</matthew>
@@ -867,7 +867,7 @@
       <john/>
     </event>
     <event id="97">
-      <day>Trial before the Jewish Authorities</day>
+      <day>Thursday</day>
       <description>Peter denies Jesus the second time</description>
       <when_where>"A little later" (Luke 22:58)</when_where>
       <matthew>26:71b-72</matthew>
@@ -876,7 +876,7 @@
       <john>18:25</john>
     </event>
     <event id="98">
-      <day>Trial before the Jewish Authorities</day>
+      <day>Thursday</day>
       <description>Peter denies Jesus the third time</description>
       <when_where>"About an hour later" (Luke 22:59)</when_where>
       <matthew>26:73-74a</matthew>
@@ -885,7 +885,7 @@
       <john>18:26-27a</john>
     </event>
     <event id="99">
-      <day>Trial before the Jewish Authorities</day>
+      <day>Thursday</day>
       <description>A rooster crows (the second time)</description>
       <when_where/>
       <matthew>26:74b</matthew>
@@ -894,7 +894,7 @@
       <john>18:27b</john>
     </event>
     <event id="100">
-      <day>Trial before the Jewish Authorities</day>
+      <day>Thursday</day>
       <description>Jesus looks at Peter, who weeps</description>
       <when_where/>
       <matthew>26:75</matthew>
@@ -903,25 +903,25 @@
       <john/>
     </event>
     <event id="101">
-      <day>Friday, early morning</day>
+      <day>Friday</day>
       <description>The Sanhedrin condemns Jesus</description>
-      <when_where/>
+      <when_where>Early morning</when_where>
       <matthew>27:1</matthew>
       <mark>15:1a</mark>
       <luke>22:66-71</luke>
       <john/>
     </event>
     <event id="102">
-      <day>Friday, early morning</day>
+      <day>Friday</day>
       <description>Judas commits suicide</description>
-      <when_where/>
+      <when_where>Early morning</when_where>
       <matthew>27:3-10</matthew>
       <mark/>
       <luke/>
       <john/>
     </event>
     <event id="103">
-      <day>Trial before Pilate</day>
+      <day>Friday</day>
       <description>Before Pilate</description>
       <when_where>The Praetorium</when_where>
       <matthew>27:2</matthew>
@@ -930,7 +930,7 @@
       <john>18:28-32</john>
     </event>
     <event id="104">
-      <day>Trial before Pilate</day>
+      <day>Friday</day>
       <description>Pilate interrogates Jesus</description>
       <when_where/>
       <matthew>27:11-14</matthew>
@@ -939,7 +939,7 @@
       <john>18:33-38</john>
     </event>
     <event id="105">
-      <day>Trial before Pilate</day>
+      <day>Friday</day>
       <description>Before Herod</description>
       <when_where/>
       <matthew/>
@@ -948,7 +948,7 @@
       <john/>
     </event>
     <event id="106">
-      <day>Trial before Pilate</day>
+      <day>Friday</day>
       <description>Message from Pilate's wife</description>
       <when_where/>
       <matthew>27:19</matthew>
@@ -957,7 +957,7 @@
       <john/>
     </event>
     <event id="107">
-      <day>Trial before Pilate</day>
+      <day>Friday</day>
       <description>Pilate wants to release him</description>
       <when_where/>
       <matthew/>
@@ -966,7 +966,7 @@
       <john/>
     </event>
     <event id="108">
-      <day>Trial before Pilate</day>
+      <day>Friday</day>
       <description>Jesus or Barrabas</description>
       <when_where/>
       <matthew>27:15-18</matthew>
@@ -975,7 +975,7 @@
       <john>18:39</john>
     </event>
     <event id="109">
-      <day>Trial before Pilate</day>
+      <day>Friday</day>
       <description>The crowd chooses Barrabas</description>
       <when_where/>
       <matthew>27:20-21</matthew>
@@ -984,7 +984,7 @@
       <john>18:40</john>
     </event>
     <event id="110">
-      <day>Trial before Pilate</day>
+      <day>Friday</day>
       <description>"Crucify him!"</description>
       <when_where/>
       <matthew>27:22-23</matthew>
@@ -993,7 +993,7 @@
       <john/>
     </event>
     <event id="111">
-      <day>Trial before Pilate</day>
+      <day>Friday</day>
       <description>Crown of thorns</description>
       <when_where/>
       <matthew>27:27-30</matthew>
@@ -1002,7 +1002,7 @@
       <john>19:1-3</john>
     </event>
     <event id="112">
-      <day>Trial before Pilate</day>
+      <day>Friday</day>
       <description>Pilate tries to release him</description>
       <when_where>6:00 am.</when_where>
       <matthew/>
@@ -1011,7 +1011,7 @@
       <john>19:4-15</john>
     </event>
     <event id="113">
-      <day>Trial before Pilate</day>
+      <day>Friday</day>
       <description>Pilate washes his hands</description>
       <when_where/>
       <matthew>27:24-25</matthew>
@@ -1020,7 +1020,7 @@
       <john/>
     </event>
     <event id="114">
-      <day>Trial before Pilate</day>
+      <day>Friday</day>
       <description>Barrabas is released</description>
       <when_where/>
       <matthew>27:26</matthew>
@@ -1029,7 +1029,7 @@
       <john>19:16</john>
     </event>
     <event id="115">
-      <day>Trial before Pilate</day>
+      <day>Friday</day>
       <description>They lead him out to crucify him</description>
       <when_where>In the Via Dolorosa</when_where>
       <matthew>27:31</matthew>
@@ -1038,7 +1038,7 @@
       <john>19:17</john>
     </event>
     <event id="116">
-      <day>Trial before Pilate</day>
+      <day>Friday</day>
       <description>Simon of Cyrene</description>
       <when_where/>
       <matthew>27:32</matthew>
@@ -1047,7 +1047,7 @@
       <john/>
     </event>
     <event id="117">
-      <day>Trial before Pilate</day>
+      <day>Friday</day>
       <description>The women weep for him</description>
       <when_where/>
       <matthew/>
@@ -1056,7 +1056,7 @@
       <john/>
     </event>
     <event id="118">
-      <day>The Crucifixion</day>
+      <day>Friday</day>
       <description>Jesus is crucified</description>
       <when_where>Golgotha ("Place of the Skull"), 9:00 a.m. (Mk. 15:25)</when_where>
       <matthew>27:33-35a</matthew>
@@ -1065,7 +1065,7 @@
       <john>19:18</john>
     </event>
     <event id="119">
-      <day>The Crucifixion</day>
+      <day>Friday</day>
       <description>"Father, forgive them"</description>
       <when_where/>
       <matthew/>
@@ -1074,7 +1074,7 @@
       <john/>
     </event>
     <event id="120">
-      <day>The Crucifixion</day>
+      <day>Friday</day>
       <description>they cast lots for his clothes</description>
       <when_where/>
       <matthew>27:35b-36</matthew>
@@ -1083,7 +1083,7 @@
       <john>19:23-24</john>
     </event>
     <event id="121">
-      <day>The Crucifixion</day>
+      <day>Friday</day>
       <description>It was the third hour (9 a.m.)</description>
       <when_where>9:00 am.</when_where>
       <matthew/>
@@ -1092,7 +1092,7 @@
       <john/>
     </event>
     <event id="122">
-      <day>The Crucifixion</day>
+      <day>Friday</day>
       <description>The written notice above his head</description>
       <when_where/>
       <matthew>27:37</matthew>
@@ -1101,7 +1101,7 @@
       <john>19:19-22</john>
     </event>
     <event id="123">
-      <day>The Crucifixion</day>
+      <day>Friday</day>
       <description>They crucify two robbers with him</description>
       <when_where/>
       <matthew>27:38</matthew>
@@ -1110,7 +1110,7 @@
       <john/>
     </event>
     <event id="124">
-      <day>The Crucifixion</day>
+      <day>Friday</day>
       <description>Everyone insults him</description>
       <when_where/>
       <matthew>27:39-44</matthew>
@@ -1119,7 +1119,7 @@
       <john/>
     </event>
     <event id="125">
-      <day>The Crucifixion</day>
+      <day>Friday</day>
       <description>The soldiers insult him</description>
       <when_where/>
       <matthew/>
@@ -1128,7 +1128,7 @@
       <john/>
     </event>
     <event id="126">
-      <day>The Crucifixion</day>
+      <day>Friday</day>
       <description>"You will be with me in paradise"</description>
       <when_where/>
       <matthew/>
@@ -1137,7 +1137,7 @@
       <john/>
     </event>
     <event id="127">
-      <day>The Crucifixion</day>
+      <day>Friday</day>
       <description>"Here is your mother"</description>
       <when_where/>
       <matthew/>
@@ -1146,7 +1146,7 @@
       <john>19:25-27</john>
     </event>
     <event id="128">
-      <day>The Crucifixion</day>
+      <day>Friday</day>
       <description>Darkness over all the land</description>
       <when_where>12:00 noon</when_where>
       <matthew>27:45</matthew>
@@ -1155,7 +1155,7 @@
       <john/>
     </event>
     <event id="129">
-      <day>The Crucifixion</day>
+      <day>Friday</day>
       <description>"Why have you forsaken me?"</description>
       <when_where>3:00 p.m.</when_where>
       <matthew>27:46-47</matthew>
@@ -1164,7 +1164,7 @@
       <john/>
     </event>
     <event id="130">
-      <day>The Crucifixion</day>
+      <day>Friday</day>
       <description>"I am thirsty"</description>
       <when_where/>
       <matthew>27:48</matthew>
@@ -1173,7 +1173,7 @@
       <john>19:28-29</john>
     </event>
     <event id="131">
-      <day>The Crucifixion</day>
+      <day>Friday</day>
       <description>"Let's see if Elijah comes"</description>
       <when_where/>
       <matthew>27:49</matthew>
@@ -1182,7 +1182,7 @@
       <john/>
     </event>
     <event id="132">
-      <day>The Crucifixion</day>
+      <day>Friday</day>
       <description>"It is finished"</description>
       <when_where/>
       <matthew/>
@@ -1191,7 +1191,7 @@
       <john>19:30a</john>
     </event>
     <event id="133">
-      <day>The Crucifixion</day>
+      <day>Friday</day>
       <description>"into your hands I commit spirit"</description>
       <when_where/>
       <matthew/>
@@ -1200,7 +1200,7 @@
       <john/>
     </event>
     <event id="134">
-      <day>The Crucifixion</day>
+      <day>Friday</day>
       <description>The death of Jesus</description>
       <when_where/>
       <matthew>27:50</matthew>
@@ -1209,7 +1209,7 @@
       <john>19:30b</john>
     </event>
     <event id="135">
-      <day>The Crucifixion</day>
+      <day>Friday</day>
       <description>Miraculous events</description>
       <when_where/>
       <matthew>27:51-53</matthew>
@@ -1218,7 +1218,7 @@
       <john/>
     </event>
     <event id="136">
-      <day>The Crucifixion</day>
+      <day>Friday</day>
       <description>The centurion believes</description>
       <when_where/>
       <matthew>27:54</matthew>
@@ -1227,7 +1227,7 @@
       <john/>
     </event>
     <event id="137">
-      <day>The Crucifixion</day>
+      <day>Friday</day>
       <description>The crowd is amazed</description>
       <when_where/>
       <matthew/>
@@ -1236,7 +1236,7 @@
       <john/>
     </event>
     <event id="138">
-      <day>The Crucifixion</day>
+      <day>Friday</day>
       <description>The women and his followers</description>
       <when_where/>
       <matthew>27:55-56</matthew>
@@ -1245,7 +1245,7 @@
       <john/>
     </event>
     <event id="139">
-      <day>The Crucifixion</day>
+      <day>Friday</day>
       <description>Jesus' side is pierced</description>
       <when_where/>
       <matthew/>
@@ -1254,7 +1254,7 @@
       <john>19:31-37</john>
     </event>
     <event id="140">
-      <day>Jesus is buried</day>
+      <day>Friday</day>
       <description>Joseph of Arimathea asks for body</description>
       <when_where>Late afternoon</when_where>
       <matthew>27:57-58</matthew>
@@ -1263,7 +1263,7 @@
       <john>19:38</john>
     </event>
     <event id="141">
-      <day>Jesus is buried</day>
+      <day>Friday</day>
       <description>Jesus is buried</description>
       <when_where>Before nightfall</when_where>
       <matthew>27:59-60</matthew>
@@ -1272,7 +1272,7 @@
       <john>19:39-42</john>
     </event>
     <event id="142">
-      <day>Jesus is buried</day>
+      <day>Friday</day>
       <description>The women observe</description>
       <when_where/>
       <matthew>27:61</matthew>
@@ -1281,7 +1281,7 @@
       <john/>
     </event>
     <event id="143">
-      <day>Jesus is buried</day>
+      <day>Friday</day>
       <description>The women prepare spices</description>
       <when_where/>
       <matthew/>
@@ -1290,12 +1290,237 @@
       <john/>
     </event>
     <event id="144">
-      <day>Saturday</day>
+      <day>Dark Saturday</day>
       <description>The guard before the tomb</description>
       <when_where/>
       <matthew>27:62-66</matthew>
       <mark/>
       <luke/>
+      <john/>
+    </event>
+    <event id="145">
+      <day>Dark Saturday</day>
+      <description>The women buy more spices</description>
+      <when_where>After the Sabbath, Saturday evening</when_where>
+      <matthew/>
+      <mark>16:1</mark>
+      <luke/>
+      <john/>
+    </event>
+    <event id="146">
+      <day>Sunday</day>
+      <description>The women go to the tomb</description>
+      <when_where>Mary Magdalene, Mary mother of James, Salome; still dark</when_where>
+      <matthew>28:1</matthew>
+      <mark>16:2-3</mark>
+      <luke>24:1</luke>
+      <john>20:1a</john>
+    </event>
+    <event id="147">
+      <day>Sunday</day>
+      <description>The stone is rolled back</description>
+      <when_where/>
+      <matthew>28:2-4</matthew>
+      <mark/>
+      <luke/>
+      <john/>
+    </event>
+    <event id="148">
+      <day>Sunday</day>
+      <description>The women see that it is!</description>
+      <when_where/>
+      <matthew/>
+      <mark>16:4</mark>
+      <luke>24:2</luke>
+      <john>20:1b</john>
+    </event>
+    <event id="149">
+      <day>Sunday</day>
+      <description>They do not find the body</description>
+      <when_where/>
+      <matthew/>
+      <mark/>
+      <luke>24:3</luke>
+      <john/>
+    </event>
+    <event id="150">
+      <day>Sunday</day>
+      <description>They see the angels</description>
+      <when_where/>
+      <matthew/>
+      <mark>16:5</mark>
+      <luke>24:4</luke>
+      <john/>
+    </event>
+    <event id="151">
+      <day>Sunday</day>
+      <description>Angels proclaim the resurrection</description>
+      <when_where/>
+      <matthew>28:5-6</matthew>
+      <mark>16:6</mark>
+      <luke>24:5-6a</luke>
+      <john/>
+    </event>
+    <event id="152">
+      <day>Sunday</day>
+      <description>"Remember how he told you"</description>
+      <when_where/>
+      <matthew/>
+      <mark/>
+      <luke>24:6b-8</luke>
+      <john/>
+    </event>
+    <event id="153">
+      <day>Sunday</day>
+      <description>"go quickly and tell his disciples"</description>
+      <when_where/>
+      <matthew>28:7</matthew>
+      <mark>16:7</mark>
+      <luke/>
+      <john/>
+    </event>
+    <event id="154">
+      <day>Sunday</day>
+      <description>At first they say nothing out of fear</description>
+      <when_where/>
+      <matthew/>
+      <mark>16:8</mark>
+      <luke/>
+      <john/>
+    </event>
+    <event id="155">
+      <day>Sunday</day>
+      <description>Then they run to tell his disciples</description>
+      <when_where/>
+      <matthew>28:8a</matthew>
+      <mark/>
+      <luke/>
+      <john/>
+    </event>
+    <event id="156">
+      <day>Sunday</day>
+      <description>Mary M. runs ahead, unbelieving</description>
+      <when_where/>
+      <matthew/>
+      <mark/>
+      <luke/>
+      <john>20:2a</john>
+    </event>
+    <event id="157">
+      <day>Sunday</day>
+      <description>Mary M. tells Peter and John</description>
+      <when_where/>
+      <matthew/>
+      <mark/>
+      <luke/>
+      <john>20:2b</john>
+    </event>
+    <event id="158">
+      <day>Sunday</day>
+      <description>Peter and John see the tomb</description>
+      <when_where/>
+      <matthew/>
+      <mark/>
+      <luke>24:12</luke>
+      <john>20:3-10</john>
+    </event>
+    <event id="159">
+      <day>Sunday</day>
+      <description>Jesus appears to Mary Magdalene</description>
+      <when_where/>
+      <matthew/>
+      <mark>16:9</mark>
+      <luke/>
+      <john>20:11-17</john>
+    </event>
+    <event id="160">
+      <day>Sunday</day>
+      <description>Jesus appears to the (other) women</description>
+      <when_where/>
+      <matthew>28:8b-10</matthew>
+      <mark/>
+      <luke/>
+      <john/>
+    </event>
+    <event id="161">
+      <day>Sunday</day>
+      <description>The report of the guard</description>
+      <when_where/>
+      <matthew>28:11-15</matthew>
+      <mark/>
+      <luke/>
+      <john/>
+    </event>
+    <event id="162">
+      <day>Sunday</day>
+      <description>Women tell news to disciples</description>
+      <when_where/>
+      <matthew/>
+      <mark>16:10-11</mark>
+      <luke>24:9-11</luke>
+      <john>20:18</john>
+    </event>
+    <event id="163">
+      <day>Sunday</day>
+      <description>Jesus appears to Peter</description>
+      <when_where>when?</when_where>
+      <matthew/>
+      <mark/>
+      <luke>24:34</luke>
+      <john/>
+    </event>
+    <event id="164">
+      <day>Sunday</day>
+      <description>Jesus appears to Cleopas and another</description>
+      <when_where>afternoon, road to Emmaus (7 miles, 2-hour walk)</when_where>
+      <matthew/>
+      <mark>16:12</mark>
+      <luke>24:13-27</luke>
+      <john/>
+    </event>
+    <event id="165">
+      <day>Sunday</day>
+      <description>Jesus reveals himself to them</description>
+      <when_where>nearly evening, Emmaus</when_where>
+      <matthew/>
+      <mark/>
+      <luke>24:28-32</luke>
+      <john/>
+    </event>
+    <event id="166">
+      <day>Sunday</day>
+      <description>They return to Jerusalem</description>
+      <when_where>2-hour walk back</when_where>
+      <matthew/>
+      <mark>16:13</mark>
+      <luke>24:33-35</luke>
+      <john/>
+    </event>
+    <event id="167">
+      <day>Sunday</day>
+      <description>Jesus appears to the Eleven</description>
+      <when_where>Evening</when_where>
+      <matthew/>
+      <mark>16:14</mark>
+      <luke>24:36-43</luke>
+      <john>20:19-20</john>
+    </event>
+    <event id="168">
+      <day>Sunday</day>
+      <description>The apostles receive authority</description>
+      <when_where>Evening</when_where>
+      <matthew/>
+      <mark/>
+      <luke/>
+      <john>20:21-23</john>
+    </event>
+    <event id="169">
+      <day>Sunday</day>
+      <description>He opens their minds to understand</description>
+      <when_where>Evening</when_where>
+      <matthew/>
+      <mark/>
+      <luke>24:44-48</luke>
       <john/>
     </event>
   </events>
