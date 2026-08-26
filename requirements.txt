@@ -1,10 +1,13 @@
+# TAVERN — runtime dependencies
+spacy>=3.8
+# python -m spacy download en_core_web_sm
 networkx>=3.0
+scipy>=1.10
 numpy>=1.24
-spacy>=3.7
-scipy>=1.11
-sentence-transformers>=2.2
-# Optional – GPU-accelerated GNN
-# torch>=2.0
-
-# Download the spaCy model after installing:
-#   python -m spacy download en_core_web_sm
+torch>=2.0            # Stage 4 only; the pipeline degrades to the unpropagated
+                      # aggregation if torch is absent
+rouge-score==0.1.2    # install with --no-build-isolation on modern setuptools,
+                      # or copy the rouge_score package into site-packages
+pylcs>=0.1.1          # compiled LCS for ROUGE-L on a 16k-token reference
+nltk>=3.8             # METEOR; needs the wordnet corpus
+lxml>=4.9
