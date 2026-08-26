@@ -145,7 +145,9 @@ class TavernConfig:
     seeds: tuple = (13, 42, 1337)
 
     # Stage 5
-    backbone: str = "extractive"           # extractive | bart | pegasus | primera | gemma
+    # extractive | union | bart | pegasus | primera | instruct | ollama
+    backbone: str = "union"
+    backbone_model: str = ""               # override the checkpoint
     max_new_tokens: int = 256
     min_new_tokens: int = 10
     length_penalty: float = 0.8

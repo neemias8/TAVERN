@@ -29,6 +29,16 @@ def main() -> int:
                     help="domain-profile projection mode (Appendix A)")
     ap.add_argument("--year", type=int, default=30,
                     help="Julian year for absolute mode (30 or 33)")
+    ap.add_argument("--backbone", default="union",
+                    choices=("union", "extractive", "bart", "pegasus",
+                             "primera", "instruct", "ollama"),
+                    help="Stage 5 fusion backbone. 'union' is deterministic "
+                         "and detail-preserving but not abstractive; "
+                         "'extractive' emits one account verbatim and exists "
+                         "for comparison with the degradation curve; the rest "
+                         "are abstractive and need a model.")
+    ap.add_argument("--backbone-model", default="",
+                    help="override the checkpoint or Ollama model name")
     ap.add_argument("--no-gnn", action="store_true",
                     help="skip Stage 4; select by account length")
     ap.add_argument("--no-veridicality", action="store_true")
@@ -48,6 +58,8 @@ def main() -> int:
         use_anchor_scaffold=not args.no_scaffold,
         use_graph_propagation=not args.no_propagation,
         cascade_levels=tuple(int(x) for x in args.cascade.split(",") if x),
+        backbone=args.backbone,
+        backbone_model=args.backbone_model,
     )
 
     print("Verifying corpus digests ...")
@@ -79,10 +91,18 @@ def main() -> int:
     print(f"                graph {st['graph_nodes']} nodes, "
           f"{st['graph_edges']} edges")
     print(f"                {st['conflicts']} conflicts reported")
-    print(f"\nConsolidation   {len(res.consolidation.paragraphs)} paragraphs, "
-          f"{res.consolidation.length} characters")
+    cons = res.consolidation
+    kind = ("abstractive" if getattr(cons, "backbone", "") in
+            ("bart", "pegasus", "primera", "instruct", "ollama")
+            else "not abstractive")
+    print(f"\nConsolidation   backbone '{cons.backbone}' ({kind})")
+    if res.backbone_note:
+        print(f"  NOTE          {res.backbone_note}")
+    print(f"                {len(cons.paragraphs)} paragraphs, "
+          f"{cons.length} characters")
     print(f"\nWrote {out}/")
     print(f"  consolidated.txt, consolidated_with_markers.txt")
+    print(f"  curation.json          per event: every source account + the fusion")
     print(f"  annotation/<book>.tml, .tokens.xml, .json")
     print(f"  stage3/timeline.json")
     print("\nNo chronology and no reference consolidation were read. "

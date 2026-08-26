@@ -23,7 +23,13 @@ from ..stage3_anchoring_alignment.graph import EventGraph
 from ..stage3_anchoring_alignment.local_timeline import EventUnit
 
 __all__ = ["Consolidation", "consolidate", "ExtractiveFuser",
-           "SelectionStrategy"]
+           "SelectionStrategy", "build_fuser"]
+
+
+def build_fuser(name: str, **kw):
+    """Resolve a backbone by name; see `backbones.build`."""
+    from .backbones import build
+    return build(name, **kw)
 
 
 @dataclass
@@ -33,6 +39,8 @@ class Consolidation:
     markers: List[str] = field(default_factory=list)
     selected: Dict[str, str] = field(default_factory=dict)   # cluster -> book
     conflicted: List[str] = field(default_factory=list)
+    backbone: str = "extractive"
+    records: List[dict] = field(default_factory=list)
 
     @property
     def length(self) -> int:
@@ -160,7 +168,8 @@ def consolidate(induced: InducedTimeline, clustering: Clustering,
         conflicted_clusters.add(a)
         conflicted_clusters.add(b)
 
-    out = Consolidation(text="")
+    out = Consolidation(text="", backbone=getattr(fuser, "name",
+                                                 "extractive"))
     for t, cid in enumerate(induced.order, start=1):
         cl = clustering.by_id(cid)
         if cl is None or not cl.members:
@@ -188,7 +197,35 @@ def consolidate(induced: InducedTimeline, clustering: Clustering,
                               context=(cluster_context or {}).get(cid))
         if not para.strip():
             continue
+        marker = f"E{t:03d}:{cid}"
         out.paragraphs.append(para.strip())
-        out.markers.append(f"E{t:03d}:{cid}")
+        out.markers.append(marker)
+        # the record an expert curator needs: every source account beside the
+        # consolidation derived from it, with its verse addresses
+        out.records.append({
+            "marker": marker,
+            "position": t,
+            "cluster": cid,
+            "selected_source": chosen,
+            "conflicted": is_conflicted,
+            # the day the anchor scaffold places this event on, and the
+            # inter-anchor interval it falls in. Both come from the annotation's
+            # own <TIMEX3> values -- not from the held-out harmony.
+            "scaffold_day": next((units[u].day_index for b in ordered
+                                  for u in spans[b]
+                                  if units[u].day_index is not None), None),
+            "anchor_interval": next((units[u].anchor_interval for b in ordered
+                                     for u in spans[b]
+                                     if units[u].anchor_interval is not None),
+                                    None),
+            "sources": [
+                {"gospel": b,
+                 "ref": "; ".join(units[u].ref for u in spans[b]),
+                 "verses": [f"{bk}:{ch}:{v}" for u in spans[b]
+                            for bk, ch, v in units[u].verse_keys],
+                 "text": " ".join(units[u].text for u in spans[b]).strip()}
+                for b in ordered],
+            "consolidated": para.strip(),
+        })
     out.text = " ".join(out.paragraphs)
     return out

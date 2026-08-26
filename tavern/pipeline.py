@@ -22,7 +22,8 @@ from .stage2_temporal_annotation.validator import ValidationReport
 from .stage3_anchoring_alignment import Stage3Result
 from .stage3_anchoring_alignment import run as run_stage3
 from .stage4_gnn import GNNResult, aggregate_without_propagation, mean_over_seeds
-from .stage5_generation import Consolidation, SelectionStrategy, consolidate
+from .stage5_generation import (Consolidation, SelectionStrategy,
+                                build_fuser, consolidate)
 
 
 @dataclass
@@ -37,6 +38,7 @@ class PipelineResult:
     stage3: Stage3Result
     gnn: Optional[GNNResult] = None
     consolidation: Optional[Consolidation] = None
+    backbone_note: Optional[str] = None
 
     @property
     def units(self):
@@ -99,18 +101,31 @@ def run(cfg: TavernConfig, with_gnn: bool = True, write: bool = True,
             gnn = aggregate_without_propagation(stage3.graph)
         scores = gnn.node_scores
 
+    kw = {}
+    if cfg.backbone_model:
+        kw["model_name" if cfg.backbone != "ollama" else "model"] = \
+            cfg.backbone_model
+    fuser, note = build_fuser(cfg.backbone, **kw)
+
     cons = consolidate(
         stage3.induced, stage3.clustering, stage3.graph.node_units,
+        fuser=fuser,
         strategy=SelectionStrategy("graph_score" if scores else "longest",
                                    scores=scores),
         conflicts=stage3.induced.conflicted_clusters(stage3.clustering))
 
     res = PipelineResult(cfg, corpus, pericopes, segments, chains, structs,
-                         reports, stage3, gnn, cons)
+                         reports, stage3, gnn, cons, note)
     if write:
         out = cfg.run_dir()
         cons.write(out / "consolidated.txt")
         cons.write(out / "consolidated_with_markers.txt", with_markers=True)
+        import json as _json
+        (out / "curation.json").write_text(
+            _json.dumps({"backbone": cons.backbone,
+                         "fallback_note": note,
+                         "events": cons.records}, indent=1),
+            encoding="utf-8")
         from .stage2_temporal_annotation.serializer import (
             serialise, serialise_token_layer, write_json_projection)
         ann = out / "annotation"

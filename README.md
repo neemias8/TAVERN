@@ -322,15 +322,62 @@ TAVERN/
 └── DATA_PROVENANCE.md          digests and the input defects
 ```
 
+## Consolidation output, and which backbone made it
+
+TAVERN is an **abstractive** framework: it fuses the parallel accounts of each
+event rather than selecting one, because the task's Completeness and
+Representativeness objectives require every version's detail to survive into the
+consolidation. Selecting one account discards the rest by construction.
+
+`--backbone` picks the fuser. All of them fuse **per event**, in induced order,
+so chronology is a property of the loop and no backbone can violate it.
+
+| Backbone | Abstractive | Needs a model | Notes |
+|---|---|---|---|
+| `union` | no | no | deterministic; every sentence survives unless another covers it. Detail-preserving, but generates no new wording, so seams show |
+| `extractive` | no | no | emits one account verbatim; exists **only** so the numbers are comparable with the degradation curve, whose rows are extractive |
+| `ollama` | **yes** | `ollama pull` | instruction-tuned, conflict-aware; easiest path on a workstation |
+| `instruct` | **yes** | HF download | same, in-process |
+| `bart`, `pegasus`, `primera` | **yes** | HF download | the IJCNN backbones, with that paper's controls: no prompt, `<doc-sep>` for PRIMERA, single-document PEGASUS checkpoint |
+
+```bash
+ollama pull gemma3:4b
+python main.py --tag gemma --backbone ollama --backbone-model gemma3:4b
+python scripts/make_curation.py outputs/gemma/curation.json consolidations/gemma/
+```
+
+The consolidation committed under [`consolidations/`](consolidations/) is the
+`union` output, produced where no model was reachable. It is a **floor, not the
+intended output**, and `consolidations/README.md` says so on its first line.
+
+| Backbone | R-1 | R-2 | R-L | METEOR | Length |
+|---|---|---|---|---|---|
+| `extractive` | 0.927 | 0.802 | 0.595 | 0.519 | 79,921 |
+| `union` | 0.916 | **0.819** | 0.577 | **0.551** | 94,101 |
+
+Union trades a little ROUGE-1 precision for higher ROUGE-2 and METEOR: it keeps
+more of the reference's actual phrasing because it keeps more of the sources.
+That is the trade the task's objectives ask for.
+
+### For expert curation
+
+`consolidations/curation.md` and `.csv` lay out, per event, every source account
+beside the consolidation derived from it, with verse addresses, the scaffold's
+day index, a conflict flag, and a blank verdict block asking three separate
+questions — **faithful**, **complete**, **placement**. They come apart in
+practice: no canonical event is undetected, exactly one is displaced across a
+day boundary, and 30 are transposed with a same-day neighbour.
+
 ## Not implemented here
 
 Stated so the repository is not read as claiming more than it does.
 
-- **Abstractive backbones.** Stage 5 ships the extractive configuration, which
-  is what the decisive comparison needs, since the degradation curve's rows are
-  extractive. The BART / PEGASUS / PRIMERA / Gemma-3 fusion of the IJCNN paper
-  lives in [Neuro-Symbolic-Narrative-Consolidation](https://github.com/neemias8/Neuro-Symbolic-Narrative-Consolidation)
-  and under `legacy/`.
+- **The abstractive backbones are written but unrun.** The code is here with the
+  published generation controls; the container it was last run in had no access
+  to a model, so no abstractive figures are reported. The IJCNN results for
+  BART / PEGASUS / PRIMERA / Gemma-3 under a *curated* timeline are quoted from
+  that paper and reproduced in
+  [Neuro-Symbolic-Narrative-Consolidation](https://github.com/neemias8/Neuro-Symbolic-Narrative-Consolidation).
 - **BERTScore.** Wired but not run in the reported tables; the figures quoted
   for it come from the published work, computed without baseline rescaling.
 - **Intrinsic annotation evaluation.** No manually annotated reference exists,
