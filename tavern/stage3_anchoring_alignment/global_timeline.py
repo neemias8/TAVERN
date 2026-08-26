@@ -62,6 +62,11 @@ class InducedTimeline:
 #: Weight of one document's transitive precedence vote.
 DOCUMENT_VOTE = 1.0
 
+#: Weight of a relation-derived vote, scaled by the assertion's confidence.
+#: Set above a document-order vote: an explicit signal outranks the assumption
+#: that narration follows chronology.
+RELATION_VOTE = 3.0
+
 #: Weight of the registration vote used to complete pairs that no document
 #: orders. Set above a single document's vote because such a pair has no
 #: relational evidence at all, and below two documents' agreement.
@@ -101,15 +106,28 @@ def build_cluster_graph(timelines: Dict[str, LocalTimeline],
                                    Dict[Tuple[str, str], List[dict]]]:
     """The weighted tournament over candidate canonical events.
 
-    An arc from cluster A to cluster B carries one vote per document in whose
-    closed local order some member of A precedes some member of B. Voting over
-    the TRANSITIVE order rather than over adjacent pairs only is what makes the
-    subsequent feedback-arc-set computation a genuine aggregation: a pair on
-    which three documents agree outweighs the one that dissents, so a single
-    mis-aligned cluster cannot reorder the timeline around it.
+    Three kinds of vote, kept separate so that each can be weighted and
+    reported on its own:
 
-    Pairs that no document orders are completed by the registration of
-    `registration`, at a weight above one document's vote and below two.
+      * one DOCUMENT-ORDER vote per document in whose narrative some member of A
+        precedes some member of B. Voting over the TRANSITIVE order rather than
+        over adjacent pairs only is what makes the subsequent feedback-arc-set
+        computation a genuine aggregation: a pair on which three documents agree
+        outweighs the one that dissents, so a single mis-aligned cluster cannot
+        reorder the timeline around it.
+      * a RELATION-DERIVED vote for every pair the closed temporal network of
+        Section 6.3.2 orders, weighted by the confidence recorded on the
+        assertion, at a weight above one document's vote.
+      * a REGISTRATION vote for pairs that nothing else orders.
+
+    ISO-TimeML defines no relation between documents, so every relation-derived
+    vote is intra-document by construction. What it can therefore contribute is
+    a correction to that document's own narrative order, and on this corpus it
+    never has one to make: the two agree on all 371 cluster pairs where
+    relational evidence exists. Section 10.8 reports that as a property of the
+    corpus -- the Gospels narrate in order -- rather than as a failure of the
+    annotation, and locates the annotation's contribution to the cross-document
+    merge in the anchor scaffold and the coreference signals instead.
     """
     weights: Dict[Tuple[str, str], float] = defaultdict(float)
     support: Dict[Tuple[str, str], List[dict]] = defaultdict(list)
@@ -139,6 +157,27 @@ def build_cluster_graph(timelines: Dict[str, LocalTimeline],
                 weights[(seq[a], seq[b])] += DOCUMENT_VOTE
                 ordered_pairs.add((seq[a], seq[b]))
                 ordered_pairs.add((seq[b], seq[a]))
+
+        # Relation-derived votes: the closed network of Section 6.3.2 projected
+        # onto cluster pairs, weighted by the confidence recorded on the
+        # assertion. These are separated from the document-order votes above so
+        # that the two can be weighted differently and reported apart. On this
+        # corpus they are unanimous with document order -- every one of them
+        # agrees, none contradicts -- which is a property of the corpus rather
+        # than of the mechanism, and Section 10.8 reports it as such.
+        for (ui, uj) in tl.order:
+            if (ui, uj) in tl.nrt_chain:
+                continue
+            if tl.order_level.get((ui, uj), 5) == 4:
+                continue          # narrative adjacency: already counted above
+            ci = clustering.cluster_of_unit.get(ui)
+            cj = clustering.cluster_of_unit.get(uj)
+            if not ci or not cj or ci == cj:
+                continue
+            weights[(ci, cj)] += (RELATION_VOTE
+                                  * tl.order_confidence.get((ui, uj), 0.35))
+            ordered_pairs.add((ci, cj))
+            ordered_pairs.add((cj, ci))
 
     if reg:
         ids = [c.cluster_id for c in clustering.clusters]

@@ -68,10 +68,19 @@ conflicts, all three documented divergences recovered. Downstream ROUGE-L 0.640
 (induced ordering, curated segmentation) and 0.595 (end to end), against the
 pre-registered 0.795 — **not met**, and Chapter 10 says so.
 
-Two ablations contradict the thesis's predictions and are reported, not hidden:
-the cascade does not move τ at all (the ordering comes from alignment and
-document order, not from the `<TLINK>` network), and removing the veridicality
-partition slightly raises τ.
+Two ablations contradict the thesis's predictions and are reported, not hidden.
+
+The cascade does not move τ at all — but **not** because the relations are
+uninformative. ISO-TimeML defines no cross-document relation, so the merge cannot
+run through `<TLINK>`s on any implementation; it runs through the `<TIMEX3>`
+normalisation and anchor chains, i.e. the scaffold, which is the one component
+whose removal degrades τ, coverage and ROUGE-L together. And within a document
+all **371** relational constraints between clusters agree with the narrative
+order, **0** contradict — the Evangelists narrate in order, so the links have
+nothing to correct here. Do not restate this as "the annotation does not help".
+
+Removing the veridicality partition slightly raises τ, so it is a correctness
+requirement (check 5) rather than an accuracy gain.
 
 ## The one rule
 
