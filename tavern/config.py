@@ -11,6 +11,7 @@ import hashlib
 import os
 from dataclasses import dataclass, field
 from pathlib import Path
+from typing import Optional
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = ROOT / "data"
@@ -128,7 +129,7 @@ class TavernConfig:
     # Stage 3 granularity (locked by the sweep of Section 10.4)
     max_unit_verses: int = 6
     entity_turnover: float = 0.60
-    max_episode_verses: int = 2
+    max_episode_verses: Optional[int] = 2   # None = pericope boundary only
     anchor_band: float = 4.0
     gap_cost: float = 0.06
     match_threshold: float = 0.34

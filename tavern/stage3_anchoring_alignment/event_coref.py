@@ -77,8 +77,9 @@ GAP_COST = 0.06
 _UBIQUITOUS_ENTITIES = {"JESUS", "DISCIPLES"}
 
 #: Largest span, in verses per document, that one candidate canonical event may
-#: cover. Bounds the episode merge below.
-MAX_EPISODE_VERSES = 2
+#: cover. Bounds the episode merge below. `None` disables this bound, leaving
+#: the pericope boundary (below) as the only span limit.
+MAX_EPISODE_VERSES: Optional[int] = 2
 
 #: Override for the profile seed order (see `cluster_units`); None = default.
 _SEED_ORDER = None
@@ -262,7 +263,9 @@ def _mergeable(cur: Sequence[str], nxt: Sequence[str],
                 return False                      # would break contiguity
             if units[prev].pericope_id != u.pericope_id:
                 return False                      # pericope boundary
-            if verses_of.get(u.book, 0) + len(u.verse_keys) > MAX_EPISODE_VERSES:
+            if (MAX_EPISODE_VERSES is not None and
+                    verses_of.get(u.book, 0) + len(u.verse_keys)
+                    > MAX_EPISODE_VERSES):
                 return False
     return True
 
