@@ -36,7 +36,7 @@ from __future__ import annotations
 import math
 import statistics
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional, Sequence, Tuple
+from typing import Dict, List, Optional, Sequence, Set, Tuple
 
 from ..stage2_temporal_annotation.model import AnnotationStructure, Timex3
 from .local_timeline import EventUnit, LocalTimeline
@@ -97,12 +97,21 @@ class Scaffold:
     unit_interval: Dict[str, int] = field(default_factory=dict)
     boundaries: List[float] = field(default_factory=list)
     day_of_unit: Dict[str, int] = field(default_factory=dict)
+    #: unit_ids whose position is a direct pin from one of their OWN anchors
+    #: (Phase 1 or 2 of _solve_document), as opposed to interpolated between
+    #: the pins of neighbouring units. Every unit in unit_position has SOME
+    #: position -- interpolation runs unconditionally -- so position_of(uid)
+    #: is not None is not evidence that uid was itself observed; this is.
+    observed: Set[str] = field(default_factory=set)
 
     def interval_of(self, uid: str) -> Optional[int]:
         return self.unit_interval.get(uid)
 
     def position_of(self, uid: str) -> Optional[float]:
         return self.unit_position.get(uid)
+
+    def is_observed(self, uid: str) -> bool:
+        return uid in self.observed
 
     def anchorable_verses(self) -> int:
         return len({a.verse_key for a in self.anchors})
@@ -312,6 +321,8 @@ def _solve_document(tl: LocalTimeline, anchors: List[Anchor], sc: Scaffold,
         sc.day_of_unit[u.unit_id] = d
         u.day_index = float(d)
         u.time_position = p - d
+        if i in pins:
+            sc.observed.add(u.unit_id)
 
     for a in anchors:
         if a.unit_id in sc.unit_position:

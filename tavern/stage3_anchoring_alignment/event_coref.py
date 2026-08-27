@@ -69,13 +69,21 @@ WEIGHTS = {
 #: absence of evidence.
 GATED_SCORE = False
 
-#: H-B (structural). anchor_compatibility returning 0.4 when either unit has
-#: no scaffold position rewards absent information with more than a third of
-#: the match threshold. When this is on, that case scores 0 instead, and its
-#: 0.15 weight is redistributed into predicate/participants in the same
-#: proportion they already have (0.40:0.25), for that pair only -- the
-#: anchored case is untouched. A no-op under GATED_SCORE, which has already
-#: dropped the anchor term.
+#: H-B (structural; reformulated -- see Addendum 4). Originally targeted
+#: anchor_compatibility's 0.4 floor for a unit with no scaffold position, on
+#: the premise that this rewards absent information. It does not: every unit
+#: in a document gets an interpolated position unconditionally
+#: (scaffold._solve_document), so position_of(uid) is not None for every real
+#: unit and that floor is unreachable -- confirmed by instrumenting score()
+#: over a full run (177,143 calls, 0 hit it). The real problem is one level
+#: down: anchor_compatibility computes a distance between two positions
+#: without asking whether either was OBSERVED (pinned by a unit's own anchor)
+#: or INTERPOLATED (borrowed from its neighbours' pins), so a confident-
+#: looking distance can be measured between two fabricated values. When this
+#: is on, the anchor term contributes only when BOTH units are
+#: scaffold.is_observed(); when either is interpolated, its 0.15 weight is
+#: redistributed into predicate/participants for that pair, same as before.
+#: A no-op under GATED_SCORE, which has already dropped the anchor term.
 NO_ANCHOR_CREDIT = False
 
 _NO_ANCHOR_WEIGHTS = (
@@ -457,9 +465,8 @@ def score(a: EventUnit, b: EventUnit, scaffold: Scaffold, vectors,
         return base * _class_gate(a, b) * _modal_gate(a, b)
 
     if NO_ANCHOR_CREDIT:                                            # H-B
-        pa = scaffold.position_of(a.unit_id)
-        pb = scaffold.position_of(b.unit_id)
-        if pa is None or pb is None:
+        if not (scaffold.is_observed(a.unit_id)
+                and scaffold.is_observed(b.unit_id)):
             w_pred, w_part = _NO_ANCHOR_WEIGHTS
             return (w_pred * pred + w_part * part
                     + WEIGHTS["modal"] * modal_compatibility(a, b)
