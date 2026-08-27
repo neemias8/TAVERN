@@ -363,7 +363,24 @@ def error_table(res, ch) -> None:
                           "example": c.example} for c in classes]
 
 
-def ablation_table(base_cfg: TavernConfig, ch) -> None:
+def ablation_table(base_cfg: TavernConfig, ch, main_res=None) -> None:
+    """`main_res`, if given, is the already-computed result for `base_cfg`
+    (main()'s own `res`). The "TAVERN, full (induced)" row is the identical
+    configuration, so it reuses `main_res` instead of a second `pipeline.run`.
+
+    That second run is not just wasted computation (a full re-generation
+    through the abstractive backbone): Stage 4's GNN is not reproducible
+    across separate runs of the same config even with fixed seeds -- verified
+    empirically, node scores differ between two runs of an unchanged config,
+    most likely from index_reduce_(reduce="amax")'s documented CPU
+    nondeterminism on ties. A second independent run of "full" therefore
+    reports a selection accuracy that can differ from the one in the
+    downstream table by the odd contested event (0.3429/24 vs 0.3571/25 was
+    observed), even though both nominally measure the same configuration.
+    Reusing main_res makes the two agree by construction, and is the number
+    that should be treated as canonical: the rest of the report is already
+    built from it.
+    """
     banner("Ablations (Table tab:res-ablations)")
     ref = reference()
     rows = []
@@ -376,9 +393,12 @@ def ablation_table(base_cfg: TavernConfig, ch) -> None:
         ("- graph propagation", {"use_graph_propagation": False}),
     ]
     for label, over in configs:
-        cfg = TavernConfig(**{**asdict(base_cfg), **over,
-                              "tag": f"abl_{label.strip('- ').replace(' ', '_')}"})
-        res = pipeline.run(cfg, with_gnn=True, write=False, verify=False)
+        if not over and main_res is not None:
+            res = main_res
+        else:
+            cfg = TavernConfig(**{**asdict(base_cfg), **over,
+                                  "tag": f"abl_{label.strip('- ').replace(' ', '_')}"})
+            res = pipeline.run(cfg, with_gnn=True, write=False, verify=False)
         ev = timeline_eval.evaluate(ch, res.stage3.clustering,
                                     res.stage3.induced, res.units)
         cons = res.consolidation
@@ -496,7 +516,7 @@ def main() -> int:
     if want["errors"]:
         error_table(res, ch)
     if want["ablations"]:
-        ablation_table(cfg, ch)
+        ablation_table(cfg, ch, main_res=res)
 
     out = cfg.run_dir() / "results.json"
     out.write_text(json.dumps(RESULTS, indent=1, default=str),
