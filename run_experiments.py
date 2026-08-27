@@ -27,7 +27,8 @@ from tavern.stage5_generation import (ExtractiveFuser, SelectionStrategy,
 from tavern.stage6_evaluation import (annotation_stats, chronology as chrono_mod,
                                       conflicts as conflicts_mod, consistency,
                                       content_metrics, error_analysis,
-                                      selection_eval, timeline_eval)
+                                      selection_eval, text_quality,
+                                      timeline_eval)
 
 RESULTS: Dict[str, object] = {}
 
@@ -249,6 +250,14 @@ def downstream_table(res, ch) -> None:
               f"R-L={sc.rougeL:.4f} "
               f"MET={'n/a' if sc.meteor is None else round(sc.meteor, 4)} "
               f"len={sc.length}")
+        if bk not in ("extractive", "union"):
+            gw = text_quality.scan(res.consolidation.paragraphs)
+            n_events = len(res.consolidation.paragraphs)
+            chars_per_event = sc.length / n_events if n_events else 0.0
+            print(f"    glued-word events: {gw.corrupted}/{gw.total} "
+                  f"({gw.fraction:.1%})   chars/event: {chars_per_event:.0f}")
+            RESULTS["text_quality"] = {**gw.as_row(),
+                                       "chars_per_event": chars_per_event}
         print()
     for name, strat in (("TAVERN, induced (graph score)", "graph_score"),
                         ("  - graph propagation", "graph_score_flat"),
@@ -434,6 +443,12 @@ def main() -> int:
                          "for, and both are reported when given.")
     ap.add_argument("--backbone-model", default="",
                     help="override the checkpoint or Ollama model name")
+    ap.add_argument("--ollama-repeat-penalty", type=float, default=None,
+                    help="A/B override for OllamaFuser's repeat_penalty "
+                         "(see tavern/stage5_generation/backbones.py, "
+                         "OLLAMA_REPEAT_PENALTY). Not a general tuning knob: "
+                         "for measuring the effect of the backend-specific "
+                         "decoding fix, both values reported side by side.")
     args = ap.parse_args()
 
     want = {k: getattr(args, k) for k in
@@ -442,8 +457,11 @@ def main() -> int:
     if args.all or not any(want.values()):
         want = {k: True for k in want}
 
+    extra = {}
+    if args.ollama_repeat_penalty is not None:
+        extra["ollama_repeat_penalty"] = args.ollama_repeat_penalty
     cfg = TavernConfig(tag=args.tag, backbone=args.backbone,
-                       backbone_model=args.backbone_model)
+                       backbone_model=args.backbone_model, extra=extra)
     print(f"Running stages 1-5 (backbone '{args.backbone}') ...")
     res = pipeline.run(cfg, with_gnn=True, write=True)
     if res.backbone_note:
@@ -451,7 +469,8 @@ def main() -> int:
     RESULTS["backbone"] = {"requested": args.backbone,
                            "used": res.consolidation.backbone,
                            "model": args.backbone_model or None,
-                           "note": res.backbone_note}
+                           "note": res.backbone_note,
+                           "ollama_repeat_penalty": args.ollama_repeat_penalty}
     ch = chrono_mod.load(res.corpus)
 
     if want["corpus"]:

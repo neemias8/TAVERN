@@ -47,6 +47,23 @@ DECODING = dict(
     repetition_penalty=1.5,
 )
 
+#: `repetition_penalty` above is a HuggingFace `generate()` parameter: a flat
+#: multiplicative penalty applied once per token already seen anywhere in the
+#: sequence. llama.cpp's `repeat_penalty` (what Ollama's `/api/generate`
+#: exposes) shares the name but not the semantics -- it penalises only tokens
+#: within a trailing `repeat_last_n` window (default 64) and its documented
+#: normal range is 1.0-1.2. `OllamaFuser` used to pass 1.5 straight through,
+#: which is far outside that range and was suppressing common tokens,
+#: including the whitespace token, producing glued-together words ("came
+#: toBethphegeon theMountofOlves..."). This constant is Ollama's own, deliber-
+#: ately NOT reused from `DECODING`: the HuggingFace backbones keep
+#: repetition_penalty=1.5 unchanged, since that is the published work's fixed
+#: decoding control (thesis Chapter 8) and changing it there would break
+#: comparability. This is a backend-specific correctness fix, not a relaxation
+#: of that requirement -- see `tavern/stage6_evaluation/text_quality.py` for
+#: the regression guard.
+OLLAMA_REPEAT_PENALTY = 1.1
+
 CONSOLIDATION_PROMPT = (
     "Below are {n} parallel accounts of the same single event, taken from "
     "different sources.\n\n"
@@ -302,8 +319,11 @@ class OllamaFuser:
     Included because it needs no model download through this package and no
     accelerator configuration: `ollama pull gemma3:4b` and the daemon's default
     endpoint are enough. Beam search is not available through Ollama, so
-    decoding is greedy with the same repetition and length controls; the
-    difference from `InstructFuser` is recorded rather than glossed.
+    decoding is greedy with the same length controls; the difference from
+    `InstructFuser` is recorded rather than glossed. Repetition control is
+    NOT shared with `InstructFuser`: see `OLLAMA_REPEAT_PENALTY` above for why
+    `DECODING["repetition_penalty"]` (a HuggingFace parameter) cannot be
+    reused for llama.cpp's `repeat_penalty` of the same name.
     """
 
     name = "ollama"
@@ -312,10 +332,12 @@ class OllamaFuser:
 
     def __init__(self, model: str = "gemma3:4b",
                  endpoint: str = "http://localhost:11434/api/generate",
-                 timeout: int = 180):
+                 timeout: int = 180,
+                 repeat_penalty: float = OLLAMA_REPEAT_PENALTY):
         self.model = model
         self.endpoint = endpoint
         self.timeout = timeout
+        self.repeat_penalty = repeat_penalty
 
     def available(self) -> bool:
         try:
@@ -340,7 +362,7 @@ class OllamaFuser:
             "stream": False,
             "options": {
                 "num_predict": DECODING["max_new_tokens"],
-                "repeat_penalty": DECODING["repetition_penalty"],
+                "repeat_penalty": self.repeat_penalty,
                 "temperature": 0.0,
             },
         }).encode()
@@ -427,10 +449,11 @@ class CachedFuser:
     will not, so every fusion is written out as it is produced and read back on
     the next run.
 
-    The key is a digest of the backbone, the model name, the accounts and the
+    The key is a digest of the backbone, the model name, the decoding
+    `repeat_penalty` (where the inner fuser has one), the accounts and the
     conflict flag, so a cache entry can only be reused for the identical call.
-    Changing the prompt, the model or the clustering therefore invalidates
-    exactly the entries it should and no others.
+    Changing the prompt, the model, the clustering or the repetition penalty
+    therefore invalidates exactly the entries it should and no others.
     """
 
     def __init__(self, inner, path):
@@ -460,6 +483,8 @@ class CachedFuser:
         h.update(self.name.encode())
         h.update(str(getattr(self.inner, "model",
                              getattr(self.inner, "model_name", ""))).encode())
+        h.update(b"\x00")
+        h.update(str(getattr(self.inner, "repeat_penalty", "")).encode())
         h.update(b"\x00conflict" if conflicted else b"\x00plain")
         for t in texts:
             h.update(b"\x00")

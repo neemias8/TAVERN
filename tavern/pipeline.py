@@ -105,6 +105,11 @@ def run(cfg: TavernConfig, with_gnn: bool = True, write: bool = True,
     if cfg.backbone_model:
         kw["model_name" if cfg.backbone != "ollama" else "model"] = \
             cfg.backbone_model
+    if cfg.backbone == "ollama" and "ollama_repeat_penalty" in cfg.extra:
+        # A/B control for the backend-specific decoding fix; see
+        # OLLAMA_REPEAT_PENALTY in stage5_generation/backbones.py. Not a
+        # tuning knob for the other backbones' fixed decoding controls.
+        kw["repeat_penalty"] = cfg.extra["ollama_repeat_penalty"]
     fuser, note = build_fuser(cfg.backbone,
                               cache_path=cfg.run_dir() / "fusion_cache.jsonl",
                               **kw)
