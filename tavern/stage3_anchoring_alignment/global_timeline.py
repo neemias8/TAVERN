@@ -393,19 +393,24 @@ def minimum_feedback_arc_set(nodes: Sequence[str],
         moved = True
         while moved:
             moved = False
-            for v in list(remaining):
+            for v in sorted(remaining):
                 if out_w[v] <= 1e-12:            # sink
                     s2.insert(0, v)
                     drop(v)
                     moved = True
-            for v in list(remaining):
+            for v in sorted(remaining):
                 if in_w[v] <= 1e-12:             # source
                     s1.append(v)
                     drop(v)
                     moved = True
         if not remaining:
             break
-        v = max(remaining, key=lambda x: out_w[x] - in_w[x])
+        # ties in out_w - in_w are common (e.g. two isolated nodes at 0-0),
+        # and `remaining` is a set: iterating it directly makes the tie-break
+        # depend on PYTHONHASHSEED, which is randomised per process by
+        # default, so the SAME input could produce a different arrangement
+        # on every run. sorted() makes the choice reproducible.
+        v = max(sorted(remaining), key=lambda x: out_w[x] - in_w[x])
         s1.append(v)
         drop(v)
 
