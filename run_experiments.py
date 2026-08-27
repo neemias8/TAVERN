@@ -449,6 +449,12 @@ def main() -> int:
                          "OLLAMA_REPEAT_PENALTY). Not a general tuning knob: "
                          "for measuring the effect of the backend-specific "
                          "decoding fix, both values reported side by side.")
+    ap.add_argument("--no-anchor-credit", action="store_true",
+                    help="H-B (Addendum 4/5): a coreference pair with no "
+                         "scaffold.is_observed() unit on either side gets no "
+                         "anchor credit, instead of anchor_compatibility's "
+                         "default. Adopted as the framework's primary "
+                         "configuration; see event_coref.NO_ANCHOR_CREDIT.")
     args = ap.parse_args()
 
     want = {k: getattr(args, k) for k in
@@ -461,7 +467,8 @@ def main() -> int:
     if args.ollama_repeat_penalty is not None:
         extra["ollama_repeat_penalty"] = args.ollama_repeat_penalty
     cfg = TavernConfig(tag=args.tag, backbone=args.backbone,
-                       backbone_model=args.backbone_model, extra=extra)
+                       backbone_model=args.backbone_model, extra=extra,
+                       no_anchor_credit=args.no_anchor_credit)
     print(f"Running stages 1-5 (backbone '{args.backbone}') ...")
     res = pipeline.run(cfg, with_gnn=True, write=True)
     if res.backbone_note:
@@ -470,7 +477,8 @@ def main() -> int:
                            "used": res.consolidation.backbone,
                            "model": args.backbone_model or None,
                            "note": res.backbone_note,
-                           "ollama_repeat_penalty": args.ollama_repeat_penalty}
+                           "ollama_repeat_penalty": args.ollama_repeat_penalty,
+                           "no_anchor_credit": args.no_anchor_credit}
     ch = chrono_mod.load(res.corpus)
 
     if want["corpus"]:
