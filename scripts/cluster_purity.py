@@ -222,7 +222,7 @@ def analyse(path: Path, v2e: Dict[str, int],
                     "cluster": rec.get("marker") or rec.get("cluster"),
                     "events": sorted(allids), "days": sorted(days),
                     "dominant": modal,
-                    "witnesses": [{"gospel": g, "ref": r, "events": ids}
+                    "witnesses": [{"gospel": g, "ref": r, "events": sorted(ids)}
                                   for g, r, ids in per],
                 })
         else:
