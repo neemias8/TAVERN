@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Stage 6 - alignment precision, measured as cluster purity.
+Stage 6 - alignment precision AND recall: cluster purity with B-cubed.
 
     python scripts/cluster_purity.py outputs/ollama/curation.json
     python scripts/cluster_purity.py outputs/*/curation.json --json purity.json
@@ -123,6 +123,54 @@ def verse_to_event(data: Path) -> Tuple[Dict[str, int], Dict[int, str]]:
     return v2e, e2day
 
 
+def bcubed(events: List[dict], v2e: Dict[str, int]) -> dict:
+    """B-cubed precision, recall and F1 over the verse-level clustering.
+
+    Purity, above, is a precision measure with no recall term, and that makes it
+    gameable in one specific direction: an aligner made conservative enough to
+    stop matching across documents purifies whatever little remains matched, and
+    purity rises while the system gets worse. Any change that raises purity must
+    therefore be read against recall, and B-cubed is the standard pairing --
+    computed against the curated events as the gold clustering, per verse.
+
+    Recall is the binding side on this corpus, so the instrument matters: the
+    baseline scores P 0.62 / R 0.41, and a change that trades recall for
+    precision moves along the axis that is already strong.
+    """
+    sysc: Dict[str, str] = {}
+    for r in events:
+        cid = str(r.get("marker") or r.get("cluster"))
+        for s in (r.get("sources") or []):
+            if isinstance(s, dict):
+                for v in (s.get("verses") or []):
+                    if v in v2e:
+                        sysc[v] = cid
+    common = [v for v in sysc if v in v2e]
+    if not common:
+        return {}
+    gold: Dict[str, set] = {}
+    syss: Dict[str, set] = {}
+    G: Dict[int, Set[str]] = {}
+    S: Dict[str, Set[str]] = {}
+    for v in common:
+        G.setdefault(v2e[v], set()).add(v)
+        S.setdefault(sysc[v], set()).add(v)
+    p = r = 0.0
+    for v in common:
+        g, s = G[v2e[v]], S[sysc[v]]
+        inter = len(g & s)
+        p += inter / len(s)
+        r += inter / len(g)
+    n = len(common)
+    p /= n
+    r /= n
+    return {
+        "verses": n, "gold_clusters": len(G), "system_clusters": len(S),
+        "precision": round(p, 4), "recall": round(r, 4),
+        "f1": round(2 * p * r / (p + r), 4) if p + r else 0.0,
+    }
+
+
 def load_events(path: Path) -> List[dict]:
     d = json.loads(Path(path).read_text(encoding="utf-8"))
     if isinstance(d, list):
@@ -190,6 +238,7 @@ def analyse(path: Path, v2e: Dict[str, int],
     worst.sort(key=lambda w: -(max(w["events"]) - min(w["events"])))
     return {
         "source": str(path),
+        "bcubed": bcubed(events, v2e),
         "multi_witness_clusters": n,
         "skipped_unmappable": skipped,
         "pure": pure,
@@ -228,6 +277,13 @@ def main() -> int:
               f"({r['pure']} pure / {r['impure']} impure)")
         print(f"  mixes different days     {r['day_mixing']:.1%}")
         print(f"  events touched/cluster   {r['events_touched_per_cluster']}")
+        b = r.get("bcubed") or {}
+        if b:
+            print(f"  B-cubed                  P {b['precision']:.4f}  "
+                  f"R {b['recall']:.4f}  F1 {b['f1']:.4f}   "
+                  f"({b['system_clusters']} system / {b['gold_clusters']} gold)")
+            print("       ^ read purity against B-cubed recall: a conservative "
+                  "aligner raises one and lowers the other")
         if not args.quiet:
             print("  amplitude (max-min curated event id):")
             for k, v in r["amplitude"].items():
