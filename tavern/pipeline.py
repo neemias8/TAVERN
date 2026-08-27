@@ -65,6 +65,8 @@ def _apply_granularity(cfg: TavernConfig) -> None:
     event_coref.ANCHOR_BAND = cfg.anchor_band
     event_coref.GAP_COST = cfg.gap_cost
     event_coref.MATCH_THRESHOLD = cfg.match_threshold
+    event_coref.GATED_SCORE = cfg.gated_score
+    event_coref.NO_ANCHOR_CREDIT = cfg.no_anchor_credit
 
 
 def prepare(cfg: TavernConfig, verify: bool = True):

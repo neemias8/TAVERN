@@ -133,6 +133,10 @@ class TavernConfig:
     anchor_band: float = 4.0
     gap_cost: float = 0.06
     match_threshold: float = 0.34
+    # H-A / H-B, cluster-purity hypotheses (see event_coref.GATED_SCORE /
+    # NO_ANCHOR_CREDIT). H-C is anchor_band above; test 1.0 there.
+    gated_score: bool = False
+    no_anchor_credit: bool = False
     use_oracle_timeline: bool = False
     cascade_levels: tuple = (1, 2, 3, 4)
 

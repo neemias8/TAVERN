@@ -57,6 +57,34 @@ WEIGHTS = {
     "class": 0.10,
 }
 
+#: H-A (structural, argument-driven -- see thesis discussion of cluster
+#: purity). class_agreement and modal_compatibility as WEIGHTS-weighted
+#: additive terms reward AGREEMENT as though it were positive evidence of
+#: coreference, when the only real signal in either is DISAGREEMENT --
+#: FUTURE-vs-PAST is a prediction/fulfilment pair, not the same event; a
+#: narrative-world unit is not coreferent with a quoted one. When this is on,
+#: score() drops the anchor term, renormalises predicate/participants to sum
+#: to 1 (0.62/0.38, i.e. 0.40/0.65 and 0.25/0.65), and multiplies by two
+#: {0,1} gates that fire only on that disagreement, never on agreement or on
+#: absence of evidence.
+GATED_SCORE = False
+
+#: H-B (structural). anchor_compatibility returning 0.4 when either unit has
+#: no scaffold position rewards absent information with more than a third of
+#: the match threshold. When this is on, that case scores 0 instead, and its
+#: 0.15 weight is redistributed into predicate/participants in the same
+#: proportion they already have (0.40:0.25), for that pair only -- the
+#: anchored case is untouched. A no-op under GATED_SCORE, which has already
+#: dropped the anchor term.
+NO_ANCHOR_CREDIT = False
+
+_NO_ANCHOR_WEIGHTS = (
+    WEIGHTS["predicate"] + WEIGHTS["anchor"] * WEIGHTS["predicate"]
+    / (WEIGHTS["predicate"] + WEIGHTS["participants"]),
+    WEIGHTS["participants"] + WEIGHTS["anchor"] * WEIGHTS["participants"]
+    / (WEIGHTS["predicate"] + WEIGHTS["participants"]),
+)
+
 #: Minimum score for a pair to be admitted as coreferent.
 MATCH_THRESHOLD = 0.34
 
@@ -421,12 +449,49 @@ def _banded_score(a: EventUnit, b: EventUnit, pa: Optional[float],
 # ---------------------------------------------------------------------------
 def score(a: EventUnit, b: EventUnit, scaffold: Scaffold, vectors,
           embeddings=None) -> float:
-    return (WEIGHTS["predicate"] * predicate_similarity(a, b, vectors,
-                                                        embeddings)
-            + WEIGHTS["participants"] * participant_similarity(a, b)
+    pred = predicate_similarity(a, b, vectors, embeddings)
+    part = participant_similarity(a, b)
+
+    if GATED_SCORE:                                                # H-A
+        base = 0.62 * pred + 0.38 * part
+        return base * _class_gate(a, b) * _modal_gate(a, b)
+
+    if NO_ANCHOR_CREDIT:                                            # H-B
+        pa = scaffold.position_of(a.unit_id)
+        pb = scaffold.position_of(b.unit_id)
+        if pa is None or pb is None:
+            w_pred, w_part = _NO_ANCHOR_WEIGHTS
+            return (w_pred * pred + w_part * part
+                    + WEIGHTS["modal"] * modal_compatibility(a, b)
+                    + WEIGHTS["class"] * class_agreement(a, b))
+
+    return (WEIGHTS["predicate"] * pred
+            + WEIGHTS["participants"] * part
             + WEIGHTS["anchor"] * anchor_compatibility(a, b, scaffold)
             + WEIGHTS["modal"] * modal_compatibility(a, b)
             + WEIGHTS["class"] * class_agreement(a, b))
+
+
+def _class_gate(a: EventUnit, b: EventUnit) -> float:
+    """H-A: class agreement as a veto, not a score.
+
+    1.0 unless tense polarity flips (FUTURE vs PAST/present) -- real evidence
+    of a prediction/fulfilment pair, not of identity. Agreement, or the
+    absence of any class evidence on either side, passes.
+    """
+    fut_a = "FUTURE" in a.tenses and "PAST" not in a.tenses
+    fut_b = "FUTURE" in b.tenses and "PAST" not in b.tenses
+    return 0.0 if fut_a != fut_b else 1.0
+
+
+def _modal_gate(a: EventUnit, b: EventUnit) -> float:
+    """H-A: modal agreement as a veto.
+
+    1.0 unless the two units sit in different narrative worlds (one timeline-
+    eligible, one not). Agreement, or absence of modal evidence, passes.
+    """
+    return (0.0 if (a.eligible_fraction > 0.5) != (b.eligible_fraction > 0.5)
+            else 1.0)
 
 
 def anchor_compatibility(a: EventUnit, b: EventUnit,
