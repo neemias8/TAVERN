@@ -47,7 +47,19 @@ verse exclusive to them at all (events 47, 93, 99, 119, 132, 133, 155, 156,
 157, 163) and so cannot be individuated as distinct objects under ANY
 clustering, however correct -- 11 counting event 53, which has no verse
 citation in any book at all. Do not read a purity/B-cubed number against
-100%; read it against ~89.5%, and report both. Not fixed here or upstream:
+100%; read it against ~89.5%, and report both.
+
+A finer distinction, confirmed by an independent recomputation and worth
+keeping separate from the 10 above: of those 10, THREE (47, 93, 157) never
+win `v2e.setdefault` for even one of their own cited verses -- every verse
+they cite is also cited by an earlier-processed competing event, so they
+never appear as a value in `verse_to_event`'s map at all. Add event 53 (no
+citation anywhere) and **4 of 168 citable events are invisible to any
+verse-keyed instrument, not just under-individuated by one** -- they can
+never be a `gold_clusters` entry in `bcubed`, nor a `modal` winner here.
+168 - 4 = 164 is not printed anywhere as its own figure, but it is why
+`bcubed`'s `gold_clusters` reads 165 (168 total minus the 3 that have
+citations but never win one), not 168 or 169. Not fixed here or upstream:
 doing so would mean a half-verse key threaded through
 Corpus/ReferenceParser/Chronology, used everywhere, for a gain in reporting
 accuracy rather than in the system itself -- see DATA_PROVENANCE.md.

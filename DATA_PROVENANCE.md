@@ -54,7 +54,21 @@ of the 169 curated events. **10 of those 40 have no verse exclusive to them
 at all** (events 47, 93, 99, 119, 132, 133, 155, 156, 157, 163) and so cannot
 be individuated as distinct objects under any clustering, however correct —
 11 counting event 53, which has no citation in any book at all and is
-already excluded from every coverage denominator in the codebase.
+already excluded from every coverage denominator in the codebase. (An
+earlier estimate of 13 for this count, from an independent recomputation
+outside this codebase, was not reconciled against a definition; a second
+independent recomputation — the one this section now reports — landed on
+the identical list of 10 above, so 10 is what `scripts/cluster_purity.py`
+and `outputs/canonical/results.json` carry.)
+
+A finer distinction inside those 10: **3 of them (47, 93, 157) never win
+even one verse** — every verse each cites is also cited by an earlier-listed
+competing event, so `verse_to_event`'s `setdefault` never assigns any verse
+to them at all. Together with event 53, **4 of the 168 citable curated
+events are invisible to any verse-keyed instrument** (never a `bcubed`
+gold cluster, never a purity `modal` winner) — not merely hard to
+individuate, absent from the map entirely. This is why `bcubed`'s
+`gold_clusters` reads 165, not 168.
 
 This is a property of the resource, verified against a perfect (oracle)
 clustering rather than assumed: cluster purity and B-cubed cap out at ~89.5%,

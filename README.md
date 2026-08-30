@@ -184,8 +184,12 @@ events this way, touching 40 of 169 events; **10 of those 40 have no verse
 exclusive to them at all** and so cannot be individuated as distinct objects
 under any clustering, however correct (events 47, 93, 99, 119, 132, 133, 155,
 156, 157, 163 — 11 counting event 53, which has no citation in any book).
-Read purity as **30.8% of the 89.5% achievable — 34.4% of ceiling**, not as
-"31% of 100%".
+Three of those ten (47, 93, 157) never win *any* of their cited verses at all
+— an earlier-listed competing event always claims them first — so together
+with event 53 they are not merely hard to individuate but invisible to any
+verse-keyed instrument (never a `bcubed` gold cluster; this is why
+`gold_clusters` reads 165, not 168). Read purity as **30.8% of the 89.5%
+achievable — 34.4% of ceiling**, not as "31% of 100%".
 
 Content coverage (share of the sources' content-word vocabulary the fusion
 retains, `redundancy.coverage_over_events`): the abstractive consolidation
