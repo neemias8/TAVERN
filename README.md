@@ -342,6 +342,11 @@ than an accuracy improvement on the ordering.
 
 ### Two corrections to the prior work
 
+The "prior work" here is TAEG (Algorithm 1: centrality over a
+similarity-weighted event graph), the JBCS paper's own baseline, reproduced
+in `tavern/baselines/__init__.py` and at
+[github.com/neemias8/TAEG](https://github.com/neemias8/TAEG).
+
 1. The reference consolidation **numbers its own events**, so its per-event
    segmentation is recoverable exactly rather than by text similarity. Against
    the exact segmentation, the centrality-based selection previously reported at
@@ -578,7 +583,7 @@ Stated so the repository is not read as claiming more than it does.
   induced timeline. `ollama`/gemma3:4b has been (see Results); the others need
   a HuggingFace download this environment did not have reachable. The IJCNN
   results for BART / PEGASUS / PRIMERA / Gemma-3 under a *curated* timeline
-  are quoted from that paper and reproduced in
+  are quoted from that paper (NSNC) and reproduced in
   [Neuro-Symbolic-Narrative-Consolidation](https://github.com/neemias8/Neuro-Symbolic-Narrative-Consolidation).
 - **BERTScore.** Wired but not run in the reported tables; the figures quoted
   for it come from the published work, computed without baseline rescaling.
@@ -637,7 +642,8 @@ Four things cost real time to discover; `CLAUDE.md` has the full list.
   volume  = {32},
   number  = {1},
   year    = {2026},
-  doi     = {10.5753/jbcs.2026.7717}
+  doi     = {10.5753/jbcs.2026.7717},
+  note    = {TAEG, Algorithm 1: https://github.com/neemias8/TAEG}
 }
 
 @inproceedings{finger2026neurosymbolic,
@@ -647,7 +653,8 @@ Four things cost real time to discover; `CLAUDE.md` has the full list.
                MDS and LLMs with Temporal Event Graphs},
   booktitle = {International Joint Conference on Neural Networks (IJCNN)},
   year      = {2026},
-  note      = {Artefacts: Zenodo 10.5281/zenodo.19262044}
+  note      = {NSNC: https://github.com/neemias8/Neuro-Symbolic-Narrative-Consolidation ;
+               Artefacts: Zenodo 10.5281/zenodo.19262044}
 }
 ```
 
