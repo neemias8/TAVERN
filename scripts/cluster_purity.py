@@ -35,91 +35,62 @@ change is making the system worse and the count better. That pairing is the
 whole point of the measurement.
 
 This script reads the chronology and therefore belongs to Stage 6. It is a
-standalone script so that no import path exists from stages 1-5.
+standalone SCRIPT (outside the `tavern` package) so that no import path
+exists from stages 1-5 into it -- but it still reuses the package's own
+Stage 1 corpus parser and Stage 6 chronology loader rather than
+re-implementing verse-reference parsing a second time (see the fix note on
+`verse_to_event` below). Importing `tavern.stage1_preprocessing` and
+`tavern.stage6_evaluation` here is a forward reference, the same direction
+`run_experiments.py` already takes; `assert_no_chronology_import` inspects
+the call stack for stage1-5 frames, and this script has none.
 """
 from __future__ import annotations
 
 import argparse
 import json
-import re
 import sys
-import xml.etree.ElementTree as ET
 from collections import Counter
 from pathlib import Path
 from typing import Dict, List, Optional, Set, Tuple
 
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
+from tavern.stage1_preprocessing.corpus import Corpus
+from tavern.stage6_evaluation import chronology as chrono_mod
+
 ROOT = Path(__file__).resolve().parent.parent
 BOOKS = ("matthew", "mark", "luke", "john")
-XML = {"matthew": "EnglishNIVMatthew40_PW.xml", "mark": "EnglishNIVMark41_PW.xml",
-       "luke": "EnglishNIVLuke42_PW.xml", "john": "EnglishNIVJohn43_PW.xml"}
-REF = re.compile(r"(\d+):(\d+)(?:\s*-\s*(?:(\d+):)?(\d+))?")
-
-
-def corpus_verses(data: Path) -> Dict[str, List[Tuple[int, int]]]:
-    """The verses that actually exist, per book, in canonical order.
-
-    Ranges in the chronology cross chapter boundaries ("21:33-22:5"), and
-    expanding those needs the real chapter lengths rather than a guess.
-    """
-    out: Dict[str, List[Tuple[int, int]]] = {}
-    for book, name in XML.items():
-        path = data / name
-        if not path.exists():
-            raise SystemExit(f"missing corpus file: {path}")
-        seq: List[Tuple[int, int]] = []
-        chapter = None
-        for el in ET.parse(path).getroot().iter():
-            tag = el.tag.lower()
-            num = el.get("number") or el.get("num") or el.get("id")
-            if tag.endswith("chapter") and num and num.isdigit():
-                chapter = int(num)
-            elif tag.endswith("verse"):
-                v = num if (num and num.isdigit()) else None
-                if v is None:
-                    continue
-                ch = chapter
-                if ch is None:
-                    continue
-                seq.append((ch, int(v)))
-        out[book] = seq
-    return out
 
 
 def verse_to_event(data: Path) -> Tuple[Dict[str, int], Dict[int, str]]:
-    """Map `book:chapter:verse` to the curated event that cites it."""
-    verses = corpus_verses(data)
-    chron = data / "ChronologyOfTheFourGospels_PW.xml"
-    if not chron.exists():
-        raise SystemExit(f"missing chronology: {chron}")
+    """Map `book:chapter:verse` to the curated event that cites it.
 
+    Built from `Chronology.load`, the same parser the rest of the framework
+    uses (`stage1_preprocessing.corpus.ReferenceParser` /`VerseSplitter`) --
+    not a second, independent regex. The earlier version had its own
+    `(\\d+):(\\d+)(-(\\d+)?:(\\d+))?` pattern, which does not understand
+    half-verse citations ("14:68a", "14:68b"). Two adjacent curated events
+    routinely split a verse that way (event 92 "Peter denies Jesus the first
+    time" cites mark 14:66-68a; event 93 "A rooster crows (the first time)"
+    cites mark 14:68b); the old regex resolved both to the whole verse
+    mark:14:68, and `setdefault` gave it to whichever event was processed
+    first, leaving the other with an incomplete or empty span. Confirmed by
+    the Addendum 7 oracle round-trip: purity and B-cubed came back at 86.3%
+    and 0.832 F1 against a perfect input instead of 100%/1.0, traced to 21 of
+    169 events (6 of them left with zero mapped verses) affected by this. The
+    official parser has no such gap, since half-verse splitting is exactly
+    what it was built for (thesis Section 5.2 / the IJCNN-ported
+    VerseSplitter).
+    """
+    corpus = Corpus(data_dir=data)
+    ch = chrono_mod.load(corpus, data_dir=data)
     v2e: Dict[str, int] = {}
     e2day: Dict[int, str] = {}
-    for ev in ET.parse(chron).getroot().iter("event"):
-        try:
-            eid = int(ev.get("id"))
-        except (TypeError, ValueError):
-            continue
-        e2day[eid] = (ev.findtext("day") or "").strip()
-        for book in BOOKS:
-            el = ev.find(book)
-            text = (el.text or "").strip() if el is not None else ""
-            if not text:
-                continue
-            seq = verses.get(book, [])
-            for part in re.split(r"[;,]", text):
-                for m in REF.finditer(part):
-                    c1, v1 = int(m.group(1)), int(m.group(2))
-                    c2 = int(m.group(3)) if m.group(3) else c1
-                    v2 = int(m.group(4)) if m.group(4) else v1
-                    try:
-                        i = seq.index((c1, v1))
-                        j = seq.index((c2, v2))
-                    except ValueError:
-                        # a citation outside the corpus scope; recorded by the
-                        # thesis as the Luke 13:34-35 case and skipped here
-                        continue
-                    for ch, vv in seq[i:j + 1]:
-                        v2e.setdefault(f"{book}:{ch}:{vv}", eid)
+    for e in ch.events:
+        e2day[e.event_id] = e.day
+        for book, keys in e.verse_keys.items():
+            for b, c, v in keys:
+                v2e.setdefault(f"{b}:{c}:{v}", e.event_id)
     return v2e, e2day
 
 
