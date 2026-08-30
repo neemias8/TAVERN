@@ -489,6 +489,10 @@ licensed copy of the source text can reconstruct the full input.
 TAVERN/
 ├── main.py                     stages 1–5
 ├── run_experiments.py          every measured table (Stage 6 lives here)
+├── scripts/                    Stage 6 diagnostics, cited by name throughout
+│                                Results: cluster_purity.py, oracle_roundtrip.py,
+│                                oracle_decomposition.py, measurement_a_recallk.py,
+│                                measurement_b_graph.py, make_curation.py
 ├── tavern/
 │   ├── config.py               paths, digests, all ablation switches
 │   ├── pipeline.py             stage driver
