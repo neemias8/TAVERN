@@ -11,7 +11,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
-from .config import TavernConfig, verify_corpus
+from .config import OUTPUT_DIR, TavernConfig, verify_corpus
 from .stage1_preprocessing.coref import EntityChains, resolve_all
 from .stage1_preprocessing.corpus import Corpus
 from .stage1_preprocessing.pericopes import PericopeLayer, load_pericopes
@@ -112,8 +112,20 @@ def run(cfg: TavernConfig, with_gnn: bool = True, write: bool = True,
         # OLLAMA_REPEAT_PENALTY in stage5_generation/backbones.py. Not a
         # tuning knob for the other backbones' fixed decoding controls.
         kw["repeat_penalty"] = cfg.extra["ollama_repeat_penalty"]
+    # Shared across every tag and config, not cfg.run_dir(): CachedFuser's
+    # key already digests the backbone, model, repeat_penalty, the conflict
+    # flag and the exact texts (backbones.py, CachedFuser._key), so a fusion
+    # is only ever reused for an identical call, regardless of which run
+    # produced it first. The ablation table reruns the pipeline under 5-9
+    # different configs whose clusters mostly overlap the main run's (e.g.
+    # "- closure" touches TLINK derivation, not clustering, so its ~249
+    # clusters are close to byte-identical to "full"'s); a per-tag cache
+    # path made every one of those a near-total cache miss, turning a
+    # 20-90 min generation into hours. One shared file lets the second and
+    # later configs in a sequence hit the cache for whatever they share with
+    # the ones already run.
     fuser, note = build_fuser(cfg.backbone,
-                              cache_path=cfg.run_dir() / "fusion_cache.jsonl",
+                              cache_path=OUTPUT_DIR / "fusion_cache.jsonl",
                               **kw)
 
     cons = consolidate(
