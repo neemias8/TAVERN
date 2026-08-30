@@ -29,7 +29,11 @@ def assert_no_chronology_import() -> None:
     """Raises if a chronology load originates in stages 1–5."""
 ```
 
-τ becomes a measurement. It is **0.9163**.
+τ becomes a measurement. It is **0.9155**. Against a null system that uses
+**no annotation at all** — N1, positional interleaving of the four documents
+in raw verse order — τ is 0.8140. So 0.9155 closes **54.6%** of the distance
+between "no annotation" and the curated chronology (1.000). Report both
+numbers together; τ alone hides that the useful range is only 0.186 wide.
 
 The previous four-stage pipeline is preserved under `legacy/` rather than
 deleted.
@@ -92,31 +96,56 @@ errors are attributable to Stage 3.
 
 ## Results
 
-Measured by `run_experiments.py --all` on the digest-pinned corpus.
+Measured by `run_experiments.py --all --tag canonical --backbone ollama
+--backbone-model gemma3:4b --ollama-repeat-penalty 1.1` on the digest-pinned
+corpus (published configuration: `no_anchor_credit=False`, the default). This
+is the canonical run — commit-tagged `canonical-20260827` — and every number
+below comes from that one execution, not a chain of separate reports.
 
 ### The induced timeline
 
 | Measure | Value |
 |---|---|
-| **Kendall's τ** | **0.9163** |
-| Pairwise ordering accuracy | 0.9581 |
+| **Kendall's τ** | **0.9155** |
+| Pairwise ordering accuracy | 0.9577 |
 | Coverage | 0.8512 (143 of 168 events) |
-| Candidate canonical events induced | 248 (harmony has 169) |
+| Candidate canonical events induced | 249 (harmony has 169) |
+| *Null:* N1, positional interleaving, **no annotation at all** | 0.8140 |
 | *Reference:* curated chronology | 1.000 **by construction** |
-| *Reference:* LexRank, no temporal structure | 0.320 |
+
+τ = 0.9155 closes 54.6% of the distance from N1 (0.8140) to the curated
+ceiling (1.000). Report τ next to N1, never alone.
+
+**τ is protected by construction, and this is measured, not asserted.** The
+induced clustering is monotone by design (progressive profile alignment), so
+the document-order votes in the global tournament never conflict:
+`removed_arcs = 0`. Feed the *oracle* (curated) clustering into the identical
+tournament instead — same algorithm, same code, only the grouping changes —
+and `removed_arcs = 614`, and τ on that configuration **falls to 0.6296**,
+below the fully-induced baseline. The correct grouping exposes real
+cross-document ordering disagreements between the Gospels that the induced
+grouping's monotonicity structurally cannot: τ is high partly because the
+alignment never lets the tournament see the disagreements it would have to
+resolve.
 
 ### Annotation
 
 5,239 `<EVENT>` (4,235 verbal, 419 nominal, 585 states) · 152 realised
-`<TIMEX3>` plus 886 empty anchoring elements · 746 `<SIGNAL>` · 1,209 asserted
-and 3,469 closure-derived `<TLINK>` · 4,524 `<SLINK>` · 43 `<ALINK>` ·
-7 `<MLINK>` · 1,945 timeline-eligible and 3,294 subordinated events.
+`<TIMEX3>` plus 886 empty anchoring elements · 746 `<SIGNAL>` · 1,208 asserted
+and 3,460 closure-derived `<TLINK>` · 4,531 `<SLINK>` · 43 `<ALINK>` ·
+7 `<MLINK>` · 1,944 timeline-eligible and 3,295 subordinated events.
 
 **All twelve code-level conformance constraints pass on all four documents.**
 
 Evidence cascade: level 1 (explicit signal) 512 · level 2 (temporal expression)
-73 · level 3 (aspectual predicate) 33 · level 4 (narrative progression) 591.
-Anchoring coverage 48.4 %.
+73 · level 3 (aspectual predicate) 33 · level 4 (narrative progression) 590.
+Anchoring coverage (share of asserted `<TLINK>`s at evidence level 1–2) 48.4%.
+This is a *relation*-level figure, not a claim that 48.4% of units have a
+scaffold position — every unit does, because `Scaffold._solve_document`
+interpolates one unconditionally. The unit-level figure that phrase invites a
+reader to infer is a different, much lower number: only 10.1% of the 567
+units (12.4% of the 410 timeline-eligible ones) are *observed* — pinned by
+one of their own anchors rather than interpolated from a neighbour's.
 
 ### Internal consistency
 
@@ -135,43 +164,156 @@ evaluation no reference permits.
 The last row matters: the three divergences the harmonisation literature
 documents — the timing of the fig tree, the relation of the crucifixion to the
 Passover, the sequence of the cockcrow — are all recovered from
-**unsatisfiability alone, with no threshold**.
+**unsatisfiability alone, with no threshold**. Inter-document conflicts: 94.
+
+### Cluster purity and B-cubed: read against a ceiling, never against 100%
+
+The error taxonomy's "over-merged" count (25 clusters) asks whether a whole
+cluster crosses a curated-event boundary; the finer question is whether every
+*witness* a cluster holds maps to the same curated event. It does in **30.8%**
+of multi-witness clusters (`scripts/cluster_purity.py`; B-cubed P/R/F1 =
+0.623/0.414/0.498 over the verse-level clustering).
+
+That number is not read against 100%. Verified against a perfect (oracle)
+clustering, purity still only reaches **89.5%** (B-cubed F1 0.829) — a
+structural ceiling, not a code defect. `local_timeline.segment`'s unit
+boundary opens only between whole verses; Aschmann's harmonisation
+occasionally individuates at the *half*-verse level (`"14:66-68a"` for one
+event, `"14:68b"` for the next). 26 verse keys are claimed by two curated
+events this way, touching 40 of 169 events; **10 of those 40 have no verse
+exclusive to them at all** and so cannot be individuated as distinct objects
+under any clustering, however correct (events 47, 93, 99, 119, 132, 133, 155,
+156, 157, 163 — 11 counting event 53, which has no citation in any book).
+Read purity as **30.8% of the 89.5% achievable — 34.4% of ceiling**, not as
+"31% of 100%".
+
+Content coverage (share of the sources' content-word vocabulary the fusion
+retains, `redundancy.coverage_over_events`): the abstractive consolidation
+covers 91.2% overall / 89.7% for multi-source events. The reference itself
+covers only **88.0%** of that same vocabulary and the abstractive
+consolidation **95.3%** — the reference is the longest curated account per
+event, which is extractive in kind, so a fusion is penalised under every
+reference-based metric for material the reference itself does not contain.
+That is the second threat to validity the thesis names, measured rather than
+argued.
+
+### Selection accuracy is below chance, against the correct floor
+
+The published ladder's analytical floor (0.3474) is computed over the 95
+contested curated events; the induced selection accuracy is measured over the
+**74** events the induced clustering actually produces a matched, ≥2-document
+cluster for — a different denominator, and comparing 0.2973 against 0.3474
+would be the same error N1 first exposed for τ. Recomputed over exactly those
+74 events (their own version-count distribution: 42 with three versions, 18
+with four, 14 with two), the floor is **0.3446**. Induced selection accuracy
+— **0.2973** — is below it. Report both floors, and always the matching one.
+
+### Grouping and ordering in Stage 3 are not separable
+
+Crossing induced/oracle clustering against induced/oracle ordering
+independently (`scripts/oracle_decomposition.py`) gives four configurations,
+all measured with the same extractive/"longest" selection rule for a fair
+comparison across cells that have no GNN score to use:
+
+| | grouping | ordering | τ | coverage | ROUGE-L | selection |
+|---|---|---|---|---|---|---|
+| **A** (induced) | induced | induced | 0.9155 | 0.8512 | 0.594 | 0.297 (74) |
+| **B** | oracle | induced | 0.6296 | 1.000 | 0.492 | 0.505 (95) |
+| **C** | induced | oracle | 1.000 | 0.8512 | 0.487 | 0.297 (74) |
+| **D** (oracle) | oracle | oracle | 1.000 | 1.000 | 0.795 | 0.505 (95) |
+
+D − A = 0.201 (ROUGE-L, total Stage 3 cost); D − B = 0.303 and D − C = 0.308
+(ordering's share and grouping's share, each measured with the other side
+perfect) — these **do not sum to the total**: 0.611 against 0.201, a residual
+of 0.410. **Fixing either component alone makes ROUGE-L worse than the fully
+induced baseline** (B and C both score below A); only fixing both together
+recovers the gain. Grouping and ordering are co-adapted to each other's
+imperfections, not independently improvable.
+
+D's ROUGE-L (0.7948) is the ceiling **TAVERN's own architecture** can reach,
+not the ceiling of the curated timeline (0.8259, "Curated, complete" below):
+the 0.031 gap is the cost of the verse being the atom of segmentation, the
+same granularity limit that bounds purity.
 
 ### Downstream, and the criterion that was not met
 
 The success criterion was fixed in advance by a published robustness analysis:
-ROUGE-L F1 at or above the −10 % point of the timeline-degradation curve.
+ROUGE-L F1 at or above the −10% point of the timeline-degradation curve.
 
 | Timeline | ROUGE-L | ROUGE-1 |
 |---|---|---|
-| Curated, complete | 0.831 | 0.922 |
-| Curated, −10 % ← **the bar** | **0.787** | 0.878 |
-| Curated, −25 % | 0.704 | 0.787 |
-| Curated, −50 % | 0.549 | 0.610 |
-| **Induced ordering, curated segmentation** | **0.615** | 0.927 |
-| **Induced end to end** | **0.595** | 0.927 |
+| Curated, complete | 0.826 | 0.919 |
+| Curated, −10% ← **the bar** | **0.795** | 0.880 |
+| Curated, −25% | 0.708 | 0.791 |
+| Curated, −50% | 0.546 | 0.607 |
+| Induced order, curated segmentation (longest rule) | 0.681 | 0.978 |
+| **Induced end to end (abstractive, Ollama gemma3:4b)** | **0.497** | 0.816 |
+
+`repeat_penalty` matters here: llama.cpp's parameter of that name is not
+HuggingFace's `repetition_penalty`, and reusing the HF value (1.5, correct
+for the HF backbones) pushed the small model to glue words together
+("...toBethphegeon theMountofOlves...", 3/249 events, 1.2%). Fixed to 1.1 for
+Ollama specifically; end-to-end ROUGE-L moved from 0.331 to 0.497 on that fix
+alone (`+50%` relative), and `scripts/check_text_quality.py` now guards
+against the regression (0/249 corrupted on the canonical run).
 
 **The criterion is not met**, and the thesis reports it as failed rather than
-reinterpreting it. Three things locate the shortfall:
+reinterpreting it. What locates the shortfall, in order of how much of it each
+explains:
 
-- **Nothing is lost.** No canonical event goes undetected, and ROUGE-1 (0.927)
-  exceeds the complete curated timeline's (0.922).
-- **Nothing is grossly misplaced.** Exactly **one** event crosses a day
-  boundary in the wrong direction. The anchor scaffold gets the week right.
-- **The errors are local.** 30 transpositions of events on the *same day*.
-  ROUGE-L is brutally non-linear in these: over the 143 matched events the
-  longest monotone chain is 94 (65.7 %), which is where ≈0.6 comes from.
+- **The reference is itself a selection** (88.0% content coverage against the
+  fusion's 95.3%) — every reference-based metric penalises a fusion for
+  material the reference doesn't contain.
+- **Cluster purity is 34.4% of its own ceiling** (30.8% of 89.5%) — most
+  clusters that hold more than one witness do not hold the *right* witnesses,
+  and the induced grouping and ordering are not separable, so this cannot be
+  fixed one component at a time.
+- **Nothing is lost at the event level.** No canonical event goes undetected.
+- **Grouping and ordering interact.** See the decomposition above: 0.410 of
+  residual, not additive.
+
+### The annotation's own discriminative power: recall@k of `score()` alone
+
+Isolating the scoring function from the alignment algorithm entirely — curated
+segmentation given for free, no monotone profile, no threshold, no band,
+every one of a book's own curated-event spans ranked by the real
+`predicate + participants + anchor + modal + class` score
+(`scripts/measurement_a_recallk.py`, 634 queries, ~94 candidates each, chance
+at rank 1 = 0.0106):
+
+| | recall@1 | recall@5 | recall@10 | MRR |
+|---|---|---|---|---|
+| full score | 0.405 | 0.732 | 0.836 | 0.551 |
+| **lexical baseline (zero annotation)** | **0.513** | **0.863** | **0.912** | **0.660** |
+| − predicate | 0.219 | 0.527 | 0.664 | 0.364 |
+| − participants | 0.394 | 0.672 | 0.774 | 0.524 |
+| − anchor | 0.375 | 0.680 | 0.771 | 0.512 |
+| − modal | 0.424 | 0.786 | 0.880 | 0.581 |
+| − class | 0.405 | 0.745 | 0.845 | 0.557 |
+
+**The zero-annotation lexical baseline (content-word TF cosine over the raw
+verse text) beats the full ISO-TimeML score on every figure.** Mapping words
+to predicate labels loses information the raw text retains for cross-document
+linking, on this corpus — the clearest single statement Stage 2's evaluation
+makes. Predicate similarity is the only term with real, load-bearing
+discriminative weight (removing it nearly halves recall@1); **class
+contributes exactly 0.000** (identical to the full score with or without it);
+**modal is net harmful** — removing it *raises* recall@1 (+0.019). Neither
+finding is a reason to reweight the score: doing so after seeing this ablation
+would be tuning against the reference the ablation itself used, and would
+destroy the ablation's value. They are reported as findings for future
+architecture work, not applied here.
 
 ### What the ablations say
 
 | Configuration | τ | Coverage | ROUGE-L |
 |---|---|---|---|
-| Full | 0.9163 | 0.8512 | 0.503 |
-| − anchor scaffold | 0.9035 | 0.8393 | 0.448 |
-| − veridicality partition | 0.9295 | 0.8393 | 0.537 |
-| − closure | 0.9163 | 0.8512 | 0.512 |
-| − graph propagation | 0.9163 | 0.8512 | 0.571 |
-| cascade levels {1} only | 0.9163 | 0.8512 | 0.595 |
+| Full | 0.9155 | 0.8512 | 0.462 |
+| − veridicality partition | 0.8983 | 0.8810 | 0.458 |
+| − closure | 0.9155 | 0.8512 | 0.463 |
+| − anchor scaffold | 0.8860 | 0.9048 | 0.446 |
+| − graph propagation | 0.9155 | 0.8512 | 0.459 |
+| cascade levels {1} only | 0.9155 | 0.8512 | 0.465 |
 
 Two of these contradict predictions the thesis recorded in advance, and are
 reported rather than defended.
@@ -257,10 +399,15 @@ configurations — extractive, for comparability with the degradation curve, and
 abstractive, which is what the framework is for — regenerates the curation
 sheets, and packages everything into one `tavern_results_<stamp>.zip`.
 
-The generation run is 248 model calls and is **cached to disk as it goes**
-(`outputs/<tag>/fusion_cache.jsonl`), so an interrupted run resumes on the same
-command instead of starting over. Expect 40 min to a few hours end to end,
-depending on the accelerator.
+The generation run is ~249 model calls (one per induced cluster) and is
+**cached to disk as it goes**, in a single file shared across every tag and
+config (`outputs/fusion_cache.jsonl`, keyed by backbone + model +
+`repeat_penalty` + the exact source texts — see `CachedFuser` in
+`stage5_generation/backbones.py`), so an interrupted run resumes on the same
+command, and re-running `--ablations` under a different configuration reuses
+whatever it shares with a prior run instead of regenerating from scratch.
+Expect 40 min to a few hours end to end on CPU, depending on the accelerator
+and on how much of the cache is already warm.
 
 ```bash
 python run_all.py --backbone union            # dry run, no model needed
@@ -301,7 +448,7 @@ Under `outputs/<tag>/`:
 | `stage3/timeline.json` | induced order, clusters, conflicts |
 | `consolidated.txt` | the consolidated narrative |
 | `consolidated_with_markers.txt` | the same, with event markers for auditing |
-| `results.json` | every measured figure (`run_experiments.py`) |
+| `results.json` | every measured figure (`run_experiments.py`); on `outputs/canonical/`, also a `clustering_quality` key (purity, its ceiling, B-cubed, content coverage — `scripts/cluster_purity.py`) |
 
 No information exists only in the JSON projection: the `.tml` documents are
 sufficient to reproduce the pipeline, which is what makes the annotation a
@@ -389,18 +536,22 @@ python main.py --tag gemma --backbone ollama --backbone-model gemma3:4b
 python scripts/make_curation.py outputs/gemma/curation.json consolidations/gemma/
 ```
 
-The consolidation committed under [`consolidations/`](consolidations/) is the
-`union` output, produced where no model was reachable. It is a **floor, not the
-intended output**, and `consolidations/README.md` says so on its first line.
+`ollama`/gemma3:4b **has been run**, on the canonical run
+(`repeat_penalty=1.1`, fixed from the HuggingFace-inherited 1.5 that glued
+words together — see Results). It is the intended abstractive configuration,
+not a fallback; the consolidation committed under
+[`consolidations/`](consolidations/) is regenerated from it, not from `union`.
 
-| Backbone | R-1 | R-2 | R-L | METEOR | Length |
-|---|---|---|---|---|---|
-| `extractive` | 0.927 | 0.802 | 0.595 | 0.519 | 79,921 |
-| `union` | 0.916 | **0.819** | 0.577 | **0.551** | 94,101 |
+| Backbone | R-1 | R-2 | R-L | METEOR | Length | corrupted |
+|---|---|---|---|---|---|---|
+| `ollama` (gemma3:4b, canonical) | 0.816 | 0.736 | 0.497 | 0.479 | 121,832 | 0/249 |
+| `extractive` | 0.793 | 0.685 | 0.510 | 0.377 | 58,377 | — |
 
-Union trades a little ROUGE-1 precision for higher ROUGE-2 and METEOR: it keeps
-more of the reference's actual phrasing because it keeps more of the sources.
-That is the trade the task's objectives ask for.
+`ollama`'s ROUGE-1/content coverage is higher (more of the sources' detail
+survives); its ROUGE-L is lower than the extractive row's, which is exactly
+the reference-is-a-selection effect above, not a generation-quality failure —
+the fusion covers 95.3% of the sources' content-word vocabulary against the
+reference's own 88.0%.
 
 ### For expert curation
 
@@ -415,11 +566,11 @@ day boundary, and 30 are transposed with a same-day neighbour.
 
 Stated so the repository is not read as claiming more than it does.
 
-- **The abstractive backbones are written but unrun.** The code is here with the
-  published generation controls; the container it was last run in had no access
-  to a model, so no abstractive figures are reported. The IJCNN results for
-  BART / PEGASUS / PRIMERA / Gemma-3 under a *curated* timeline are quoted from
-  that paper and reproduced in
+- **`bart`/`pegasus`/`primera`/`instruct` are written but unrun** on the
+  induced timeline. `ollama`/gemma3:4b has been (see Results); the others need
+  a HuggingFace download this environment did not have reachable. The IJCNN
+  results for BART / PEGASUS / PRIMERA / Gemma-3 under a *curated* timeline
+  are quoted from that paper and reproduced in
   [Neuro-Symbolic-Narrative-Consolidation](https://github.com/neemias8/Neuro-Symbolic-Narrative-Consolidation).
 - **BERTScore.** Wired but not run in the reported tables; the figures quoted
   for it come from the published work, computed without baseline rescaling.
@@ -427,6 +578,23 @@ Stated so the repository is not read as claiming more than it does.
   so span-level F1, attribute accuracy and inter-annotator agreement are
   unavailable. This is the largest limitation of the evaluation and the six
   internal checks detect incoherence, not error.
+- **A half-verse-precise key.** Aschmann's harmonisation occasionally
+  individuates below verse granularity; TAVERN's atom is the whole verse
+  (`local_timeline.segment`'s `for v in verses`). This caps cluster purity and
+  B-cubed at ~89.5%, not 100%, and costs ~0.031 of ROUGE-L against the
+  curated ceiling (see Results). Not fixed: it would mean a half-verse key
+  threaded through `Corpus`/`ReferenceParser`/`Chronology`, used everywhere,
+  for a gain in reporting precision rather than in the system. Documented as
+  a known property of the resource in `DATA_PROVENANCE.md`.
+- **The length asymmetry in `predicate_similarity`.** Its cosine is correctly
+  L2-normalised, but nothing in `score()` compensates for a short, terse
+  account competing against a longer, lexically richer wrong candidate — a
+  real, unfixed asymmetry, not investigated further because fixing it now
+  would invalidate the canonical run.
+- **`class_agreement`'s and `modal_compatibility`'s weights.** Measured to
+  contribute 0.000 and net-negative recall@1 respectively (see Results'
+  per-term ablation). Left as measured: reweighting after seeing this
+  ablation would be tuning against the reference the ablation used.
 
 ## Notes for anyone extending this
 

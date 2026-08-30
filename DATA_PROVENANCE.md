@@ -37,6 +37,33 @@ layer only. Verse text always comes from the digest-pinned files.
    scope is not widened, because the passage is a parallel to Matthew 23:37–39
    spoken on another occasion.
 
+## A known ambiguity: half-verse citations
+
+Aschmann's harmonisation occasionally individuates events below verse
+granularity — one verse split between two adjacent events, e.g. Mark 14 cites
+`"66-68a"` for one event and `"68b"` for the next. The corpus's own verse
+addressing (`book:chapter:verse`) has no key for "half a verse": `Corpus`'s
+text extraction (`ReferenceParser`/`VerseSplitter`) can select the right
+*text* for each half, but the verse *key* itself — what
+`Chronology.verse_keys` and everything built on it uses to say "this belongs
+to event N" — is necessarily whole-verse. Two adjacent events that split a
+verse this way both carry that verse's key.
+
+Measured: **26 verse keys are claimed by two curated events**, touching **40**
+of the 169 curated events. **10 of those 40 have no verse exclusive to them
+at all** (events 47, 93, 99, 119, 132, 133, 155, 156, 157, 163) and so cannot
+be individuated as distinct objects under any clustering, however correct —
+11 counting event 53, which has no citation in any book at all and is
+already excluded from every coverage denominator in the codebase.
+
+This is a property of the resource, verified against a perfect (oracle)
+clustering rather than assumed: cluster purity and B-cubed cap out at ~89.5%,
+not 100%, for this reason alone. It is not fixed in code — doing so would
+mean a half-verse key threaded through `Corpus`/`ReferenceParser`/
+`Chronology`, used by every stage, for a gain in reporting precision rather
+than in the system being measured. `scripts/cluster_purity.py`'s module
+docstring carries the same note next to the code that measures it.
+
 ## The held-out guarantee
 
 `config.assert_no_chronology_import()` inspects the call stack and raises if a
