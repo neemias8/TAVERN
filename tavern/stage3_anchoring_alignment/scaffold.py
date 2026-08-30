@@ -373,6 +373,70 @@ def _interpolate_pins(pins: Dict[int, float], n: int, lo: float,
     return out
 
 
+def project_timexes(structs: Dict[str, AnnotationStructure], sc: Scaffold,
+                    units: Dict[str, EventUnit]) -> Dict[str, int]:
+    """Addendum 9, Task 1/2 -- an absolute-day projection derived from a
+    narrative reference date, made to reach the coreference score.
+
+    Thesis Achado 4 claims the TIMEX3 inventory and its normalisation order
+    the four documents; in the code, only the EVENT predicate inventory
+    reached PredicateIDF.vector() -- the normalised day/part never did (see
+    the module docstring of event_coref.EntityIDF's sibling, PredicateIDF).
+    This closes that gap using data the scaffold has already resolved from
+    the text itself: FEAST_DAY and DAYPART_POSITION, the same feast/daypart
+    lexicon `_document_anchors` uses to fix `Anchor.absolute_day` and
+    `Anchor.within_day` -- never WEEKDAY_ORDER (biblical_calendar.py), which
+    carries the chronology's own day labels and exists for the scaffold, not
+    for this. `assert_no_chronology_import` is untouched: nothing here reads
+    the chronology, only the annotation's own anchors.
+
+    Written onto BOTH the Timex3 (serialiser.py emits it as the tvn:
+    extension attributes projectedDay/projectedPart, alongside -- not instead
+    of -- the conformant relative @value/@anchorTimeID encoding) and the
+    EventUnit (so PredicateIDF can index D:{day}/P:{part} terms, Task 2).
+    Must run after scaffold.build() (needs Anchor.absolute_day/within_day)
+    and before cluster_units() (PredicateIDF reads units' projected fields).
+
+    Returns counts for Task 1's report: how many anchorable TIMEX3s got a
+    concrete day/part projection versus how many stayed subspecified (a
+    non-narration expression, or an offset with nothing resolved to chain
+    from) -- over the population of anchorable TIMEX3s, the only ones that
+    are candidates for projection at all.
+    """
+    day_concrete = day_subspecified = 0
+    part_concrete = part_subspecified = 0
+    for a in sc.anchors:
+        struct = structs.get(a.book)
+        tx = struct.timexes.get(a.anchor_id) if struct is not None else None
+        u = units.get(a.unit_id) if a.unit_id else None
+
+        if a.absolute_day is not None:
+            day = int(math.floor(a.absolute_day))
+            if tx is not None:
+                tx.projected_day = day
+            if u is not None:
+                u.projected_days.add(day)
+            day_concrete += 1
+        else:
+            day_subspecified += 1
+
+        if a.kind in ("daypart", "hour") and a.pred:
+            if tx is not None:
+                tx.projected_part = a.pred
+            if u is not None:
+                u.projected_parts.add(a.pred)
+            part_concrete += 1
+        else:
+            part_subspecified += 1
+
+    return {
+        "timex_day_concrete": day_concrete,
+        "timex_day_subspecified": day_subspecified,
+        "timex_part_concrete": part_concrete,
+        "timex_part_subspecified": part_subspecified,
+    }
+
+
 def _assign_intervals(sc: Scaffold, timelines) -> None:
     bounds = sc.boundaries
     for tl in timelines.values():

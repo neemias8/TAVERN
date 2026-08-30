@@ -109,9 +109,6 @@ ANCHOR_BAND = 4.0
 #: unequal length against each other.
 GAP_COST = 0.06
 
-#: Predicates too frequent to discriminate; retained but down-weighted by IDF.
-_UBIQUITOUS_ENTITIES = {"JESUS", "DISCIPLES"}
-
 #: Largest span, in verses per document, that one candidate canonical event may
 #: cover. Bounds the episode merge below. `None` disables this bound, leaving
 #: the pericope boundary (below) as the only span limit.
@@ -167,13 +164,23 @@ class Clustering:
 # ---------------------------------------------------------------------------
 class PredicateIDF:
     """Inverse document frequency over the @pred inventory, with units as the
-    documents. Derived entirely from the annotation."""
+    documents. Derived entirely from the annotation.
+
+    Addendum 9, Task 2: also indexes the scaffold's absolute-day/within-day
+    projection (scaffold.project_timexes, run before cluster_units) as
+    D:{day}/P:{part} terms -- quantized, not the raw ISO @value string, so
+    that two units narratively close on the projected day axis actually
+    collide as terms. IDF handles down-weighting a day/part that appears
+    almost everywhere on its own; no manual weight is introduced for it.
+    """
 
     def __init__(self, units: Sequence[EventUnit]):
         df: Counter = Counter()
         for u in units:
             df.update(set(u.preds))
             df.update({f"T:{t}" for t in u.timex_preds})
+            df.update({f"D:{d}" for d in u.projected_days})
+            df.update({f"P:{p}" for p in u.projected_parts})
         self.n = max(1, len(units))
         self.df = df
 
@@ -184,10 +191,42 @@ class PredicateIDF:
         terms = Counter(u.preds)
         for t in u.timex_preds:
             terms[f"T:{t}"] += 1
+        for d in u.projected_days:
+            terms[f"D:{d}"] += 1
+        for p in u.projected_parts:
+            terms[f"P:{p}"] += 1
         vec = {t: (1.0 + math.log(c)) * self.weight(t)
                for t, c in terms.items()}
         norm = math.sqrt(sum(v * v for v in vec.values())) or 1.0
         return {t: v / norm for t, v in vec.items()}
+
+
+class EntityIDF:
+    """Inverse document frequency over entity mentions, with units as the
+    documents -- the same construction as PredicateIDF (Addendum 9, Task 3a),
+    applied to `EventUnit.entities` instead of `.preds`. Replaces the
+    hand-picked `_UBIQUITOUS_ENTITIES` stop-list: whether JESUS/DISCIPLES
+    discriminate a pair of units is a question the corpus's own distribution
+    answers, not a two-word list chosen by inspection.
+
+    `max_weight` is the IDF of an entity attested in exactly one unit -- the
+    most distinctive weight this corpus can produce given its size. It is a
+    closed-form property of the corpus (the same kind of derived constant as
+    `n` above), not a hand-tuned threshold: `participant_similarity` uses it
+    to scale a match's evidence strength (Task 3b) without introducing a
+    free parameter to sweep.
+    """
+
+    def __init__(self, units: Sequence[EventUnit]):
+        df: Counter = Counter()
+        for u in units:
+            df.update(u.entities)
+        self.n = max(1, len(units))
+        self.df = df
+        self.max_weight = math.log((self.n + 1) / 2.0)
+
+    def weight(self, entity: str) -> float:
+        return math.log((self.n + 1) / (1 + self.df.get(entity, 0)))
 
 
 def _cosine(a: Dict[str, float], b: Dict[str, float]) -> float:
@@ -207,6 +246,7 @@ def cluster_units(timelines: Dict[str, LocalTimeline], scaffold: Scaffold,
 
     idf = PredicateIDF(list(units.values()))
     vectors = {uid: idf.vector(u) for uid, u in units.items()}
+    entity_idf = EntityIDF(list(units.values()))
 
     # Documents enter the profile in canonical order. The choice has a
     # measurable but small effect, reported as a sensitivity analysis in
@@ -221,7 +261,8 @@ def cluster_units(timelines: Dict[str, LocalTimeline], scaffold: Scaffold,
     profile: List[List[str]] = [[u.unit_id] for u in timelines[books[0]].units]
     for book in books[1:]:
         profile = _add_to_profile(profile, timelines[book].units, units,
-                                  scaffold, vectors, embeddings, clustering)
+                                  scaffold, vectors, entity_idf, embeddings,
+                                  clustering)
 
     profile = _merge_episodes(profile, units, timelines)
 
@@ -309,7 +350,8 @@ def _mergeable(cur: Sequence[str], nxt: Sequence[str],
 
 def _add_to_profile(profile: List[List[str]], new_units: Sequence[EventUnit],
                     units: Dict[str, EventUnit], scaffold: Scaffold, vectors,
-                    embeddings, clustering: Clustering) -> List[List[str]]:
+                    entity_idf: "EntityIDF", embeddings,
+                    clustering: Clustering) -> List[List[str]]:
     """Monotone alignment of one document's units against the profile.
 
     A Needleman-Wunsch recursion in which the substitution score of a unit
@@ -341,8 +383,8 @@ def _add_to_profile(profile: List[List[str]], new_units: Sequence[EventUnit],
         if pa is not None and pb is not None and abs(pa - pb) > ANCHOR_BAND:
             sub[key] = -1.0
             return -1.0
-        vals = [score(units[mem], new_units[j], scaffold, vectors, embeddings)
-                for mem in profile[i]]
+        vals = [score(units[mem], new_units[j], scaffold, vectors, entity_idf,
+                     embeddings) for mem in profile[i]]
         s = sum(vals) / len(vals) if vals else 0.0
         sub[key] = s
         return s
@@ -387,7 +429,8 @@ def _add_to_profile(profile: List[List[str]], new_units: Sequence[EventUnit],
 
 # ---------------------------------------------------------------------------
 def _align(ta: LocalTimeline, tb: LocalTimeline, scaffold: Scaffold,
-           vectors, embeddings) -> List[Tuple[float, str, str]]:
+           vectors, entity_idf: "EntityIDF",
+           embeddings) -> List[Tuple[float, str, str]]:
     """Band-constrained monotone alignment of two documents' unit sequences.
 
     A Needleman-Wunsch recursion over the two sequences, with the substitution
@@ -414,7 +457,7 @@ def _align(ta: LocalTimeline, tb: LocalTimeline, scaffold: Scaffold,
             if i == 1:
                 ptr[0][j] = 2
             s = _banded_score(A[i - 1], B[j - 1], pa[i - 1], pb[j - 1],
-                              scaffold, vectors, embeddings)
+                              scaffold, vectors, entity_idf, embeddings)
             diag = prev[j - 1] + (s if s >= MATCH_THRESHOLD else NEG)
             up = prev[j] - GAP_COST
             left = cur[j - 1] - GAP_COST
@@ -448,17 +491,17 @@ def _align(ta: LocalTimeline, tb: LocalTimeline, scaffold: Scaffold,
 
 def _banded_score(a: EventUnit, b: EventUnit, pa: Optional[float],
                   pb: Optional[float], scaffold: Scaffold, vectors,
-                  embeddings) -> float:
+                  entity_idf: "EntityIDF", embeddings) -> float:
     if pa is not None and pb is not None and abs(pa - pb) > ANCHOR_BAND:
         return -1.0
-    return score(a, b, scaffold, vectors, embeddings)
+    return score(a, b, scaffold, vectors, entity_idf, embeddings)
 
 
 # ---------------------------------------------------------------------------
 def score(a: EventUnit, b: EventUnit, scaffold: Scaffold, vectors,
-          embeddings=None) -> float:
+          entity_idf: "EntityIDF", embeddings=None) -> float:
     pred = predicate_similarity(a, b, vectors, embeddings)
-    part = participant_similarity(a, b)
+    part = participant_similarity(a, b, entity_idf)
 
     if GATED_SCORE:                                                # H-A
         base = 0.62 * pred + 0.38 * part
@@ -527,16 +570,37 @@ def predicate_similarity(a: EventUnit, b: EventUnit, vectors,
     return val
 
 
-def participant_similarity(a: EventUnit, b: EventUnit) -> float:
+def participant_similarity(a: EventUnit, b: EventUnit,
+                           entity_idf: "EntityIDF") -> float:
+    """Addendum 9, Task 3: an IDF-weighted overlap, not a hand-listed
+    stop-list Jaccard, scaled by how distinctive the shared entities are.
+
+    The ratio term (weighted Jaccard: shared IDF mass over the union's) is
+    what Task 3a asks for -- JESUS/DISCIPLES are down-weighted because the
+    corpus attests them almost everywhere, not because a two-word list says
+    so. It is not sufficient on its own: two units whose entity sets are
+    IDENTICAL always score 1.0 under ANY normalised overlap measure
+    (Jaccard, cosine, weighted or not), including two units that only
+    mention the ubiquitous pair -- ratios are invariant to uniform
+    reweighting of a set against itself. Task 3b's fix is the `strength`
+    factor: the IDF of the single most distinctive SHARED entity, scaled
+    against `max_weight` (the IDF an entity seen in exactly one unit would
+    get) -- a corpus-derived ceiling, not a swept constant. Absence of any
+    distinctive shared entity now multiplies the ratio down instead of
+    leaving it at its self-similarity maximum.
+    """
     if not a.entities or not b.entities:
         return 0.0
-    jac = len(a.entities & b.entities) / len(a.entities | b.entities)
-    sa = a.entities - _UBIQUITOUS_ENTITIES
-    sb = b.entities - _UBIQUITOUS_ENTITIES
-    if sa and sb:
-        sj = len(sa & sb) / len(sa | sb)
-        return 0.35 * jac + 0.65 * sj
-    return jac
+    inter = a.entities & b.entities
+    if not inter:
+        return 0.0
+    union = a.entities | b.entities
+    w_inter = sum(entity_idf.weight(e) for e in inter)
+    w_union = sum(entity_idf.weight(e) for e in union)
+    ratio = w_inter / w_union if w_union else 0.0
+    strength = min(1.0, max(entity_idf.weight(e) for e in inter)
+                  / entity_idf.max_weight) if entity_idf.max_weight else 0.0
+    return ratio * strength
 
 
 def modal_compatibility(a: EventUnit, b: EventUnit) -> float:
@@ -593,6 +657,7 @@ def detect_order_conflicts(timelines: Dict[str, LocalTimeline],
             units[u.unit_id] = u
     idf = PredicateIDF(list(units.values()))
     vectors = {uid: idf.vector(u) for uid, u in units.items()}
+    entity_idf = EntityIDF(list(units.values()))
 
     books = sorted(timelines)
     out: List[dict] = []
@@ -600,12 +665,12 @@ def detect_order_conflicts(timelines: Dict[str, LocalTimeline],
         for j in range(i + 1, len(books)):
             a, b = books[i], books[j]
             out.extend(_pair_conflicts(timelines[a], timelines[b], scaffold,
-                                       vectors, embeddings))
+                                       vectors, entity_idf, embeddings))
     return out
 
 
 def _pair_conflicts(ta: LocalTimeline, tb: LocalTimeline, scaffold: Scaffold,
-                    vectors, embeddings) -> List[dict]:
+                    vectors, entity_idf: "EntityIDF", embeddings) -> List[dict]:
     pos_a = {u.unit_id: i for i, u in enumerate(ta.units)}
     pos_b = {u.unit_id: i for i, u in enumerate(tb.units)}
 
@@ -616,7 +681,7 @@ def _pair_conflicts(ta: LocalTimeline, tb: LocalTimeline, scaffold: Scaffold,
             pb = scaffold.position_of(ub.unit_id)
             if pa is not None and pb is not None and abs(pa - pb) > ANCHOR_BAND:
                 continue
-            s = score(ua, ub, scaffold, vectors, embeddings)
+            s = score(ua, ub, scaffold, vectors, entity_idf, embeddings)
             if s >= MATCH_THRESHOLD:
                 cands.append((s, ua.unit_id, ub.unit_id))
     # Mutually best pairs only. A match used as evidence of DISAGREEMENT must

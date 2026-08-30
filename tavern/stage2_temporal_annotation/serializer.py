@@ -119,6 +119,10 @@ def serialise(struct: AnnotationStructure, seg: SegmentedDocument,
             el.set(_p("anchorLevel"), str(tx.anchor_level))
         if tx.anchorable:
             el.set(_p("anchorable"), "true")
+        if tx.projected_day is not None:
+            el.set(_p("projectedDay"), str(tx.projected_day))
+        if tx.projected_part is not None:
+            el.set(_p("projectedPart"), tx.projected_part)
         if tx.comment:
             el.set(_p("comment"), tx.comment)
 
@@ -240,6 +244,8 @@ def json_projection(struct: AnnotationStructure) -> dict:
                 "anchorTimeID": t.anchor_time_id, "mod": str(t.mod)
                 if t.mod else None, "pred": t.pred,
                 "anchor_level": t.anchor_level, "anchorable": t.anchorable,
+                "projected_day": t.projected_day,
+                "projected_part": t.projected_part,
                 "verse": list(t.verse_key) if t.verse_key else None,
                 "text": t.text,
             } for tid, t in struct.timexes.items()

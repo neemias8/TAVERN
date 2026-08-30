@@ -49,6 +49,11 @@ class EventUnit:
     timex_ids: List[str] = field(default_factory=list)
     timex_preds: List[str] = field(default_factory=list)
     anchorable_timex: bool = False
+    #: Absolute-day / within-day-part projection (Addendum 9, Task 1),
+    #: populated by scaffold.project_timexes() after the scaffold is built --
+    #: empty at segment() time, since no anchor is resolved yet.
+    projected_days: Set[int] = field(default_factory=set)
+    projected_parts: Set[str] = field(default_factory=set)
     signal_preds: Set[str] = field(default_factory=set)
     entities: Set[str] = field(default_factory=set)
     text: str = ""

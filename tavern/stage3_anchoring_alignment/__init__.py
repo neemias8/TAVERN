@@ -33,6 +33,7 @@ class Stage3Result:
     clustering: Clustering
     induced: InducedTimeline
     graph: "graph_mod.EventGraph"
+    projection: Optional[Dict[str, int]] = None
 
     def stats(self) -> dict:
         units = sum(len(tl.units) for tl in self.timelines.values())
@@ -53,6 +54,7 @@ class Stage3Result:
             "edge_types": self.graph.edge_counts(),
             "removed_arcs": len(self.induced.removed),
             "conflicts": len(self.induced.conflicts),
+            **(self.projection or {}),
         }
 
 
@@ -64,6 +66,8 @@ def run(structs: Dict[str, AnnotationStructure], corpus: Corpus,
     timelines = segment_corpus(structs, corpus, pericopes, chains)
     sc = scaffold_mod.build(structs, timelines,
                             enabled=cfg.use_anchor_scaffold)
+    units_flat = {u.unit_id: u for tl in timelines.values() for u in tl.units}
+    projection = scaffold_mod.project_timexes(structs, sc, units_flat)
     clustering = cluster_units(timelines, sc, embeddings)
     intra = [c for s in structs.values() for c in s.conflicts]
     crossings = detect_order_conflicts(timelines, sc, embeddings)
@@ -71,7 +75,7 @@ def run(structs: Dict[str, AnnotationStructure], corpus: Corpus,
                      structs=structs)
     eg = graph_mod.build(structs, timelines, clustering, induced, sc,
                          embeddings)
-    res = Stage3Result(timelines, sc, clustering, induced, eg)
+    res = Stage3Result(timelines, sc, clustering, induced, eg, projection)
 
     if write:
         out = cfg.run_dir() / "stage3"

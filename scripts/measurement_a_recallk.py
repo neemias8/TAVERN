@@ -50,8 +50,8 @@ from tavern import pipeline
 from tavern.config import OUTPUT_DIR, TavernConfig
 from tavern.stage3_anchoring_alignment import scaffold as scaffold_mod
 from tavern.stage3_anchoring_alignment.event_coref import (
-    PredicateIDF, anchor_compatibility, class_agreement, modal_compatibility,
-    participant_similarity, predicate_similarity)
+    EntityIDF, PredicateIDF, anchor_compatibility, class_agreement,
+    modal_compatibility, participant_similarity, predicate_similarity)
 from tavern.stage3_anchoring_alignment.local_timeline import segment_corpus
 from tavern.stage6_evaluation import chronology as chrono_mod
 from tavern.stage6_evaluation.redundancy import _STOP, _TOKEN, _stem
@@ -61,14 +61,14 @@ WEIGHTS = {"predicate": 0.40, "participants": 0.25, "anchor": 0.15,
           "modal": 0.10, "class": 0.10}
 
 
-def raw_score(a, b, scaffold, vectors, zero_term=None):
+def raw_score(a, b, scaffold, vectors, entity_idf, zero_term=None):
     """score(), inlined so a single term's weight can be zeroed without
     touching event_coref.WEIGHTS (which the induced pipeline still reads)."""
     w = dict(WEIGHTS)
     if zero_term:
         w[zero_term] = 0.0
     return (w["predicate"] * predicate_similarity(a, b, vectors, None)
-            + w["participants"] * participant_similarity(a, b)
+            + w["participants"] * participant_similarity(a, b, entity_idf)
             + w["anchor"] * anchor_compatibility(a, b, scaffold)
             + w["modal"] * modal_compatibility(a, b)
             + w["class"] * class_agreement(a, b))
@@ -116,10 +116,12 @@ def build_context(cfg: TavernConfig):
     for tl in timelines.values():
         for u in tl.units:
             units[u.unit_id] = u
+    scaffold_mod.project_timexes(structs, sc, units)   # Addendum 9, Task 1/2
     idf = PredicateIDF(list(units.values()))
     vectors = {uid: idf.vector(u) for uid, u in units.items()}
+    entity_idf = EntityIDF(list(units.values()))
     ch = chrono_mod.load(corpus)
-    return units, sc, vectors, ch
+    return units, sc, vectors, entity_idf, ch
 
 
 def event_spans(ch, units):
@@ -140,8 +142,10 @@ def event_spans(ch, units):
     return spans
 
 
-def span_score(query_ids, cand_ids, units, scaffold, vectors, zero_term=None):
-    vals = [raw_score(units[a], units[b], scaffold, vectors, zero_term)
+def span_score(query_ids, cand_ids, units, scaffold, vectors, entity_idf,
+              zero_term=None):
+    vals = [raw_score(units[a], units[b], scaffold, vectors, entity_idf,
+                      zero_term)
            for a in query_ids for b in cand_ids]
     return sum(vals) / len(vals) if vals else 0.0
 
@@ -152,7 +156,7 @@ def lexical_span_score(query_ids, cand_ids, units):
 
 
 def run(cfg: TavernConfig, zero_term=None, lexical=False):
-    units, sc, vectors, ch = build_context(cfg)
+    units, sc, vectors, entity_idf, ch = build_context(cfg)
     spans = event_spans(ch, units)
 
     # candidates per book: every event that book has a (found) span for
@@ -183,7 +187,7 @@ def run(cfg: TavernConfig, zero_term=None, lexical=False):
                              for eid, ids in cands]
                 else:
                     scored = [(span_score(query, ids, units, sc, vectors,
-                                          zero_term), eid)
+                                          entity_idf, zero_term), eid)
                              for eid, ids in cands]
                 # stable, deterministic tie-break: score desc, event_id asc
                 scored.sort(key=lambda t: (-t[0], t[1]))

@@ -103,6 +103,14 @@ class Timex3:
     anchor_level: int = 0
     anchorable: bool = False
     scaffold_rank: Optional[float] = None
+    #: Absolute-day / within-day projection derived from the anchor scaffold's
+    #: own feast/daypart lexicon (Addendum 9, Task 1) -- an extension to the
+    #: conformant relative encoding (@value/@anchorTimeID), not a replacement
+    #: for it. None where the scaffold could not resolve an absolute day (a
+    #: non-narration expression, or an offset with nothing in scope to chain
+    #: from).
+    projected_day: Optional[int] = None
+    projected_part: Optional[str] = None
 
     @property
     def ref(self) -> str:
