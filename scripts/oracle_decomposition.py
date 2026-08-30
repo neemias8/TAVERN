@@ -9,14 +9,22 @@ axis independently.
                  real tournament: isolates what ordering alone costs
   C              induced clustering, oracle ordering   -- real linking,
                  perfect order: isolates what grouping alone costs
-  D (oracle)     oracle clustering,  oracle ordering    -- ceiling; this is
-                 what TavernConfig.use_oracle_timeline was supposed to be
-                 and never was (dead flag, never read -- see Addendum 7
-                 Task 1). Implemented here rather than in pipeline.py,
-                 because building it needs the chronology, and pipeline.py
-                 is Stage 1-5: assert_no_chronology_import would (correctly)
-                 refuse it there. This script is Stage 6, same reasoning as
-                 cluster_purity.py and oracle_roundtrip.py.
+  D (oracle)     oracle clustering,  oracle ordering    -- ceiling.
+
+This is the "oracle timeline" configuration the thesis describes -- and, as
+of Addendum 7 Task 1, the ONLY place it exists. TavernConfig used to carry a
+`use_oracle_timeline` flag; it was declared and never read anywhere, a dead
+switch. It has been removed rather than wired up, because wiring it up
+inside pipeline.run would require pipeline.py (Stage 1-5) to read the
+chronology, which config.assert_no_chronology_import() exists specifically
+to refuse -- correctly, in this case. The oracle configuration is a Stage 6
+BENCH: it takes real Stage 1-3 annotation and units (via pipeline.prepare /
+segment_corpus, chronology-free) and substitutes the chronology-built
+oracle clustering/ordering for the induced ones only here, downstream of the
+guard, the same reasoning as cluster_purity.py and oracle_roundtrip.py. If a
+pipeline-level oracle configuration is wanted later, it has to be built this
+way -- a Stage 6 driver that calls into Stage 1-3 for annotation and units,
+never the reverse.
 
 B reuses global_timeline.induce() directly -- the real registration/
 build_cluster_graph/minimum_feedback_arc_set/topological_sort pipeline --

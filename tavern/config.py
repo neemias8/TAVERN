@@ -137,7 +137,6 @@ class TavernConfig:
     # NO_ANCHOR_CREDIT). H-C is anchor_band above; test 1.0 there.
     gated_score: bool = False
     no_anchor_credit: bool = False
-    use_oracle_timeline: bool = False
     cascade_levels: tuple = (1, 2, 3, 4)
 
     # Stage 4

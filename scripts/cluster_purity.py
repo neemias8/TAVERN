@@ -34,6 +34,24 @@ merging more material into each cluster; if purity falls at the same time, the
 change is making the system worse and the count better. That pairing is the
 whole point of the measurement.
 
+STRUCTURAL CEILING: purity, B-cubed and SAME_EVENT precision cap out at
+roughly 89.5%, not 100%, and this is not a bug -- verified against a perfect
+(oracle) clustering, which still lands there (Addendum 7, Task 1). The cause
+is a genuine granularity mismatch between the system and the reference:
+`local_timeline.segment`'s `for v in verses` opens a unit boundary only
+between whole verses -- TAVERN's atom is the verse -- while Aschmann's
+harmonisation occasionally individuates at the HALF-verse level ("14:66-68a"
+for one event, "14:68b" for the next). 26 verse keys are claimed by two
+curated events this way, touching 40 of 169 events; 10 of those 40 have no
+verse exclusive to them at all (events 47, 93, 99, 119, 132, 133, 155, 156,
+157, 163) and so cannot be individuated as distinct objects under ANY
+clustering, however correct -- 11 counting event 53, which has no verse
+citation in any book at all. Do not read a purity/B-cubed number against
+100%; read it against ~89.5%, and report both. Not fixed here or upstream:
+doing so would mean a half-verse key threaded through
+Corpus/ReferenceParser/Chronology, used everywhere, for a gain in reporting
+accuracy rather than in the system itself -- see DATA_PROVENANCE.md.
+
 This script reads the chronology and therefore belongs to Stage 6. It is a
 standalone SCRIPT (outside the `tavern` package) so that no import path
 exists from stages 1-5 into it -- but it still reuses the package's own
