@@ -4,9 +4,14 @@
 
 TAVERN consolidates several long, overlapping narrative documents into one
 chronologically ordered account — and **induces** the chronology from the text
-rather than receiving it. The temporal backbone comes from an ISO 24617-1:2012
-(ISO-TimeML) annotation of the sources; the curated harmony that earlier work
-consumed as input is held out here as an evaluation reference.
+rather than receiving it. Two earlier works in this same PhD share the task
+and the sources: **TAEG** (JBCS) introduces Narrative Consolidation and solves
+it **extractively** — one source account selected per event; **NSNC** (IJCNN)
+generalises that to **abstractive**, neuro-symbolic fusion. Both take the same
+external, ready-made chronology (Aschmann's harmony of the Gospels) as a given
+input to alignment. TAVERN is abstractive like NSNC, but holds that same
+chronology out and reads it only at evaluation — the temporal backbone instead
+comes from an ISO 24617-1:2012 (ISO-TimeML) annotation of the sources.
 
 Case study: the four canonical Gospels over the Passion Week.
 
@@ -17,7 +22,8 @@ Case study: the four canonical Gospels over the Passion Week.
 
 ## Why this repository changed
 
-Earlier revisions took the Aschmann chronology as an input to alignment. That
+Earlier revisions of TAVERN itself — not TAEG or NSNC, which never claimed
+otherwise — also took the Aschmann chronology as an input to alignment. That
 made Kendall's τ — the ordering metric — **1.000 by construction** in every
 configuration ever reported, because the system was never asked to exercise the
 competence the metric measures. The chronology is now reachable only from
