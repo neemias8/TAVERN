@@ -43,6 +43,9 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+import math
+from collections import Counter
+
 from tavern import pipeline
 from tavern.config import OUTPUT_DIR, TavernConfig
 from tavern.stage3_anchoring_alignment import scaffold as scaffold_mod
@@ -51,6 +54,7 @@ from tavern.stage3_anchoring_alignment.event_coref import (
     participant_similarity, predicate_similarity)
 from tavern.stage3_anchoring_alignment.local_timeline import segment_corpus
 from tavern.stage6_evaluation import chronology as chrono_mod
+from tavern.stage6_evaluation.redundancy import _STOP, _TOKEN, _stem
 
 TERMS = ("predicate", "participants", "anchor", "modal", "class")
 WEIGHTS = {"predicate": 0.40, "participants": 0.25, "anchor": 0.15,
@@ -68,6 +72,39 @@ def raw_score(a, b, scaffold, vectors, zero_term=None):
             + w["anchor"] * anchor_compatibility(a, b, scaffold)
             + w["modal"] * modal_compatibility(a, b)
             + w["class"] * class_agreement(a, b))
+
+
+# ---------------------------------------------------------------------------
+# Addendum 7, Task 2: the lexical_baseline control. Zero annotation -- no
+# predicate label, no entity chain, no anchor, no modal type, no class.
+# Content-word term-frequency cosine over the raw verse text, using the same
+# stopword list, tokenizer and suffix stemmer already validated in
+# redundancy.py's content-coverage measurement, so this reuses one
+# tokenisation, not a second ad hoc one.
+_LEXICAL_CACHE: dict = {}
+
+
+def _lexical_vector(unit_id, units):
+    v = _LEXICAL_CACHE.get(unit_id)
+    if v is not None:
+        return v
+    words = [_stem(m.group(0)) for m in _TOKEN.finditer(units[unit_id].text)
+             if len(m.group(0)) > 2 and m.group(0).lower() not in _STOP]
+    c = Counter(words)
+    norm = math.sqrt(sum(x * x for x in c.values())) or 1.0
+    v = {w: x / norm for w, x in c.items()}
+    _LEXICAL_CACHE[unit_id] = v
+    return v
+
+
+def _cosine(a, b):
+    if len(a) > len(b):
+        a, b = b, a
+    return sum(x * b.get(k, 0.0) for k, x in a.items())
+
+
+def lexical_score(a, b, units):
+    return _cosine(_lexical_vector(a, units), _lexical_vector(b, units))
 
 
 def build_context(cfg: TavernConfig):
@@ -109,7 +146,12 @@ def span_score(query_ids, cand_ids, units, scaffold, vectors, zero_term=None):
     return sum(vals) / len(vals) if vals else 0.0
 
 
-def run(cfg: TavernConfig, zero_term=None):
+def lexical_span_score(query_ids, cand_ids, units):
+    vals = [lexical_score(a, b, units) for a in query_ids for b in cand_ids]
+    return sum(vals) / len(vals) if vals else 0.0
+
+
+def run(cfg: TavernConfig, zero_term=None, lexical=False):
     units, sc, vectors, ch = build_context(cfg)
     spans = event_spans(ch, units)
 
@@ -136,8 +178,13 @@ def run(cfg: TavernConfig, zero_term=None):
                 if not any(eid == e.event_id for eid, _ in cands):
                     skipped_no_true_candidate += 1
                     continue
-                scored = [(span_score(query, ids, units, sc, vectors, zero_term),
-                          eid) for eid, ids in cands]
+                if lexical:
+                    scored = [(lexical_span_score(query, ids, units), eid)
+                             for eid, ids in cands]
+                else:
+                    scored = [(span_score(query, ids, units, sc, vectors,
+                                          zero_term), eid)
+                             for eid, ids in cands]
                 # stable, deterministic tie-break: score desc, event_id asc
                 scored.sort(key=lambda t: (-t[0], t[1]))
                 rank = next(i for i, (_, eid) in enumerate(scored, start=1)
@@ -152,7 +199,7 @@ def run(cfg: TavernConfig, zero_term=None):
     mrr = sum(1.0 / r for r in ranks) / n if n else 0.0
     avg_cand = sum(n_candidates) / n if n else 0.0
     return {
-        "zero_term": zero_term, "queries": n,
+        "zero_term": "lexical_baseline" if lexical else zero_term, "queries": n,
         "skipped_no_query_span": skipped_no_query,
         "skipped_no_true_candidate": skipped_no_true_candidate,
         "avg_candidates": round(avg_cand, 2),
@@ -170,6 +217,9 @@ def main() -> int:
     ap.add_argument("--all-terms", action="store_true",
                     help="run the full score plus all five single-term "
                          "ablations in one call")
+    ap.add_argument("--lexical", action="store_true",
+                    help="Addendum 7 Task 2: zero-annotation content-word "
+                         "cosine baseline, same bench, same queries")
     args = ap.parse_args()
 
     cfg = TavernConfig(tag="measurement_a")
@@ -177,7 +227,12 @@ def main() -> int:
     out_dir.mkdir(parents=True, exist_ok=True)
 
     rows = []
-    if args.all_terms:
+    if args.lexical:
+        print("--- lexical_baseline (zero annotation) ---")
+        row = run(cfg, lexical=True)
+        print(row)
+        rows.append({"config": "lexical_baseline", **row})
+    elif args.all_terms:
         print("--- full score (all five terms) ---")
         full = run(cfg, zero_term=None)
         print(full)
@@ -192,9 +247,10 @@ def main() -> int:
         print(row)
         rows.append({"config": args.ablate or "full", **row})
 
-    (out_dir / "recallk.json").write_text(json.dumps(rows, indent=1),
-                                          encoding="utf-8")
-    print(f"\nwrote {out_dir / 'recallk.json'}")
+    out_name = "recallk_lexical.json" if args.lexical else "recallk.json"
+    (out_dir / out_name).write_text(json.dumps(rows, indent=1),
+                                    encoding="utf-8")
+    print(f"\nwrote {out_dir / out_name}")
     return 0
 
 
