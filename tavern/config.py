@@ -138,6 +138,12 @@ class TavernConfig:
     gated_score: bool = False
     no_anchor_credit: bool = False
     cascade_levels: tuple = (1, 2, 3, 4)
+    # Addendum 11 -- isolating which of Addendum 9's three changes produced
+    # the ancoragem gain. Ablations over an already-adopted configuration;
+    # none of them is ever the default and none is meant to be adopted.
+    disable_projection: bool = False          # R1: scaffold.project_timexes never runs
+    disable_projection_indexing: bool = False  # R2: projection runs, but D:/P: terms are not indexed
+    legacy_participants: bool = False          # R3: pre-Addendum-9 _UBIQUITOUS_ENTITIES + bare Jaccard
 
     # Stage 4
     gnn_hidden: int = 128

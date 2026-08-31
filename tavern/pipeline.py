@@ -67,6 +67,8 @@ def _apply_granularity(cfg: TavernConfig) -> None:
     event_coref.MATCH_THRESHOLD = cfg.match_threshold
     event_coref.GATED_SCORE = cfg.gated_score
     event_coref.NO_ANCHOR_CREDIT = cfg.no_anchor_credit
+    event_coref.DISABLE_PROJECTION_INDEXING = cfg.disable_projection_indexing
+    event_coref.LEGACY_PARTICIPANTS = cfg.legacy_participants
 
 
 def prepare(cfg: TavernConfig, verify: bool = True):

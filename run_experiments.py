@@ -475,6 +475,19 @@ def main() -> int:
                          "anchor credit, instead of anchor_compatibility's "
                          "default. Adopted as the framework's primary "
                          "configuration; see event_coref.NO_ANCHOR_CREDIT.")
+    ap.add_argument("--disable-projection", action="store_true",
+                    help="Addendum 11, R1: scaffold.project_timexes never "
+                         "runs, isolating Addendum 9's absolute-day "
+                         "projection from its other two changes. Ablation "
+                         "over ancoragem, never the default.")
+    ap.add_argument("--disable-projection-indexing", action="store_true",
+                    help="Addendum 11, R2: the projection still runs and is "
+                         "serialised, but PredicateIDF does not index its "
+                         "D:/P: terms. Isolates indexing from projecting.")
+    ap.add_argument("--legacy-participants", action="store_true",
+                    help="Addendum 11, R3: participant_similarity reverts to "
+                         "the pre-Addendum-9 hand-picked _UBIQUITOUS_ENTITIES "
+                         "stop-list and bare Jaccard fallback.")
     args = ap.parse_args()
 
     want = {k: getattr(args, k) for k in
@@ -488,7 +501,10 @@ def main() -> int:
         extra["ollama_repeat_penalty"] = args.ollama_repeat_penalty
     cfg = TavernConfig(tag=args.tag, backbone=args.backbone,
                        backbone_model=args.backbone_model, extra=extra,
-                       no_anchor_credit=args.no_anchor_credit)
+                       no_anchor_credit=args.no_anchor_credit,
+                       disable_projection=args.disable_projection,
+                       disable_projection_indexing=args.disable_projection_indexing,
+                       legacy_participants=args.legacy_participants)
     print(f"Running stages 1-5 (backbone '{args.backbone}') ...")
     res = pipeline.run(cfg, with_gnn=True, write=True)
     if res.backbone_note:

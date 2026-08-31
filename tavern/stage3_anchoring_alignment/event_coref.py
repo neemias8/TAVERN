@@ -86,6 +86,18 @@ GATED_SCORE = False
 #: A no-op under GATED_SCORE, which has already dropped the anchor term.
 NO_ANCHOR_CREDIT = False
 
+#: Addendum 11, R2: scaffold.project_timexes still runs and Timex3 still
+#: carries tvn:projectedDay/Part, but PredicateIDF does not index the
+#: D:/P: terms -- isolates whether INDEXING the projection (as opposed to
+#: merely computing and serialising it) is what produced the ancoragem gain.
+DISABLE_PROJECTION_INDEXING = False
+
+#: Addendum 11, R3: revert participant_similarity to the pre-Addendum-9
+#: hand-picked stop-list and bare Jaccard fallback -- isolates how much of
+#: the ancoragem gain came from the participant fix alone.
+LEGACY_PARTICIPANTS = False
+_LEGACY_UBIQUITOUS_ENTITIES = {"JESUS", "DISCIPLES"}
+
 _NO_ANCHOR_WEIGHTS = (
     WEIGHTS["predicate"] + WEIGHTS["anchor"] * WEIGHTS["predicate"]
     / (WEIGHTS["predicate"] + WEIGHTS["participants"]),
@@ -179,8 +191,9 @@ class PredicateIDF:
         for u in units:
             df.update(set(u.preds))
             df.update({f"T:{t}" for t in u.timex_preds})
-            df.update({f"D:{d}" for d in u.projected_days})
-            df.update({f"P:{p}" for p in u.projected_parts})
+            if not DISABLE_PROJECTION_INDEXING:
+                df.update({f"D:{d}" for d in u.projected_days})
+                df.update({f"P:{p}" for p in u.projected_parts})
         self.n = max(1, len(units))
         self.df = df
 
@@ -191,10 +204,11 @@ class PredicateIDF:
         terms = Counter(u.preds)
         for t in u.timex_preds:
             terms[f"T:{t}"] += 1
-        for d in u.projected_days:
-            terms[f"D:{d}"] += 1
-        for p in u.projected_parts:
-            terms[f"P:{p}"] += 1
+        if not DISABLE_PROJECTION_INDEXING:
+            for d in u.projected_days:
+                terms[f"D:{d}"] += 1
+            for p in u.projected_parts:
+                terms[f"P:{p}"] += 1
         vec = {t: (1.0 + math.log(c)) * self.weight(t)
                for t, c in terms.items()}
         norm = math.sqrt(sum(v * v for v in vec.values())) or 1.0
@@ -589,6 +603,17 @@ def participant_similarity(a: EventUnit, b: EventUnit,
     distinctive shared entity now multiplies the ratio down instead of
     leaving it at its self-similarity maximum.
     """
+    if LEGACY_PARTICIPANTS:                                        # R3
+        if not a.entities or not b.entities:
+            return 0.0
+        jac = len(a.entities & b.entities) / len(a.entities | b.entities)
+        sa = a.entities - _LEGACY_UBIQUITOUS_ENTITIES
+        sb = b.entities - _LEGACY_UBIQUITOUS_ENTITIES
+        if sa and sb:
+            sj = len(sa & sb) / len(sa | sb)
+            return 0.35 * jac + 0.65 * sj
+        return jac
+
     if not a.entities or not b.entities:
         return 0.0
     inter = a.entities & b.entities

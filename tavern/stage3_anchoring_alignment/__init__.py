@@ -67,7 +67,15 @@ def run(structs: Dict[str, AnnotationStructure], corpus: Corpus,
     sc = scaffold_mod.build(structs, timelines,
                             enabled=cfg.use_anchor_scaffold)
     units_flat = {u.unit_id: u for tl in timelines.values() for u in tl.units}
-    projection = scaffold_mod.project_timexes(structs, sc, units_flat)
+    if cfg.disable_projection:
+        # Addendum 11, R1: isolate the projection itself from Addendum 9's
+        # other two changes by never running it -- EventUnit.projected_days/
+        # parts and Timex3.projected_day/part stay at their empty defaults,
+        # so PredicateIDF's D:/P: indexing (R2) has nothing to index.
+        projection = {"timex_day_concrete": 0, "timex_day_subspecified": 0,
+                     "timex_part_concrete": 0, "timex_part_subspecified": 0}
+    else:
+        projection = scaffold_mod.project_timexes(structs, sc, units_flat)
     clustering = cluster_units(timelines, sc, embeddings)
     intra = [c for s in structs.values() for c in s.conflicts]
     crossings = detect_order_conflicts(timelines, sc, embeddings)
