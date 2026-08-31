@@ -64,6 +64,30 @@ token layer, the JSON projection and the consolidated narrative.
   cites a verse range per Gospel; selecting per unit fragments the account and
   costs ~0.1 of ROUGE-L.
 - Allen's composition table is generated from the endpoint algebra, not typed in.
+- **A structural score defect is worth a failing test before the fix, not
+  after.** `participant_similarity`'s bare Jaccard over the ubiquitous
+  entities and `modal_compatibility`'s 1.0 default for no modal evidence let
+  two units with zero shared predicate, zero distinguishing entity and zero
+  anchor evidence clear `MATCH_THRESHOLD` (0.25×1.0 + 0.10×1.0 = 0.35 ≥
+  0.34). `scripts/test_no_evidence_floor.py` was committed failing against
+  the pre-fix code (`bf12077`) before Addendum 9's fix (`9d9e0ec`) — the
+  failing commit is the proof the defect existed, kept in history rather
+  than folded into the fix as an invisible footnote.
+
+## Consolidation output, and which backbone made it
+
+TAVERN is abstractive by design: `--backbone` fuses **per event**, in induced
+order, so chronology is a property of the loop. `union`/`extractive` need no
+model; `ollama`/`instruct`/`bart`/`pegasus`/`primera` do. What's committed
+under `consolidations/` is `ollama`/gemma3:4b on the `ancoragem` run (R-1
+0.793, R-2 0.734, R-L 0.566, METEOR 0.477, 0/289 glued-word events) —
+regenerate with `python main.py --tag t --backbone ollama --backbone-model
+gemma3:4b && python scripts/make_curation.py outputs/t/curation.json
+consolidations/t/`. `consolidations/curation.md`/`.csv` lay out, per event,
+every source account beside its consolidation, with verse addresses, day
+index, conflict flag, and a blank verdict for **faithful / complete /
+placement** — no event is undetected, 2 are displaced across a day
+boundary, 29 are transposed with a same-day neighbour (ancoragem).
 
 ## Where the results stand
 
