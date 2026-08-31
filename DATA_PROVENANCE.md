@@ -78,6 +78,38 @@ mean a half-verse key threaded through `Corpus`/`ReferenceParser`/
 than in the system being measured. `scripts/cluster_purity.py`'s module
 docstring carries the same note next to the code that measures it.
 
+## A derived layer: absolute-day projection
+
+Addendum 9 adds a projection of each anchorable `<TIMEX3>` onto an absolute
+day index and a within-day part, alongside — never instead of — the
+conformant relative encoding (`@value="XXXX-XX-XX"` + `@anchorTimeID`, the
+Appendix A conformance argument, untouched). The reference date is derived
+**from the text**, not from the chronology: `FEAST_DAY`
+(`tavern/stage3_anchoring_alignment/scaffold.py`) maps `PASSOVER → 0.0`,
+`SABBATH → 1.0`, `FIRST_DAY → 2.0` — three feast names the Gospels themselves
+use — and `DAYPART_POSITION` gives the within-day fraction for a daypart or
+temporal-hour expression. `scaffold.project_timexes` writes the result onto
+the `Timex3` object (serialised as the `tvn:projectedDay`/`tvn:projectedPart`
+extension attributes) and onto the corresponding `EventUnit`
+(`projected_days`/`projected_parts`), which `event_coref.PredicateIDF` then
+indexes as `D:{day}`/`P:{part}` terms.
+
+`biblical_calendar.WEEKDAY_ORDER` is never the source: that lexicon carries
+the *chronology's own* day labels ("Palm Sunday", "Dark Saturday") and exists
+for the scaffold's own registration, not for this projection — using it here
+would smuggle the held-out chronology's vocabulary into the score through a
+side door, which `assert_no_chronology_import()` does not (and cannot, since
+`WEEKDAY_ORDER` is a static lexicon, not a chronology load) catch.
+
+Measured: of the corpus's 112 anchorable `<TIMEX3>`, **42 (37.5%) resolve to
+a concrete absolute day** and 70 stay subspecified (a non-narration
+expression, e.g. inside a prophecy, or an offset expression with nothing
+resolved in scope to chain from); **46 (41.1%) resolve to a concrete
+within-day part**, 66 do not. This partial population is declared, not
+hidden: it is the known limit of the mechanism Addendum 9 introduced, left
+unextended because closing it after measuring its effect on `ancoragem`
+would be tuning against the evaluation that reported the effect.
+
 ## The held-out guarantee
 
 `config.assert_no_chronology_import()` inspects the call stack and raises if a

@@ -67,76 +67,127 @@ token layer, the JSON projection and the consolidated narrative.
 
 ## Where the results stand
 
-**Canonical run: `canonical-20260827`** (tag `canonical`, base config
-— `no_anchor_credit=False`, the published default — Ollama gemma3:4b,
-`repeat_penalty=1.1`). This is the single source; everything below is
-measured on it or diagnostically against it, not a separate run.
+**Primary run: `ancoragem-20260831`** (tag `ancoragem`, code commit `9d9e0ec`,
+base config, Ollama gemma3:4b, `repeat_penalty=1.1`). **`canonical-20260827`
+is retained as the "before" state** — the run that exposed the defect
+Addendum 9 fixed, not a discarded result. Both tags stay citable; every
+number below reports both where they differ.
 
-τ = 0.9155, pairwise 0.9577, coverage 0.8512 (143/168), 249 clusters. All six
-consistency checks pass. 94 inter-document conflicts, all three documented
-divergences recovered. End-to-end ROUGE-L 0.497 (Ollama, `repeat_penalty`
-fixed from 1.5 to 1.1 — see below), against the pre-registered 0.795 —
-**not met**, and Chapter 10 says so.
+Addendum 9's finding: the thesis's Achado 4 claims the TIMEX3 inventory's
+normalisation and the anchor chains order the four documents, but the
+normalisation never reached the coreference score, and a hand-picked
+2-entity stop-list (`_UBIQUITOUS_ENTITIES`) stood in for entity
+discrimination. `scripts/test_no_evidence_floor.py` proves it: two units
+sharing zero predicate, zero distinguishing entity and zero anchor evidence
+still cleared `MATCH_THRESHOLD` (0.25×1.0 + 0.10×1.0 = 0.35 ≥ 0.34) — failing
+commit `bf12077`, fixed in `9d9e0ec`. The fix: `scaffold.project_timexes`
+derives an absolute day/part per anchorable TIMEX3 from `FEAST_DAY`/
+`DAYPART_POSITION` (never the chronology, never `WEEKDAY_ORDER`) and feeds
+it into `PredicateIDF` as `D:{day}`/`P:{part}` terms; `_UBIQUITOUS_ENTITIES`
+is replaced by `EntityIDF`, the same IDF construction applied to entities.
 
-**τ has a floor and it changes the reading.** N1 (positional interleaving,
-zero annotation) gets τ=0.8140. So 0.9155 closes 54.6% of the gap to the
-curated ceiling (1.000), not "92% of perfect" — report both numbers, never τ
-alone.
+τ = 0.9274 (was 0.9155), pairwise 0.9637 (0.9577), coverage 0.8869/149/168
+(0.8512/143/168), 289 clusters (249). All six consistency checks pass in
+both. 96 inter-document conflicts (94), all three documented divergences
+recovered in both. End-to-end ROUGE-L 0.566 (0.497, Ollama), against the
+pre-registered 0.795 — **still not met**, closer than before, and Chapter 10
+says so.
 
-**τ is protected by construction — measured, not asserted.** `removed_arcs`
-in the global tournament is 0 under the induced (monotone-by-construction)
-clustering. Feed the oracle clustering into the identical tournament and
-`removed_arcs = 614`, τ **falls** to 0.6296. The induced grouping's
-monotonicity keeps real cross-document ordering disagreements from ever
-reaching the tournament; τ is high partly because of that, not despite it.
+**τ has a floor and it changes the reading — and the floor did not move.**
+N1 (positional interleaving, zero annotation) gets τ=0.8140 regardless of
+configuration, since it's a property of the corpus and the null model, not
+of Stage 3's scoring. 0.9274 closes 61.0% of the gap to the curated ceiling
+(1.000), up from 54.6% — report both numbers, never τ alone.
 
-**Cluster purity has the same shape.** 30.8% of multi-witness clusters are
-pure — but the ceiling, verified against a perfect oracle clustering, is
-89.5%, not 100%: `local_timeline.segment` opens a unit boundary only between
-whole verses, and Aschmann's harmonisation occasionally splits one verse
-between two events (`"14:66-68a"` / `"14:68b"`). 26 verse keys, 40 events
-touched, 10 with no verse exclusive to them at all. 30.8/89.5 = 34.4% of
-ceiling is the number to report, not 30.8/100.
+**τ is protected by construction — measured, not asserted, unchanged by the
+fix.** `removed_arcs` in the global tournament is 0 under either induced
+(monotone-by-construction) clustering. Feed the oracle clustering into the
+identical tournament and `removed_arcs = 614`, τ **falls** to 0.6296 in
+both — this cross-check depends only on `global_timeline.induce()` and the
+oracle clustering, neither touched by Addendum 9.
 
-**Grouping and ordering are not separable.** Crossing induced/oracle on each
-axis (A=both induced, B=oracle grouping, C=oracle ordering, D=both oracle):
-D−B (0.303) + D−C (0.308) = 0.611, against the real D−A of 0.201 — a residual
-of 0.410. Fixing either component alone makes ROUGE-L *worse* than the fully
-induced baseline; only fixing both together helps.
+**Cluster purity moved, the ceiling did not.** 44.4% of multi-witness
+clusters are pure (was 30.8%) — but the ceiling, verified against a perfect
+oracle clustering, is still 89.5% (B-cubed F1 0.829): the oracle clustering
+is built straight from the chronology, so this ceiling is a property of the
+corpus's citation granularity, invariant to the coreference fix.
+`local_timeline.segment` opens a unit boundary only between whole verses,
+and Aschmann's harmonisation occasionally splits one verse between two
+events (`"14:66-68a"` / `"14:68b"`). 26 verse keys, 40 events touched, 10
+with no verse exclusive to them at all (3 of those 10 never win any verse at
+all, invisible to any verse-keyed instrument, not just hard to individuate).
+44.4/89.5 = 49.6% of ceiling now (was 34.4%).
 
-**Selection accuracy is below chance, against the right floor.** 0.2973
-induced, over 74 events (the ones the induced clustering actually gives a
-matched ≥2-document cluster for) — not the 95 the published analytical floor
-(0.3474) is computed over. Recomputed over the same 74, the floor is 0.3446.
-0.2973 < 0.3446.
+**How much predicate evidence reaches the score — corrected twice, and the
+second correction is the one that goes to the thesis.** First measurement
+(27%, all-witness intersection) was too strict for 3–4-document clusters;
+corrected to pairwise, 59.1% of clusters share *some* raw predicate/TIMEX3
+term. But raw intersection is itself the wrong instrument — common verbs
+(SAY, GO, COME) make almost any pair intersect regardless of discrimination,
+which IDF weighting suppresses. `scripts/predicate_evidence_fraction.py`
+reports the actual signal: the pairwise IDF-weighted cosine's 0.40-weighted
+contribution, pooled over every cross-book pair. Median contribution 0.042
+→ 0.101, fraction of pairs below 0.08 contribution 61.0% → 46.3%. Same
+direction as predicted, not the same exact percentiles as any intermediate
+estimate — report the instrument, not a copied number.
 
-**The annotation loses to a zero-annotation lexical baseline.** Isolating
-`score()` from the alignment algorithm (curated segmentation given for free,
-no threshold, no band): recall@1 is 0.405 for the full
-predicate+participants+anchor+modal+class score, **0.513 for raw content-word
-cosine over the verse text**. Per-term ablation: `class` contributes exactly
-0.000; `modal` is net-harmful (+0.019 recall@1 when removed). Not reweighted
-— that would be tuning against the reference the ablation used.
+**Grouping and ordering are not separable — and the fix did not separate
+them.** Crossing induced/oracle on each axis (A=both induced, B=oracle
+grouping, C=oracle ordering, D=both oracle) — B and D depend only on the
+oracle clustering and are therefore identical before/after: canonical
+D−A=0.201, D−B=0.303, D−C=0.308, sum 0.611, residual 0.410; ancoragem
+D−A=0.133 (closes markedly more of Stage 3's own gap), D−B=0.303 (same),
+D−C=0.315, sum 0.618, residual 0.486 — *wider*, if anything. Fixing either
+component alone still makes ROUGE-L worse than the fully induced baseline in
+both configurations.
 
-Two ablations contradict the thesis's predictions and are reported, not hidden.
+**Selection accuracy crossed from below chance to above it.** Canonical:
+0.2973 over 74 matched events, floor (recomputed over that subset's own
+version-count distribution) 0.3446 — below. Ancoragem: **0.3600 over 75**,
+floor **0.3411** — above.
+
+**The annotation still loses to a zero-annotation lexical baseline — closer,
+not closed.** Isolating `score()` from the alignment algorithm: recall@1
+0.405→**0.437** for the full score, lexical baseline unchanged at 0.513 (it
+never touches `score()`). The fix closed 0.032 of a 0.108 gap. Per-term
+ablation on the fixed score: `class` moved from contributing exactly 0.000
+to net-harmful (+0.016 on removal); `modal` was already net-harmful and is
+now more so (+0.041, was +0.019) — Addendum 9 touched neither term; their
+apparent harm grew because the other terms got better calibrated. Not
+reweighted — that would be tuning against the reference the ablation used.
+
+**The absolute-day/within-day projection is only partly populated, and this
+is future work, not a bug.** 42/112 anchorable TIMEX3 get a concrete day
+(37.5%), 46/112 a concrete part (41.1%). The entire ancoragem gain came
+through a mechanism barely a third populated. Do not close this now — doing
+so after measuring ancoragem's result would be tuning against the
+evaluation that reported it.
+
+Two ablations contradict the thesis's predictions and are reported, not
+hidden, in both configurations.
 
 The cascade does not move τ at all — but **not** because the relations are
 uninformative. ISO-TimeML defines no cross-document relation, so the merge cannot
 run through `<TLINK>`s on any implementation; it runs through the `<TIMEX3>`
 normalisation and anchor chains, i.e. the scaffold, which is the one component
-whose removal degrades τ, coverage and ROUGE-L together. And within a document
-all **371** relational constraints between clusters agree with the narrative
-order, **0** contradict — the Evangelists narrate in order, so the links have
-nothing to correct here. Do not restate this as "the annotation does not help".
+whose removal degrades τ, coverage and ROUGE-L together in both configurations.
+Within a document, the canonical run's own count (371 relational constraints
+between clusters agree with the narrative order, 0 contradict) was not
+recomputed against ancoragem's 289 clusters — only the oracle decomposition
+was re-run — but the finding (the Evangelists narrate in order, so the links
+never need to correct anything here) is not expected to flip. Do not restate
+this as "the annotation does not help".
 
-Removing the veridicality partition slightly raises τ, so it is a correctness
-requirement (check 5) rather than an accuracy gain.
+Removing the veridicality partition slightly raises τ in both configurations,
+so it is a correctness requirement (check 5) rather than an accuracy gain.
 
-**The reference is itself a selection.** It covers 88.0% of the sources'
-content-word vocabulary; the abstractive consolidation covers 95.3%. Every
-reference-based metric therefore penalises a fusion for material the
+**The reference is itself a selection, and the gap widens as the fusion
+improves.** It covers 88.0% of the sources' content-word vocabulary
+(unchanged); the abstractive consolidation covers 96.4% now (was 95.1%).
+Every reference-based metric therefore penalises a fusion for material the
 reference doesn't contain — the strongest form of the thesis's second threat
-to validity, measured rather than argued.
+to validity, measured rather than argued, and it gets *worse*, not better,
+as Stage 3 improves.
 
 **`repeat_penalty` is backend-specific, and reusing the HuggingFace value was
 a real bug, not a tuning target.** llama.cpp's `repeat_penalty` (what Ollama
@@ -145,22 +196,26 @@ exposes) and HuggingFace's `repetition_penalty` share a name, not a scale;
 controls) pushed gemma3:4b to glue words together
 (`...toBethphegeon theMountofOlves...`, 3/249 events). Fixed to
 `OLLAMA_REPEAT_PENALTY=1.1` for Ollama only; end-to-end ROUGE-L moved 0.331 →
-0.497 on that fix alone. `scripts/check_text_quality.py` guards the
-regression.
+0.497 (canonical) on that fix alone. `scripts/check_text_quality.py` guards
+the regression (0/249 canonical, 0/289 ancoragem corrupted).
 
 ## Known, unfixed, and staying that way
 
-Fixing any of these now would invalidate the canonical run and force
+Fixing any of these now would invalidate the `ancoragem` run and force
 re-reconciling the thesis; they are findings, not open bugs to close reflexively.
 
 - The half-verse/whole-verse granularity mismatch above (purity's 89.5%
-  ceiling, and ~0.031 of ROUGE-L against the curated timeline's own ceiling).
-  Fixing it means a half-verse key through `Corpus`/`ReferenceParser`/
-  `Chronology`, used everywhere.
+  ceiling, and ~0.031 of ROUGE-L against the curated timeline's own ceiling)
+  — a corpus property, unchanged by Addendum 9. Fixing it means a half-verse
+  key through `Corpus`/`ReferenceParser`/`Chronology`, used everywhere.
+- **The absolute-day/within-day projection is only ~38–41% populated**
+  (42/112 day, 46/112 part) — the mechanism Addendum 9 added, not extended
+  further, per the ablations/analysis above.
 - `predicate_similarity`'s cosine has no length compensation for a short,
   terse account competing against a longer, richer wrong candidate.
 - `class_agreement`'s and `modal_compatibility`'s weights, per the per-term
-  ablation above.
+  ablation above — neither touched by Addendum 9, both measurably more
+  harmful after it.
 - The fusion cache is global now (keyed by backbone/model/`repeat_penalty`/
   the exact texts, `outputs/fusion_cache.jsonl`, not per-tag) — this one
   *was* fixed, because it changed nothing about what gets measured, only how
