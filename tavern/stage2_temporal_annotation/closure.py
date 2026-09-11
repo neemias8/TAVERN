@@ -299,7 +299,20 @@ def close(struct: AnnotationStructure, enabled: bool = True) -> ClosureResult:
 def apply_to_struct(struct: AnnotationStructure, res: ClosureResult,
                     emit_derived: bool = True) -> None:
     """Record the closure on the annotation structure, emitting derived
-    <TLINK> elements marked origin="closure"."""
+    <TLINK> elements marked origin="closure".
+
+    `res.network`'s nodes are always events: `close()` builds V exclusively
+    from `struct.events` and skips any asserted <TLINK> touching a TIMEX3
+    ("relations to timexes handled by the scaffold"). So a closure-derived
+    'd'/'di' relation is always between two events, and per thesis
+    Section 2.3.8 (INCLUDES/IS_INCLUDED relate an event to a time; DURING
+    relates one event to another) it must be emitted as DURING, never
+    IS_INCLUDED/INCLUDES -- `ALLEN_TO_ISO`'s generic 'd'->IS_INCLUDED,
+    'di'->INCLUDES mapping is correct for the event-time links Level 2 of
+    the cascade asserts, but wrong here (Addendum 16, Task 1). 'di' is
+    inverted and written as DURING on (j, i) rather than as DURING_INV,
+    which Section 6.2.1 accepts on input but never emits.
+    """
     struct.closed_network = {k: set(v) for k, v in res.network.items()}
     struct.network_provenance = res.provenance
     struct.conflicts.extend(res.conflicts)
@@ -315,14 +328,20 @@ def apply_to_struct(struct: AnnotationStructure, res: ClosureResult,
             continue
         if len(r) != 1:
             continue
-        iso = ALLEN_TO_ISO.get(next(iter(r)))
+        rel = next(iter(r))
+        if rel == "di":
+            src, tgt, iso = j, i, "DURING"
+        elif rel == "d":
+            src, tgt, iso = i, j, "DURING"
+        else:
+            src, tgt, iso = i, j, ALLEN_TO_ISO.get(rel)
         if iso is None:
             continue
         struct.add_tlink(TLink(
             xml_id=struct.next_id("l"),
             rel_type=TLinkRel(iso),
-            event_id=i,
-            related_to_event=j,
+            event_id=src,
+            related_to_event=tgt,
             origin="closure",
             level=5,
             confidence=CONFIDENCE_OF_LEVEL[5],

@@ -275,6 +275,29 @@ class TLinkInferrer:
         rid, rkind = right
         if lid == rid:
             return
+        if lkind == "event" and rkind == "event":
+            # thesis Section 2.3.8 / ISO-TimeML: INCLUDES/IS_INCLUDED relate
+            # an event to a time; DURING relates one event to another. Level
+            # 1 (signal) and level 3 (ALINK) can resolve two events with a
+            # relType chosen from the signal/preposition/ALINK alone, blind
+            # to what kind of node ended up on each side -- normalise here,
+            # the single point every level's assertion passes through,
+            # rather than in each level's own dict (Addendum 16, Task 1).
+            if rel == TLinkRel.IS_INCLUDED:
+                rel = TLinkRel.DURING
+            elif rel == TLinkRel.INCLUDES:
+                rel = TLinkRel.DURING
+                lid, rid = rid, lid
+        elif lkind == "timex" and rkind == "event" and rel == TLinkRel.IS_INCLUDED:
+            # A signal can resolve with the TIMEX as the syntactic left
+            # argument (e.g. its head governs the clause) and the event as
+            # the right one; canonical direction is event-source,
+            # IS_INCLUDED, time-target ("the event occurs during/within the
+            # time"), so swap rather than emit "time IS_INCLUDED event",
+            # which reads backwards. (The symmetric event-left/INCLUDES
+            # case does not currently occur -- no signal maps to INCLUDES --
+            # so it is not handled here; it would need the same swap.)
+            lid, lkind, rid, rkind = rid, rkind, lid, lkind
         key = (lid, rid)
         rkey = (rid, lid)
         prior = asserted.get(key) or asserted.get(rkey)

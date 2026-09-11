@@ -74,12 +74,24 @@ def validate(struct: AnnotationStructure) -> ValidationReport:
             rep.add(12, f"duplicate xml:id {xid}")
         seen.add(xid)
 
-    # C1 - exactly one of @eventID / @timeID
+    # C1 - exactly one of @eventID / @timeID, and (Addendum 16) @relType
+    # matches the kind of node on the target side: INCLUDES/IS_INCLUDED
+    # relate an event to a time, DURING relates one event to another
+    # (thesis Section 2.3.8) -- catches a regression of the closure.py /
+    # link_inference/tlink.py fix without waiting for someone to notice the
+    # relType histogram looks wrong.
     for l in struct.tlinks:
         if bool(l.event_id) == bool(l.time_id):
             rep.add(1, f"{l.xml_id}: eventID={l.event_id} timeID={l.time_id}")
         if not l.target_id:
             rep.add(1, f"{l.xml_id}: no relatedTo* target")
+        rt = str(l.rel_type)
+        if rt in ("IS_INCLUDED", "INCLUDES") and not l.related_to_time:
+            rep.add(1, f"{l.xml_id}: {rt} without relatedToTime "
+                       "(reserved for event-time, Section 2.3.8)")
+        if rt == "DURING" and not l.related_to_event:
+            rep.add(1, f"{l.xml_id}: DURING without relatedToEvent "
+                       "(relates one event to another, Section 2.3.8)")
 
     # C2, C3, C4, C6, C9 - <TIMEX3> attributes
     for tx in struct.timexes.values():
