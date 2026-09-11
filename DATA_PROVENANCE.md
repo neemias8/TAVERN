@@ -1,5 +1,16 @@
 # Data provenance
 
+> **Third-party material.** `data/` contains the New International Version text
+> of the four Gospels for the Passion Week (© Biblica, Inc.) and Aschmann's
+> harmony of the Gospels. Neither is the author's work and neither is licensed
+> for redistribution by this repository's licence. They are present because the
+> pipeline is digest-pinned to them and the experiments are not reproducible
+> without the exact files. The thesis's own annotation is **stand-off**: every
+> annotation artefact is keyed on `book:chapter:verse` and carries no verse text,
+> so results, annotations and ratings can be published without the sources. If
+> you intend to redistribute anything derived from this repository, take the
+> stand-off artefacts and supply your own copy of the text.
+
 Every experiment runs on the files in `data/`, identified by content digest.
 `tavern.config.verify_corpus()` checks them and raises on mismatch; the check
 runs at the start of `run_experiments.py`.

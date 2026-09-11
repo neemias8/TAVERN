@@ -3,3 +3,6 @@ __pycache__/
 outputs/
 .cache/
 models/
+human_eval/
+human_eval_*/
+*KEY_DO_NOT_DISTRIBUTE*

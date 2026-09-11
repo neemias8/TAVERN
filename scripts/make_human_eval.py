@@ -11,7 +11,7 @@ Build the expert-evaluation booklet, and score it when the ratings come back.
     # score (after the three raters return their sheets)
     python scripts/make_human_eval.py score --dir human_eval
 
-This implements the protocol pre-registered in Section 9.3.4 of the thesis. Two
+This implements the protocol pre-registered in Section 9.3.5 of the thesis. Two
 properties of that protocol are load-bearing and are enforced here rather than
 left to the operator:
 

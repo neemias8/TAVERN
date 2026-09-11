@@ -1,21 +1,51 @@
 # TAVERN
 
-**Temporal Anchoring for Version Consolidation in Abstractive Narrative Summarization**
+**Temporal Anchoring for Version Consolidation**
 
-TAVERN consolidates several long, overlapping narrative documents into one
-chronologically ordered account — and **induces** the chronology from the text
-rather than receiving it. Two earlier works in this same PhD share the task
-and the sources: **TAEG** (JBCS) introduces Narrative Consolidation and solves
-it **extractively** — one source account selected per event; **NSNC** (IJCNN)
-generalises that to **abstractive**, neuro-symbolic fusion. Both take the same
-external, ready-made chronology (Aschmann's harmony of the Gospels) as a given
-input to alignment. TAVERN is abstractive like NSNC, but holds that same
-chronology out and reads it only at evaluation — the temporal backbone instead
-comes from an ISO 24617-1:2012 (ISO-TimeML) annotation of the sources.
+*A framework for Abstractive Narrative Consolidation from multiple overlapping accounts.*
+
+**Narrative Consolidation** is a Natural Language Processing task formulated in
+this doctoral work: given several long narrative accounts of the same events,
+produce one continuous account that is chronologically correct, carries every
+detail any source contributes, and states shared material once. It is not
+multi-document summarization — the objective is unification rather than
+compression, chronology is constitutive rather than secondary, and the output may
+be longer than any source. The definition also excludes extraction: no system
+restricted to verbatim spans can carry every detail *and* avoid repeating what
+the accounts share, so abstraction is what remains once the objectives are stated.
+
+**TAVERN** is the framework that performs the task end to end, in six stages:
+
+| # | Stage | What it contributes |
+|---|---|---|
+| 1 | Pre-processing | documents, verses, the pericope layer |
+| 2 | Temporal annotation | ISO 24617-1:2012 (ISO-TimeML) events, times, links |
+| 3 | Anchoring and alignment | the induced timeline, event clusters |
+| 4 | Relational graph | the TAEG, typed inter- and intra-document relations |
+| 5 | Guided abstractive generation | one fused version per event, in order |
+| 6 | Evaluation | held-out chronology, reference consolidation, metrics |
+
+The framework's governing design principle is the separation of **temporal
+planning** from **surface realisation**: the chronology of the output is settled
+symbolically, before any text is generated.
+
+Three works in this doctorate share the task and the sources. **TAEG** (JBCS)
+formulates Narrative Consolidation and solves version selection extractively.
+**NSNC** (IJCNN) generalises the selection to neuro-symbolic abstractive fusion.
+Both take an external, ready-made chronology (Aschmann's harmony of the Gospels)
+as an input to alignment. This repository implements the stage that removes that
+dependency: the temporal backbone is **induced** from an ISO-TimeML annotation of
+the sources, and the harmony is held out and read only at evaluation.
+
+Annotation is one stage of six. It is the stage newly implemented here, which is
+why most of the code added in this repository lives in Stage 2 and Stage 3 — not
+because it is the framework's centre.
 
 Case study: the four canonical Gospels over the Passion Week.
 
 > PhD thesis — Roger Antonio Finger, UNISINOS
+> *TAVERN: Temporal Anchoring for Version Consolidation — A Framework for
+> Abstractive Narrative Consolidation from Multiple Overlapping Accounts*
 > Advisor: Prof. Dr. Gabriel de Oliveira Ramos
 
 ---
@@ -129,6 +159,50 @@ every level, which is what makes these comparison points usable.
 
 ---
 
+## What the measurements show, and what they cannot
+
+Four cautions belong next to the tables above. They are not disclaimers; each is
+a measured result.
+
+**Kendall's τ has a floor here, and it is high.** A null model that reads no
+annotation at all — it cuts each document into positional windows and interleaves
+them by position — reaches τ = 0.8140 on this corpus. The interpretable band is
+0.186 wide, not 2.0. A τ of 0.9274 read at face value overstates the contribution
+by roughly a factor of three. `scripts/null_model_n1.py` reproduces it.
+
+**The architecture protects its own metric.** Progressive profile alignment is
+monotone by construction, so the ordering graph is acyclic, the feedback arc set
+never fires, and τ cannot register a whole class of failure. This is not specific
+to this system: any monotone aligner has the property. The decisive comparison is
+in the repository — the same ordering machinery removes 0 arcs under the induced
+clustering, 614 under the curated one, and 4,203 under a non-monotone
+agglomerative clustering of the same corpus, where τ falls to 0.7812, *below the
+null model*. Run it with `python run_experiments.py --legacy-agglomerative`.
+
+**Reproducibility is not significance.** A ten-seed sweep of the selection metric
+gives sd = 0.0042. The sampling distribution that matters is over the 75 events,
+not over seeds, and its null standard deviation is 0.0539 — thirteen times
+larger. Reporting "0.3613 ± 0.0042" would be formally correct and materially
+misleading. On the honest denominator, z = 0.37 and P(a random selector scores at
+least as high) = 0.31: the result is reproducible and indistinguishable from
+chance at the same time. `scripts/seed_sweep_selection.py` and
+`scripts/selection_significance.py`.
+
+**The pre-registered criterion is reported as failed.** End-to-end ROUGE-L is
+0.566 against a pre-registered bar of 0.7954 — a bar that, as it turned out, sat
+above the architecture's own ceiling of 0.7948. On the same backbone an
+extractive configuration reaches ROUGE-L 0.662 against fusion's 0.566, while
+covering less of the sources' content-word vocabulary than the fusion does
+(96.4%; the reference consolidation itself covers 88.0%). The extractive
+configuration does not satisfy the task definition, so the two numbers do not
+compare two candidate systems; they compare a system that solves the task with
+one that does not, under a metric that rewards the latter.
+
+Nothing above is reconstructed after the fact. Each is in the thesis with the
+run that produced it.
+
+---
+
 ## Install
 
 ```bash
@@ -236,6 +310,17 @@ resource rather than an intermediate representation.
 ---
 
 ## Data
+
+> **Third-party material.** `data/` contains the New International Version text
+> of the four Gospels for the Passion Week (© Biblica, Inc.) and Aschmann's
+> harmony of the Gospels. Neither is the author's work and neither is licensed
+> for redistribution by this repository's licence. They are present because the
+> pipeline is digest-pinned to them and the experiments are not reproducible
+> without the exact files. The thesis's own annotation is **stand-off**: every
+> annotation artefact is keyed on `book:chapter:verse` and carries no verse text,
+> so results, annotations and ratings can be published without the sources. If
+> you intend to redistribute anything derived from this repository, take the
+> stand-off artefacts and supply your own copy of the text.
 
 1,245 verses across the four Gospels (Passion Week scope), the Aschmann
 harmony (held out, Stage 6 only), and the Golden Sample reference
