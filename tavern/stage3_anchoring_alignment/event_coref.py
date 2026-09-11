@@ -23,7 +23,9 @@ Clusters are formed by PROGRESSIVE PROFILE ALIGNMENT, not by independent
 pairwise matching. The local partial orders of Section 6.3.3 are themselves
 evidence: four parallel accounts of one week do not cross each other wholesale,
 so an alignment respecting every document's order is preferred to one that does
-not. Documents are added to a growing profile in decreasing order of length,
+not. Documents are added to a growing profile in canonical order (`BOOK_ORDER`
+-- Matthew, Mark, Luke, John; fixed independently of any measurement, see
+`cluster_units`'s own comment and the sensitivity analysis of Section 10.4),
 each by a band-constrained monotone alignment against the profile built so far;
 the band comes from the anchor scaffold, which is the role Section 6.4.1
 assigns it.
@@ -475,8 +477,10 @@ def _add_to_profile(profile: List[List[str]], new_units: Sequence[EventUnit],
 
     A Needleman-Wunsch recursion in which the substitution score of a unit
     against a profile column is the mean of its scores against that column's
-    members. Gaps are free in both directions: a column no document but one
-    describes is legitimate, and so is a unit no column matches.
+    members. Gaps are not free (`GAP_COST`, below): a column no document but
+    one describes is legitimate, and so is a unit no column matches, but a
+    small positive cost keeps the recursion from being indifferent among
+    equal-scoring paths, advancing both sequences in proportion instead.
     """
     m, k = len(profile), len(new_units)
     if not k:
