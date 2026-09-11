@@ -76,6 +76,9 @@ def run(structs: Dict[str, AnnotationStructure], corpus: Corpus,
                      "timex_part_concrete": 0, "timex_part_subspecified": 0}
     else:
         projection = scaffold_mod.project_timexes(structs, sc, units_flat)
+        if cfg.propagate_entailed_days:
+            projection.update(
+                scaffold_mod.propagate_entailed_days(sc, timelines, units_flat))
     clustering = cluster_units(timelines, sc, embeddings)
     intra = [c for s in structs.values() for c in s.conflicts]
     crossings = detect_order_conflicts(timelines, sc, embeddings)

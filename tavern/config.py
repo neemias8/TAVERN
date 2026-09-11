@@ -144,6 +144,11 @@ class TavernConfig:
     disable_projection: bool = False          # R1: scaffold.project_timexes never runs
     disable_projection_indexing: bool = False  # R2: projection runs, but D:/P: terms are not indexed
     legacy_participants: bool = False          # R3: pre-Addendum-9 _UBIQUITOUS_ENTITIES + bare Jaccard
+    # Addendum 13, Task 3 -- entailment-only day propagation between two
+    # agreeing anchors (scaffold.propagate_entailed_days). Off by default
+    # until measured against the fixed adoption criterion (purity/B3/tau
+    # within +-0.01 of ancoragem AND selection accuracy rises).
+    propagate_entailed_days: bool = False
 
     # Stage 4
     gnn_hidden: int = 128

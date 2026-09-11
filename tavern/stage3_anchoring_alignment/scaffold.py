@@ -437,6 +437,72 @@ def project_timexes(structs: Dict[str, AnnotationStructure], sc: Scaffold,
     }
 
 
+def propagate_entailed_days(sc: Scaffold, timelines: Dict[str, LocalTimeline],
+                            units: Dict[str, EventUnit]) -> Dict[str, int]:
+    """Addendum 13, Task 3 -- extend the day projection from anchor units to
+    the units narratively BETWEEN two agreeing anchors, by entailment, never
+    by interpolation.
+
+    `_interpolate_pins` (used for `unit_position`/`anchor_interval`/the
+    ANCHOR_BAND) fabricates a continuous position from narrative adjacency
+    alone -- exactly the signal N1 (the zero-annotation null model) measures
+    on its own, since N1 reaches tau=0.8140 from positional interleaving
+    with no annotation at all. Feeding an interpolated day into the score
+    under the ISO-TimeML label would re-measure position and mislabel it as
+    annotation, inflating the annotation's apparent contribution. This
+    propagates a day only where the text itself entails one: for two
+    consecutive resolved-day anchors in the SAME book, if they name the SAME
+    day, every unit strictly between them is on that day -- inference over
+    the anchor chain, the same evidence `@anchorTimeID` chaining already
+    uses elsewhere. If the two anchors disagree, the interval between them
+    stays open: no day is assigned, not an interpolated guess.
+
+    One further check, added after measuring the naive version against this
+    corpus: two same-resolved-day anchors can be dozens of units apart with a
+    `DAY_OPENING` marker ("when evening came") sitting between them -- the
+    profile's own signal that a new day begins right there. FEAST_DAY maps
+    PASSOVER/UNLEAVENED_BREAD/PREPARATION all to day 0, so two mentions of
+    different feast names that both resolve to 0.0 can flank a real day
+    boundary the text itself asserts. Bridging through that marker anyway
+    would use positional proximity to override an explicit textual signal --
+    the same mistake this function exists to avoid, entering from the other
+    side. A `DAY_OPENING` anchor between the two pins blocks the bridge,
+    same as a disagreement would.
+
+    Must run after `project_timexes` (extends `EventUnit.projected_days`,
+    already populated for the anchor units themselves) and before
+    `cluster_units` (PredicateIDF reads the extended field). Does not touch
+    `projected_parts` -- entailment gives no evidence for a within-day
+    position, only for the day.
+    """
+    entailed = 0
+    for book, tl in timelines.items():
+        pins: Dict[int, float] = {}
+        openings: Set[int] = set()
+        for a in sc.anchors:
+            if a.book != book or a.unit_index is None:
+                continue
+            if a.kind == "daypart" and a.pred in DAY_OPENING:
+                openings.add(a.unit_index)
+            if a.absolute_day is not None:
+                i = a.unit_index
+                if i not in pins or a.absolute_day < pins[i]:
+                    pins[i] = a.absolute_day
+        ordered = sorted(pins.items())
+        for (i1, d1), (i2, d2) in zip(ordered, ordered[1:]):
+            if d1 != d2:
+                continue                                  # disagreement: stay open
+            if any(i1 < oi < i2 for oi in openings):
+                continue                                  # a day begins in between
+            day = int(math.floor(d1))
+            for i in range(i1 + 1, i2):
+                u = tl.units[i]
+                if day not in u.projected_days:
+                    u.projected_days.add(day)
+                    entailed += 1
+    return {"units_entailed": entailed}
+
+
 def _assign_intervals(sc: Scaffold, timelines) -> None:
     bounds = sc.boundaries
     for tl in timelines.values():

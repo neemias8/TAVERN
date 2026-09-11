@@ -488,6 +488,12 @@ def main() -> int:
                     help="Addendum 11, R3: participant_similarity reverts to "
                          "the pre-Addendum-9 hand-picked _UBIQUITOUS_ENTITIES "
                          "stop-list and bare Jaccard fallback.")
+    ap.add_argument("--propagate-entailed-days", action="store_true",
+                    help="Addendum 13, Task 3: extend the day projection to "
+                         "units between two agreeing anchors in the same "
+                         "book, by entailment only (never interpolation). "
+                         "Off by default pending the fixed adoption "
+                         "criterion; see scaffold.propagate_entailed_days.")
     args = ap.parse_args()
 
     want = {k: getattr(args, k) for k in
@@ -504,7 +510,8 @@ def main() -> int:
                        no_anchor_credit=args.no_anchor_credit,
                        disable_projection=args.disable_projection,
                        disable_projection_indexing=args.disable_projection_indexing,
-                       legacy_participants=args.legacy_participants)
+                       legacy_participants=args.legacy_participants,
+                       propagate_entailed_days=args.propagate_entailed_days)
     print(f"Running stages 1-5 (backbone '{args.backbone}') ...")
     res = pipeline.run(cfg, with_gnn=True, write=True)
     if res.backbone_note:
