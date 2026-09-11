@@ -18,7 +18,7 @@ from ..stage1_preprocessing.pericopes import PericopeLayer
 from ..stage2_temporal_annotation.model import AnnotationStructure
 from . import graph as graph_mod
 from . import scaffold as scaffold_mod
-from .event_coref import (Clustering, cluster_units,
+from .event_coref import (Clustering, agglomerative_cluster, cluster_units,
                           detect_order_conflicts)
 from .global_timeline import InducedTimeline, induce
 from .local_timeline import LocalTimeline, segment_corpus
@@ -79,7 +79,12 @@ def run(structs: Dict[str, AnnotationStructure], corpus: Corpus,
         if cfg.propagate_entailed_days:
             projection.update(
                 scaffold_mod.propagate_entailed_days(sc, timelines, units_flat))
-    clustering = cluster_units(timelines, sc, embeddings)
+    if cfg.legacy_agglomerative:
+        clustering, transitivity_breaks = agglomerative_cluster(
+            timelines, sc, embeddings)
+        projection["transitivity_breaks"] = transitivity_breaks
+    else:
+        clustering = cluster_units(timelines, sc, embeddings)
     intra = [c for s in structs.values() for c in s.conflicts]
     crossings = detect_order_conflicts(timelines, sc, embeddings)
     induced = induce(timelines, clustering, sc, intra + crossings,

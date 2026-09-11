@@ -297,6 +297,111 @@ def cluster_units(timelines: Dict[str, LocalTimeline], scaffold: Scaffold,
     return clustering
 
 
+def agglomerative_cluster(timelines: Dict[str, LocalTimeline], scaffold: Scaffold,
+                          embeddings: Optional[Dict[str, Sequence[float]]] = None
+                          ) -> Tuple[Clustering, int]:
+    """Thesis Section 6.4.2 as literally specified, implemented and measured
+    (Addendum 14) rather than left as an unmeasured alternative to the
+    profile alignment this module actually runs.
+
+    Score every candidate pair within the anchor band across two different
+    documents, using the SAME `score()`, the SAME five WEIGHTS, the SAME
+    MATCH_THRESHOLD and ANCHOR_BAND the profile alignment uses -- never
+    recalibrated, or the two would not be a comparison of clustering
+    strategy, only of which threshold each one prefers. Link every pair
+    scoring >= MATCH_THRESHOLD and take the transitive closure (single-
+    linkage agglomeration), then enforce "at most one unit per document per
+    cluster" by processing candidate merges in DESCENDING score order and
+    refusing a merge that would put two units of the same book in one
+    cluster -- "keep the highest-scoring pair, break the rest" made
+    concrete: a union-find that greedily accepts the best available
+    evidence first, so what gets broken is whatever a stronger pair already
+    pre-empted, not an arbitrary later comparison.
+
+    No profile order, no seed order: `Cluster.profile_index` is left at its
+    default (0.0) for every cluster, so `global_timeline.registration()`'s
+    own existing fallback -- mean relative position of a cluster's units in
+    their own documents, used whenever no profile is available -- supplies
+    the tournament's registration axis, exactly as it was already written to
+    do for a non-profile clustering. Ordering runs through the identical
+    `induce()` tournament used for the profile-based clustering.
+
+    Returns (clustering, breaks): `breaks` is the number of above-threshold
+    pairs rejected because applying them would have violated the one-unit-
+    per-document constraint -- the direct measurement of the transitivity
+    problem this module's own docstring predicts for a non-monotone
+    aggregation, never previously counted because this function never ran.
+    """
+    units: Dict[str, EventUnit] = {}
+    for tl in timelines.values():
+        for u in tl.units:
+            units[u.unit_id] = u
+    idf = PredicateIDF(list(units.values()))
+    vectors = {uid: idf.vector(u) for uid, u in units.items()}
+    entity_idf = EntityIDF(list(units.values()))
+
+    by_book: Dict[str, List[str]] = defaultdict(list)
+    for uid, u in units.items():
+        by_book[u.book].append(uid)
+    books = sorted(by_book)
+
+    edges: List[Tuple[float, str, str]] = []
+    for bi in range(len(books)):
+        for bj in range(bi + 1, len(books)):
+            for ua in by_book[books[bi]]:
+                pa = scaffold.position_of(ua)
+                for ub in by_book[books[bj]]:
+                    pb = scaffold.position_of(ub)
+                    if (pa is not None and pb is not None
+                            and abs(pa - pb) > ANCHOR_BAND):
+                        continue
+                    s = score(units[ua], units[ub], scaffold, vectors,
+                             entity_idf, embeddings)
+                    if s >= MATCH_THRESHOLD:
+                        edges.append((s, ua, ub))
+    edges.sort(key=lambda e: (-e[0], e[1], e[2]))
+
+    parent: Dict[str, str] = {uid: uid for uid in units}
+    books_in: Dict[str, Set[str]] = {uid: {units[uid].book} for uid in units}
+
+    def find(x: str) -> str:
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]
+            x = parent[x]
+        return x
+
+    breaks = 0
+    for _s, a, b in edges:
+        ra, rb = find(a), find(b)
+        if ra == rb:
+            continue
+        if books_in[ra] & books_in[rb]:
+            breaks += 1
+            continue
+        parent[rb] = ra
+        books_in[ra] |= books_in[rb]
+
+    groups: Dict[str, List[str]] = defaultdict(list)
+    for uid in units:
+        groups[find(uid)].append(uid)
+
+    clustering = Clustering()
+    for n, (_root, members) in enumerate(sorted(groups.items()), start=1):
+        cid = f"ac{n:03d}"
+        ivs = [scaffold.interval_of(u) for u in members]
+        ivs = [v for v in ivs if v is not None]
+        ps = [scaffold.position_of(u) for u in members]
+        ps = [p for p in ps if p is not None]
+        cl = Cluster(cluster_id=cid, members=sorted(members),
+                     books={units[u].book for u in members},
+                     position=(sum(ps) / len(ps)) if ps else 0.0,
+                     anchor_interval=min(ivs) if ivs else -1)
+        clustering.clusters.append(cl)
+        for uid in members:
+            clustering.cluster_of_unit[uid] = cid
+    return clustering, breaks
+
+
 def _merge_episodes(profile: List[List[str]], units: Dict[str, EventUnit],
                     timelines: Dict[str, LocalTimeline]) -> List[List[str]]:
     """Merge adjacent profile columns into candidate canonical events.

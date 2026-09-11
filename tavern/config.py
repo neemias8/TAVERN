@@ -149,6 +149,13 @@ class TavernConfig:
     # until measured against the fixed adoption criterion (purity/B3/tau
     # within +-0.01 of ancoragem AND selection accuracy rises).
     propagate_entailed_days: bool = False
+    # Addendum 14 -- thesis Section 6.4.2 as literally specified: pairwise
+    # score >= threshold, transitive closure, one-unit-per-document
+    # constraint (event_coref.agglomerative_cluster), measured against the
+    # adopted progressive-profile alignment rather than left as an
+    # unmeasured alternative. Off by default; adopted only if it clears the
+    # fixed criterion (purity and B3 F1 beat ancoragem, tau stays above N1).
+    legacy_agglomerative: bool = False
 
     # Stage 4
     gnn_hidden: int = 128

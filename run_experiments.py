@@ -494,6 +494,13 @@ def main() -> int:
                          "book, by entailment only (never interpolation). "
                          "Off by default pending the fixed adoption "
                          "criterion; see scaffold.propagate_entailed_days.")
+    ap.add_argument("--legacy-agglomerative", action="store_true",
+                    help="Addendum 14: thesis Section 6.4.2 as literally "
+                         "specified -- pairwise score >= MATCH_THRESHOLD, "
+                         "transitive closure, one unit per document per "
+                         "cluster -- measured against the adopted profile "
+                         "alignment. Same score, weights, threshold, band; "
+                         "see event_coref.agglomerative_cluster.")
     args = ap.parse_args()
 
     want = {k: getattr(args, k) for k in
@@ -511,7 +518,8 @@ def main() -> int:
                        disable_projection=args.disable_projection,
                        disable_projection_indexing=args.disable_projection_indexing,
                        legacy_participants=args.legacy_participants,
-                       propagate_entailed_days=args.propagate_entailed_days)
+                       propagate_entailed_days=args.propagate_entailed_days,
+                       legacy_agglomerative=args.legacy_agglomerative)
     print(f"Running stages 1-5 (backbone '{args.backbone}') ...")
     res = pipeline.run(cfg, with_gnn=True, write=True)
     if res.backbone_note:
