@@ -73,6 +73,16 @@ token layer, the JSON projection and the consolidated narrative.
   the pre-fix code (`bf12077`) before Addendum 9's fix (`9d9e0ec`) — the
   failing commit is the proof the defect existed, kept in history rather
   than folded into the fix as an invisible footnote.
+- **`py_heideltime` on Windows silently returns nothing.** Its own
+  `_write_config_props()` writes the TreeTagger path with backslashes into a
+  Java `.properties` file, which eats them as escape sequences, so
+  `C:\ProgramData\anaconda3\...` is read back with no separators at all and
+  TreeTagger's path resolution breaks — no exception, `stderr` is captured
+  and discarded by the library itself. `tools/heideltime_agreement.py`
+  monkeypatches the function (forward slashes, Windows accepts them) rather
+  than touching the installed package; also needs `pip install emoji`
+  (undeclared dependency) and must run per chapter, not per verse (each
+  call starts a JVM) — see that file's module docstring for the rest.
 
 ## Consolidation output, and which backbone made it
 
