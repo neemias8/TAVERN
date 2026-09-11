@@ -192,11 +192,16 @@ chance at the same time. `scripts/seed_sweep_selection.py` and
 0.566 against a pre-registered bar of 0.7954 — a bar that, as it turned out, sat
 above the architecture's own ceiling of 0.7948. On the same backbone an
 extractive configuration reaches ROUGE-L 0.662 against fusion's 0.566, while
-covering less of the sources' content-word vocabulary than the fusion does
-(96.4%; the reference consolidation itself covers 88.0%). The extractive
-configuration does not satisfy the task definition, so the two numbers do not
-compare two candidate systems; they compare a system that solves the task with
-one that does not, under a metric that rewards the latter.
+covering less of the sources' content-word vocabulary than the fusion does:
+82.5% against 96.9% (the reference consolidation itself covers 87.5%; 1,693
+content-word types in the sources, scikit-learn's `ENGLISH_STOP_WORDS` removed,
+no lemmatization or frequency/length cutoff — `scripts/verify_for_thesis.py`).
+The extractive figure moves by about a percentage point across independently
+seeded runs, since Stage 4's GNN selects the verbatim account per cluster;
+the reference and fusion figures do not move. The extractive configuration
+does not satisfy the task definition, so the two numbers do not compare two
+candidate systems; they compare a system that solves the task with one that
+does not, under a metric that rewards the latter.
 
 Nothing above is reconstructed after the fact. Each is in the thesis with the
 run that produced it.
@@ -422,5 +427,7 @@ Reference consolidation: Cunha (2025); Cunha & Sena (2026).
 
 ## License
 
-Academic research project — UNISINOS. The NIV source text is under copyright
-and is not redistributed; the annotation is stand-off.
+Academic research project — UNISINOS. This licence covers the code and the
+stand-off annotation artefacts. It does **not** cover the New International
+Version text or Aschmann's harmony of the Gospels, present in `data/` for
+reproducibility — see the third-party notice under [Data](#data).
