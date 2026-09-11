@@ -233,6 +233,44 @@ controls) pushed gemma3:4b to glue words together
 0.497 (canonical) on that fix alone. `scripts/check_text_quality.py` guards
 the regression (0/249 canonical, 0/289 ancoragem corrupted).
 
+**Addendum 16: 155 `<TLINK>` were conformance violations, fixed, and the
+`ancoragem` artifacts were replaced in place.** `IS_INCLUDED` is reserved by
+the norm (thesis Section 2.3.8) for event-time; `closure.py`'s reverse Allen
+map emitted it for event-event relations too, since the closure network's
+nodes are always events but the map didn't know that. 155 event-event
+`IS_INCLUDED` → `DURING` (0 → 151), plus 4 inverted event-time links found
+along the way ("time IS_INCLUDED event", backwards). All four Gospels now
+pass 12/12. Verified as a null change *before* touching anything: a
+pre-registered diff against `ancoragem-20260831`'s own `results.json` found
+differences only in two GNN-dependent ablation rows, and a **control** (two
+independent runs of the fixed code, same config, diffed against each
+other) reproduced noise of the same or larger magnitude in those same
+rows — confirming the variation is Stage 4's own run-to-run GNN noise, not
+the fix. The tag `ancoragem-conformance-20260911` points at the fixing
+commit; `ancoragem-20260831` is untouched and stays citable as the
+pre-fix state. `outputs/ancoragem/` itself (gitignored, not the git tag)
+was overwritten with the corrected run's artifacts — byte-identical
+`consolidated.txt` (fusion-cache hit), identical τ/coverage/clusters/
+purity/B-cubed/end-to-end R-1-R-2-R-L-METEOR to the pre-fix numbers
+already in this file and the README.
+
+**The control also gives thesis Section 9.6 a number it's currently
+missing.** §9.6 says GNN-involving figures are "reported as the mean over a
+stated number of seeded runs" — true (`mean_over_seeds` does average
+`cfg.seeds = (13, 42, 1337)`), but two full re-runs of the identical
+config+seeds still don't reproduce each other: ROUGE-family metrics moved
+by up to ~0.006, selection accuracy by up to one event out of 75 (0.0133),
+purely from `index_reduce_(reduce="amax")`'s documented CPU
+non-determinism, which the seed does not control. Exactly reproducible
+across both control runs: Kendall's τ, coverage, cluster count, and the
+`- graph propagation` ablation (no GNN training at all) — confirming the
+noise is specifically Stage 4's, not a general property of the pipeline.
+The abstractive end-to-end headline row (what Chapter 10 actually reports)
+was also exactly reproducible both times, via the same fusion-cache hit
+that keeps `consolidated.txt` byte-identical. §9.6 needs a sentence saying
+seeding does not eliminate this — the exact figures above are the
+envelope to cite.
+
 ## Known, unfixed, and staying that way
 
 Fixing any of these now would invalidate the `ancoragem` run and force
