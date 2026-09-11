@@ -39,6 +39,7 @@ def compute_modal_paths(struct: AnnotationStructure) -> Dict[str, List[str]]:
 
     frontier = deque(roots)
     visited: Set[str] = set(roots)
+    iterations = 0
     while frontier:
         cur = frontier.popleft()
         base = paths.get(cur, [])
@@ -50,7 +51,8 @@ def compute_modal_paths(struct: AnnotationStructure) -> Dict[str, List[str]]:
                 if child not in visited or _cost(cand) < _cost(existing or []):
                     visited.add(child)
                     frontier.append(child)
-        if len(visited) > 20 * (len(struct.events) + 1):
+        iterations += 1
+        if iterations > 20 * (len(struct.events) + 1):
             break                      # cycle guard
 
     for eid in struct.events:

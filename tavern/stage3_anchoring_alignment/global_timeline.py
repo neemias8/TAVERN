@@ -197,18 +197,20 @@ def cluster_constraints(structs, timelines: Dict[str, LocalTimeline],
                         clustering: Clustering, scaffold: Scaffold):
     """Per-document Allen constraints between candidate canonical events.
 
-    Two sources, both evidence-backed:
-
-      * an asserted <TLINK> at cascade level 1, 2 or 3 between eligible events
-        lying in different clusters -- an explicit signal, an explicit temporal
-        expression, or an aspectual predicate;
-      * a day boundary between the two clusters' units on the shared day axis,
-        which the anchor chain of Section 6.2.5 asserts and which entails strict
-        precedence.
+    One source, evidence-backed: an asserted <TLINK> at cascade level 1, 2 or
+    3 between eligible events lying in different clusters -- an explicit
+    signal, an explicit temporal expression, or an aspectual predicate.
 
     Level 4 is excluded deliberately: narrative adjacency is an assumption, and
     a disagreement between two assumptions is not evidence that the sources
     disagree.
+
+    A second source the thesis names -- a day boundary between two clusters
+    on the shared day axis, entailing strict precedence -- was never
+    implemented here: the loop that would have computed it was a no-op
+    (Addendum 13, Task 2). Left as documented future work, not implemented
+    now, since adding it would change which constraints reach the tournament
+    and therefore the induced order itself.
     """
     from ..stage2_temporal_annotation.closure import allen_of, invert
 
@@ -244,9 +246,6 @@ def cluster_constraints(structs, timelines: Dict[str, LocalTimeline],
                                        "confidence": l.confidence,
                                        "signal": l.signal_id})
 
-        # day-boundary evidence
-        for ci in clustering.clusters:
-            pass
     day_of = scaffold.day_of_unit
     for book, tl in timelines.items():
         by_cluster: Dict[str, List[str]] = defaultdict(list)
