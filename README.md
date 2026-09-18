@@ -56,8 +56,7 @@ Earlier revisions of TAVERN itself — not TAEG or NSNC, which never claimed
 otherwise — also took the Aschmann chronology as an input to alignment. That
 made Kendall's τ — the ordering metric — **1.000 by construction** in every
 configuration ever reported, because the system was never asked to exercise the
-competence the metric measures. The chronology is now reachable only from
-Stage 6, enforced in code:
+competence the metric measures. The chronology is now reachable only from Stage 6, enforced in code:
 
 ```python
 # tavern/config.py
@@ -98,8 +97,7 @@ deleted.
   canonical event, in induced order.
 - **Stage 6** — the only place the harmony and the reference may be read.
 
-The wall: the Aschmann chronology and the Golden Sample are reachable only
-from Stage 6, enforced by `config.assert_no_chronology_import()`.
+The wall: the Aschmann chronology and the Golden Sample are reachable only from Stage 6, enforced by `config.assert_no_chronology_import()`.
 
 ---
 
@@ -107,8 +105,7 @@ from Stage 6, enforced by `config.assert_no_chronology_import()`.
 
 Measured by `run_experiments.py --all --backbone ollama --backbone-model
 gemma3:4b --ollama-repeat-penalty 1.1` on the digest-pinned corpus. Full
-numbers in `outputs/<tag>/results.json`; the discussion belongs to the
-thesis, not here.
+numbers in `outputs/<tag>/results.json`; the discussion belongs to the thesis, not here.
 
 | Measure | canonical (before) | **ancoragem (primary)** |
 |---|---|---|
@@ -133,8 +130,8 @@ thesis, not here.
   to any verse-indexed instrument, which is why `gold_clusters` reads 165.
 - Selection accuracy is 0.3600 against a floor of 0.3411 **over the same
   subset** — the floors over 95 and over 75 events are not interchangeable.
-- Stage 3's two halves do not separate: fixing either alone **makes the
-  system worse** (B = 0.4916, C = 0.4794, against A = 0.6620).
+- Stage 3's two halves do not separate: fixing either alone **makes the system
+  worse** (B = 0.4916, C = 0.4794, against A = 0.6620).
 - The architecture's own ceiling is R-L 0.7948, and the pre-registered bar
   was 0.7954 — set above the achievable maximum.
 - `lexical_baseline` wins: recall@1 0.5126 against 0.4369 for the annotated score.
@@ -161,50 +158,17 @@ every level, which is what makes these comparison points usable.
 
 ## What the measurements show, and what they cannot
 
-Four cautions belong next to the tables above. They are not disclaimers; each is
-a measured result.
+Four cautions belong next to the tables above. They are not disclaimers; each is a measured result.
 
-**Kendall's τ has a floor here, and it is high.** A null model that reads no
-annotation at all — it cuts each document into positional windows and interleaves
-them by position — reaches τ = 0.8140 on this corpus. The interpretable band is
-0.186 wide, not 2.0. A τ of 0.9274 read at face value overstates the contribution
-by roughly a factor of three. `scripts/null_model_n1.py` reproduces it.
+**Kendall's τ has a floor here, and it is high.** A null model that reads no annotation at all — it cuts each document into positional windows and interleaves them by position — reaches τ = 0.8140 on this corpus. The interpretable band is 0.186 wide, not 2.0. A τ of 0.9274 read at face value overstates the contribution by roughly a factor of three. `scripts/null_model_n1.py` reproduces it.
 
-**The architecture protects its own metric.** Progressive profile alignment is
-monotone by construction, so the ordering graph is acyclic, the feedback arc set
-never fires, and τ cannot register a whole class of failure. This is not specific
-to this system: any monotone aligner has the property. The decisive comparison is
-in the repository — the same ordering machinery removes 0 arcs under the induced
-clustering, 614 under the curated one, and 4,203 under a non-monotone
-agglomerative clustering of the same corpus, where τ falls to 0.7812, *below the
-null model*. Run it with `python run_experiments.py --legacy-agglomerative`.
+**The architecture protects its own metric.** Progressive profile alignment is monotone by construction, so the ordering graph is acyclic, the feedback arc set never fires, and τ cannot register a whole class of failure. This is not specific to this system: any monotone aligner has the property. The decisive comparison is in the repository — the same ordering machinery removes 0 arcs under the induced clustering, 614 under the curated one, and 4,203 under a non-monotone agglomerative clustering of the same corpus, where τ falls to 0.7812, *below the null model*. Run it with `python run_experiments.py --legacy-agglomerative`.
 
-**Reproducibility is not significance.** A ten-seed sweep of the selection metric
-gives sd = 0.0042. The sampling distribution that matters is over the 75 events,
-not over seeds, and its null standard deviation is 0.0539 — thirteen times
-larger. Reporting "0.3613 ± 0.0042" would be formally correct and materially
-misleading. On the honest denominator, z = 0.37 and P(a random selector scores at
-least as high) = 0.31: the result is reproducible and indistinguishable from
-chance at the same time. `scripts/seed_sweep_selection.py` and
-`scripts/selection_significance.py`.
+**Reproducibility is not significance.** A ten-seed sweep of the selection metric gives sd = 0.0042. The sampling distribution that matters is over the 75 events, not over seeds, and its null standard deviation is 0.0539 — thirteen times larger. Reporting "0.3613 ± 0.0042" would be formally correct and materially misleading. On the honest denominator, z = 0.37 and P(a random selector scores at least as high) = 0.31: the result is reproducible and indistinguishable from chance at the same time. `scripts/seed_sweep_selection.py` and `scripts/selection_significance.py`.
 
-**The pre-registered criterion is reported as failed.** End-to-end ROUGE-L is
-0.566 against a pre-registered bar of 0.7954 — a bar that, as it turned out, sat
-above the architecture's own ceiling of 0.7948. On the same backbone an
-extractive configuration reaches ROUGE-L 0.662 against fusion's 0.566, while
-covering less of the sources' content-word vocabulary than the fusion does:
-82.5% against 96.9% (the reference consolidation itself covers 87.5%; 1,693
-content-word types in the sources, scikit-learn's `ENGLISH_STOP_WORDS` removed,
-no lemmatization or frequency/length cutoff — `scripts/verify_for_thesis.py`).
-The extractive figure moves by about a percentage point across independently
-seeded runs, since Stage 4's GNN selects the verbatim account per cluster;
-the reference and fusion figures do not move. The extractive configuration
-does not satisfy the task definition, so the two numbers do not compare two
-candidate systems; they compare a system that solves the task with one that
-does not, under a metric that rewards the latter.
+**The pre-registered criterion is reported as failed.** End-to-end ROUGE-L is 0.566 against a pre-registered bar of 0.7954 — a bar that, as it turned out, sat above the architecture's own ceiling of 0.7948. On the same backbone an extractive configuration reaches ROUGE-L 0.662 against fusion's 0.566, while covering less of the sources' content-word vocabulary than the fusion does: 82.5% against 96.9% (the reference consolidation itself covers 87.5%; 1,693 content-word types in the sources, scikit-learn's `ENGLISH_STOP_WORDS` removed, no lemmatization or frequency/length cutoff — `scripts/verify_for_thesis.py`). The extractive figure moves by about a percentage point across independently seeded runs, since Stage 4's GNN selects the verbatim account per cluster; the reference and fusion figures do not move. The extractive configuration does not satisfy the task definition, so the two numbers do not compare two candidate systems; they compare a system that solves the task with one that does not, under a metric that rewards the latter.
 
-Nothing above is reconstructed after the fact. Each is in the thesis with the
-run that produced it.
+Nothing above is reconstructed after the fact. Each is in the thesis with the run that produced it.
 
 ---
 
@@ -215,20 +179,9 @@ pip install -r requirements.txt
 python -m spacy download en_core_web_sm
 ```
 
-Two dependencies need a note. `rouge-score==0.1.2` fails to build against recent
-setuptools — install with `--no-build-isolation`, or copy the `rouge_score`
-package directly into site-packages. `torch` is needed only for Stage 4; without
-it the pipeline falls back to the unpropagated aggregation.
+Two dependencies need a note. `rouge-score==0.1.2` fails to build against recent setuptools — install with `--no-build-isolation`, or copy the `rouge_score` package directly into site-packages. `torch` is needed only for Stage 4; without it the pipeline falls back to the unpropagated aggregation.
 
-ROUGE-L over a ~16k-token reference cannot use `rouge_score`'s own
-longest-common-subsequence table, which is quadratic in pure Python and takes
-minutes per pair. `content_metrics._lcs_length` therefore uses `pylcs` when it is
-installed and otherwise a bit-parallel fallback (Crochemore, Iliopoulos, Pinzon
-and Reid, 2001) that packs a row of the table into one arbitrary-precision
-integer: 0.3 s on the reference, and `verify_fast_path` asserts either path
-reproduces `rouge_score` exactly (it does, to 0.0). `pylcs` is optional and
-commented out in `requirements.txt` because it is a compiled extension without a
-wheel for every interpreter.
+ROUGE-L over a ~16k-token reference cannot use `rouge_score`'s own longest-common-subsequence table, which is quadratic in pure Python and takes minutes per pair. `content_metrics._lcs_length` therefore uses `pylcs` when it is installed and otherwise a bit-parallel fallback (Crochemore, Iliopoulos, Pinzon and Reid, 2001) that packs a row of the table into one arbitrary-precision integer: 0.3 s on the reference, and `verify_fast_path` asserts either path reproduces `rouge_score` exactly (it does, to 0.0). `pylcs` is optional and commented out in `requirements.txt` because it is a compiled extension without a wheel for every interpreter.
 
 ## Run
 
@@ -239,8 +192,7 @@ ollama pull gemma3:4b        # once
 python run_all.py            # or, on Windows PowerShell:  .\run-all.bat
 ```
 
-On a fresh clone, check out the branch first — `git clone` leaves you on the
-repository's default branch, which does not contain any of this:
+On a fresh clone, check out the branch first — `git clone` leaves you on the repository's default branch, which does not contain any of this:
 
 ```powershell
 git fetch <remote-or-bundle> main:tavern-thesis-framework
@@ -249,20 +201,9 @@ pip install -r requirements.txt
 python run_all.py
 ```
 
-`run_all.py` checks the environment and the corpus digests, measures **both**
-configurations — extractive, for comparability with the degradation curve, and
-abstractive, which is what the framework is for — regenerates the curation
-sheets, and packages everything into one `tavern_results_<stamp>.zip`.
+`run_all.py` checks the environment and the corpus digests, measures **both** configurations — extractive, for comparability with the degradation curve, and abstractive, which is what the framework is for — regenerates the curation sheets, and packages everything into one `tavern_results_<stamp>.zip`.
 
-The generation run is ~289 model calls (one per induced cluster) and is
-**cached to disk as it goes**, in a single file shared across every tag and
-config (`outputs/fusion_cache.jsonl`, keyed by backbone + model +
-`repeat_penalty` + the exact source texts — see `CachedFuser` in
-`stage5_generation/backbones.py`), so an interrupted run resumes on the same
-command, and re-running `--ablations` under a different configuration reuses
-whatever it shares with a prior run instead of regenerating from scratch.
-Expect 40 min to a few hours end to end on CPU, depending on the accelerator
-and on how much of the cache is already warm.
+The generation run is ~289 model calls (one per induced cluster) and is **cached to disk as it goes**, in a single file shared across every tag and config (`outputs/fusion_cache.jsonl`, keyed by backbone + model + `repeat_penalty` + the exact source texts — see `CachedFuser` in `stage5_generation/backbones.py`), so an interrupted run resumes on the same command, and re-running `--ablations` under a different configuration reuses whatever it shares with a prior run instead of regenerating from scratch. Expect 40 min to a few hours end to end on CPU, depending on the accelerator and on how much of the cache is already warm.
 
 ```bash
 python run_all.py --backbone union            # dry run, no model needed
@@ -305,34 +246,19 @@ Under `outputs/<tag>/`:
 | `consolidated_with_markers.txt` | the same, with event markers for auditing |
 | `results.json` | every measured figure (`run_experiments.py`) |
 
-Both `outputs/canonical/` and `outputs/ancoragem/` are kept: canonical as the
-pre-Addendum-9 "before" state, ancoragem as the primary configuration.
+Both `outputs/canonical/` and `outputs/ancoragem/` are kept: canonical as the pre-Addendum-9 "before" state, ancoragem as the primary configuration.
 
-No information exists only in the JSON projection: the `.tml` documents are
-sufficient to reproduce the pipeline, which is what makes the annotation a
-resource rather than an intermediate representation.
+No information exists only in the JSON projection: the `.tml` documents are sufficient to reproduce the pipeline, which is what makes the annotation a resource rather than an intermediate representation.
 
 ---
 
 ## Data
 
-> **Third-party material.** `data/` contains the New International Version text
-> of the four Gospels for the Passion Week (© Biblica, Inc.) and Aschmann's
-> harmony of the Gospels. Neither is the author's work and neither is licensed
-> for redistribution by this repository's licence. They are present because the
-> pipeline is digest-pinned to them and the experiments are not reproducible
-> without the exact files. The thesis's own annotation is **stand-off**: every
-> annotation artefact is keyed on `book:chapter:verse` and carries no verse text,
-> so results, annotations and ratings can be published without the sources. If
-> you intend to redistribute anything derived from this repository, take the
-> stand-off artefacts and supply your own copy of the text.
+> **Third-party material.** `data/` contains the New International Version text of the four Gospels for the Passion Week (© Biblica, Inc.) and Aschmann's harmony of the Gospels. Neither is the author's work and neither is licensed for redistribution by this repository's licence. They are present because the pipeline is digest-pinned to them and the experiments are not reproducible without the exact files. The thesis's own annotation is **stand-off**: every annotation artefact is keyed on `book:chapter:verse` and carries no verse text, so results, annotations and ratings can be published without the sources. If you intend to redistribute anything derived from this repository, take the stand-off artefacts and supply your own copy of the text.
 
-1,245 verses across the four Gospels (Passion Week scope), the Aschmann
-harmony (held out, Stage 6 only), and the Golden Sample reference
-(Stage 6 only). Identified by content digest and verified on every run.
+1,245 verses across the four Gospels (Passion Week scope), the Aschmann harmony (held out, Stage 6 only), and the Golden Sample reference (Stage 6 only). Identified by content digest and verified on every run.
 
-Digests, known input defects, and the half-verse citation ambiguity behind
-the purity ceiling: [`DATA_PROVENANCE.md`](DATA_PROVENANCE.md).
+Digests, known input defects, and the half-verse citation ambiguity behind the purity ceiling: [`DATA_PROVENANCE.md`](DATA_PROVENANCE.md).
 
 ---
 
@@ -360,19 +286,13 @@ TAVERN/
 
 ## Not implemented here
 
-- `bart`/`pegasus`/`primera`/`instruct` are written but unrun on the induced
-  timeline; their curated-timeline numbers are quoted from NSNC.
+- `bart`/`pegasus`/`primera`/`instruct` are written but unrun on the induced timeline; their curated-timeline numbers are quoted from NSNC.
 - BERTScore is wired but not run; the figures quoted come from the published work.
-- No intrinsic annotation evaluation exists (no manual reference); the six
-  consistency checks substitute.
-- A half-verse-precise key — caps purity/B-cubed at ~89.5%, costs ~0.031 of
-  R-L against the curated ceiling; not fixed (see `DATA_PROVENANCE.md`).
-- The length asymmetry in `predicate_similarity`'s cosine — no compensation
-  for a short account competing against a longer wrong candidate.
-- `class_agreement`'s and `modal_compatibility`'s weights — measured
-  net-harmful / near-zero, not reweighted.
-- The absolute-day projection is only ~38–41% populated (42/112 day, 46/112
-  part) — declared future work, not fixed here.
+- No intrinsic annotation evaluation exists (no manual reference); the six consistency checks substitute.
+- A half-verse-precise key — caps purity/B-cubed at ~89.5%, costs ~0.031 of R-L against the curated ceiling; not fixed (see `DATA_PROVENANCE.md`).
+- The length asymmetry in `predicate_similarity`'s cosine — no compensation for a short account competing against a longer wrong candidate.
+- `class_agreement`'s and `modal_compatibility`'s weights — measured net-harmful / near-zero, not reweighted.
+- The absolute-day projection is only ~38–41% populated (42/112 day, 46/112 part) — declared future work, not fixed here.
 
 ---
 
@@ -380,7 +300,7 @@ TAVERN/
 
 ```bibtex
 @article{finger2026narrative,
-  author  = {Finger, Roger Antonio and Cortes, Vinicius and
+  author  = {Finger, Roger Antonio and Cortes, Eduardo Gabriel and
              Rigo, Sandro José and Ramos, Gabriel de Oliveira},
   title   = {Narrative Consolidation: Formulating a New Task for
              Unifying Multi-Perspective Accounts},
@@ -393,7 +313,7 @@ TAVERN/
 }
 
 @inproceedings{finger2026neurosymbolic,
-  author    = {Finger, Roger Antonio and Cortes, Vinicius and
+  author    = {Finger, Roger Antonio and Cortes, Eduardo Gabriel and
                Rigo, Sandro José and Ramos, Gabriel de Oliveira},
   title     = {Neurosymbolic Narrative Consolidation: Grounding Abstractive
                MDS and LLMs with Temporal Event Graphs},
@@ -406,15 +326,11 @@ TAVERN/
 
 ## References
 
-- ISO 24617-1:2012. *Language resource management — Semantic annotation
-  framework — Part 1: Time and events.*
-- Pustejovsky, J. et al. (2010). ISO-TimeML: An International Standard for
-  Temporal Annotation.
+- ISO 24617-1:2012. *Language resource management — Semantic annotation framework — Part 1: Time and events.*
+- Pustejovsky, J. et al. (2010). ISO-TimeML: An International Standard for Temporal Annotation.
 - Allen, J. F. (1983). Maintaining Knowledge about Temporal Intervals.
-- Eades, P., Lin, X. & Smyth, W. F. (1993). A Fast and Effective Heuristic for
-  the Feedback Arc Set Problem.
-- Schlichtkrull, M. et al. (2018). Modeling Relational Data with Graph
-  Convolutional Networks.
+- Eades, P., Lin, X. & Smyth, W. F. (1993). A Fast and Effective Heuristic for the Feedback Arc Set Problem.
+- Schlichtkrull, M. et al. (2018). Modeling Relational Data with Graph Convolutional Networks.
 - Veličković, P. et al. (2018). Graph Attention Networks.
 - Kendall, M. G. (1938). A New Measure of Rank Correlation.
 - Lin, C.-Y. (2004). ROUGE: A Package for Automatic Evaluation of Summaries.
@@ -427,7 +343,4 @@ Reference consolidation: Cunha (2025); Cunha & Sena (2026).
 
 ## License
 
-Academic research project — UNISINOS. This licence covers the code and the
-stand-off annotation artefacts. It does **not** cover the New International
-Version text or Aschmann's harmony of the Gospels, present in `data/` for
-reproducibility — see the third-party notice under [Data](#data).
+Academic research project — UNISINOS. This licence covers the code and the stand-off annotation artefacts. It does **not** cover the New International Version text or Aschmann's harmony of the Gospels, present in `data/` for reproducibility — see the third-party notice under [Data](#data).
