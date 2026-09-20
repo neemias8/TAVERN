@@ -214,14 +214,16 @@ ollama pull gemma4:26b       # once
 python run_all.py            # or, on Windows PowerShell:  .\run-all.bat
 ```
 
-On a fresh clone, check out the branch first — `git clone` leaves you on the repository's default branch, which does not contain any of this:
+A fresh clone needs nothing else: `main` is the default branch and carries the framework, the digest-pinned corpus and the committed consolidation.
 
 ```powershell
-git fetch <remote-or-bundle> main:tavern-thesis-framework
-git checkout tavern-thesis-framework
+git clone https://github.com/neemias8/TAVERN.git
+cd TAVERN
 pip install -r requirements.txt
 python run_all.py
 ```
+
+The `tavern-thesis-framework` branch is an earlier snapshot, three commits behind `main`, kept for reference only — do not start from it.
 
 `run_all.py` checks the environment and the corpus digests, measures **both** configurations — extractive, for comparability with the degradation curve, and abstractive, which is what the framework is for — regenerates the curation sheets, and packages everything into one `tavern_results_<stamp>.zip`.
 
