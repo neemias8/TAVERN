@@ -94,7 +94,12 @@ deleted.
   across documents, a weighted tournament, the typed cross-document event graph.
 - **Stage 4** — relational graph attention over the typed graph.
 - **Stage 5** — micro-abstractive fusion, one paragraph per candidate
-  canonical event, in induced order.
+  canonical event, in induced order, each checked against the accounts it
+  was built from — keep every detail, invent none, state each once — and
+  re-asked or handed to a deterministic union when it fails. The third axis
+  compares 5-grams and so catches literal repetition only; the
+  paraphrase-robust measure (`fidelity.excess_repetition`) is reported but
+  does not gate.
 - **Stage 6** — the only place the harmony and the reference may be read.
 
 The wall: the Aschmann chronology and the Golden Sample are reachable only from Stage 6, enforced by `config.assert_no_chronology_import()`.
@@ -104,7 +109,7 @@ The wall: the Aschmann chronology and the Golden Sample are reachable only from 
 ## Results
 
 Measured by `run_experiments.py --all --backbone ollama --backbone-model
-gemma3:4b --ollama-repeat-penalty 1.1` on the digest-pinned corpus. Full
+gemma4:26b --ollama-repeat-penalty 1.1` on the digest-pinned corpus. Full
 numbers in `outputs/<tag>/results.json`; the discussion belongs to the thesis, not here.
 
 | Measure | canonical (before) | **ancoragem (primary)** |
@@ -114,15 +119,30 @@ numbers in `outputs/<tag>/results.json`; the discussion belongs to the thesis, n
 | Purity | 30.8% | **44.4%** |
 | B-cubed F1 | 0.498 | **0.519** |
 | R-L, extractive (induced order + grouping) | 0.594 | **0.662** |
-| R-L, abstractive end-to-end (Ollama) | 0.497 | **0.566** |
-| Content coverage (overall / multi-source) | 91.2% / 89.7% | **93.3% / 91.7%** |
+| R-L, abstractive end-to-end (Ollama) | 0.497 | **0.622** |
+| Content coverage (overall / multi-source) | 91.2% / 89.7% | **98.8% / 98.3%** |
 | Selection accuracy vs. floor | 0.2973 < 0.3446 (74) | **0.3600 > 0.3411 (75)** |
 | Errors (not-detected/not-aligned/over/under/transposed/day-boundary/leaked) | 0/21/25/87/31/1/0 | **0/20/23/91/29/2/0** |
 
+The abstractive row is the only one the Stage 5 fusion work moved (R-L 0.566
+→ 0.604 with the fixes, → 0.622 on gemma4:26b; content coverage 93.3% →
+98.8%). Everything else in this table is
+Stage 3 or Stage 4. τ, pairwise, coverage, clusters, purity and B-cubed were
+re-measured on this artefact and reproduce to the digit; selection accuracy and the
+error-taxonomy line are carried over from the run before the Stage 5 work,
+because re-measuring them requires `--downstream`, which would overwrite the frozen artefact and break the
+digest the human evaluation is tied to. The point stands either way: the
+faithfulness of the fusion and the quality of the induced chronology are
+separable, and here they were separated by measurement rather than by
+argument. `ancoragem` keeps its name across that change; the pre-fix
+artefacts are recoverable from `ancoragem-20260831`.
+
 **What these numbers do not say:**
 
-- τ has a floor: N1 (no annotation at all) gives 0.8140 — ancoragem closes
-  61.0% of the range to the ceiling.
+- τ has a floor: N1 (no annotation at all) gives 0.8140 at K = 169 windows, the
+  curated event count — a granularity target supplied from outside, not tuned
+  against N1's own τ; at K = 289 it gives 0.8259. ancoragem closes 61.0% of the
+  range to the ceiling.
 - τ is protected by construction: `removed_arcs` is 0 with the induced
   grouping, 614 with the curated one, and τ falls to 0.6296 under that grouping.
 - Purity is 44.4% against an 89.5% ceiling, not against 100%.
@@ -137,7 +157,7 @@ numbers in `outputs/<tag>/results.json`; the discussion belongs to the thesis, n
 - `lexical_baseline` wins: recall@1 0.5126 against 0.4369 for the annotated score.
 - The absolute-day projection is 38% populated (42/112 day, 46/112 part).
 - Three of the five ablations improve some headline metric, because the
-  reference covers only 88.0% of the sources' vocabulary and restricting
+  reference covers only 87.5% of the sources' vocabulary and restricting
   output is rewarded.
 - The pre-registered criterion is **not met**: 0.7605 against 0.7954.
 
@@ -164,9 +184,11 @@ Four cautions belong next to the tables above. They are not disclaimers; each is
 
 **The architecture protects its own metric.** Progressive profile alignment is monotone by construction, so the ordering graph is acyclic, the feedback arc set never fires, and τ cannot register a whole class of failure. This is not specific to this system: any monotone aligner has the property. The decisive comparison is in the repository — the same ordering machinery removes 0 arcs under the induced clustering, 614 under the curated one, and 4,203 under a non-monotone agglomerative clustering of the same corpus, where τ falls to 0.7812, *below the null model*. Run it with `python run_experiments.py --legacy-agglomerative`.
 
-**Reproducibility is not significance.** A ten-seed sweep of the selection metric gives sd = 0.0042. The sampling distribution that matters is over the 75 events, not over seeds, and its null standard deviation is 0.0539 — thirteen times larger. Reporting "0.3613 ± 0.0042" would be formally correct and materially misleading. On the honest denominator, z = 0.37 and P(a random selector scores at least as high) = 0.31: the result is reproducible and indistinguishable from chance at the same time. `scripts/seed_sweep_selection.py` and `scripts/selection_significance.py`.
+**Reproducibility is not significance.** A ten-seed sweep of the selection metric gives sd = 0.0042. Like the selection-accuracy row above, this sweep predates the Stage 5 work and was not re-run on the frozen artefact, for the same reason; the argument it makes is about denominators and does not depend on the exact value. The sampling distribution that matters is over the 75 events, not over seeds, and its null standard deviation is 0.0539 — thirteen times larger. Reporting "0.3613 ± 0.0042" would be formally correct and materially misleading. On the honest denominator, z = 0.37 and P(a random selector scores at least as high) = 0.31: the result is reproducible and indistinguishable from chance at the same time. `scripts/seed_sweep_selection.py` and `scripts/selection_significance.py`.
 
-**The pre-registered criterion is reported as failed.** End-to-end ROUGE-L is 0.566 against a pre-registered bar of 0.7954 — a bar that, as it turned out, sat above the architecture's own ceiling of 0.7948. On the same backbone an extractive configuration reaches ROUGE-L 0.662 against fusion's 0.566, while covering less of the sources' content-word vocabulary than the fusion does: 82.5% against 96.9% (the reference consolidation itself covers 87.5%; 1,693 content-word types in the sources, scikit-learn's `ENGLISH_STOP_WORDS` removed, no lemmatization or frequency/length cutoff — `scripts/verify_for_thesis.py`). The extractive figure moves by about a percentage point across independently seeded runs, since Stage 4's GNN selects the verbatim account per cluster; the reference and fusion figures do not move. The extractive configuration does not satisfy the task definition, so the two numbers do not compare two candidate systems; they compare a system that solves the task with one that does not, under a metric that rewards the latter.
+**The pre-registered criterion is reported as failed.** The criterion was set at substitution level — the induced version selection projected into the curated segmentation — and at that level the pipeline reaches 0.7605 under the longest-account rule (0.6655 under TAEG's) against the bar of 0.7954, a bar that, as it turned out, sat above the architecture's own ceiling of 0.7948. End-to-end ROUGE-L is a different quantity and is 0.622; the two are not comparable and must not be read against the same bar. On the same backbone an extractive configuration reaches ROUGE-L 0.662 against fusion's 0.622, while covering less of the sources' content-word vocabulary than the fusion does: 82.3% against 99.1% (the reference consolidation itself covers 87.5%; 1,693 content-word types in the sources, scikit-learn's `ENGLISH_STOP_WORDS` removed, no lemmatization or frequency/length cutoff — `scripts/verify_for_thesis.py`). The extractive figure moves by about a percentage point across independently seeded runs, since Stage 4's GNN selects the verbatim account per cluster; the reference and fusion figures do not move. The extractive configuration does not satisfy the task definition, so the two numbers do not compare two candidate systems; they compare a system that solves the task with one that does not, under a metric that rewards the latter.
+
+**Faithfulness was a code defect; fusion was a capacity limit.** The Stage 5 fixes took the abstractive configuration from 104 of 289 events failing the fusion premise to 11, and 0 events now lose a detail the accounts carry or state material no account carries, against 52 and 49 before. Compression did not move with them: on gemma3:4b the fused paragraph was at the median exactly as long as `UnionFuser`'s output for the same accounts, and by `fidelity.excess_repetition` — which counts how often a fusion restates a content term beyond any single account — the model (0.115) was indistinguishable from that deterministic baseline (0.125). Three redrafted prompts were measured against the production one on the worst-repeating episodes and every one of them bought less repetition with lost detail and invention, so the prompt was not the binding constraint. Changing only the backbone, to gemma4:26b, moved excess repetition to 0.067, halved the events above 0.10 (87 → 63), and cut the fallback rate from 30 of 155 to 4 — 97.4% abstractive by event against 80.7%. `curation.csv`'s `fusion` column states the path per event; `scripts/check_text_quality.py` and `scripts/fusion_prompt_ab.py` are the instruments.
 
 Nothing above is reconstructed after the fact. Each is in the thesis with the run that produced it.
 
@@ -188,7 +210,7 @@ ROUGE-L over a ~16k-token reference cannot use `rouge_score`'s own longest-commo
 ### Everything at once
 
 ```bash
-ollama pull gemma3:4b        # once
+ollama pull gemma4:26b       # once
 python run_all.py            # or, on Windows PowerShell:  .\run-all.bat
 ```
 
@@ -203,7 +225,7 @@ python run_all.py
 
 `run_all.py` checks the environment and the corpus digests, measures **both** configurations — extractive, for comparability with the degradation curve, and abstractive, which is what the framework is for — regenerates the curation sheets, and packages everything into one `tavern_results_<stamp>.zip`.
 
-The generation run is ~289 model calls (one per induced cluster) and is **cached to disk as it goes**, in a single file shared across every tag and config (`outputs/fusion_cache.jsonl`, keyed by backbone + model + `repeat_penalty` + the exact source texts — see `CachedFuser` in `stage5_generation/backbones.py`), so an interrupted run resumes on the same command, and re-running `--ablations` under a different configuration reuses whatever it shares with a prior run instead of regenerating from scratch. Expect 40 min to a few hours end to end on CPU, depending on the accelerator and on how much of the cache is already warm.
+The generation run is 155 model calls — one per multi-source cluster; the 134 single-witness events are emitted verbatim without one, since with a single account there is nothing to fuse — plus one retry for every fusion the faithfulness guard rejects, which was 13 on the reported run, for 168 in total. It is **cached to disk as it goes**, in a single file shared across every tag and config (`outputs/fusion_cache.jsonl`, keyed by backbone + model + `repeat_penalty` + the prompt version + the repair pass + the exact source texts — see `CachedFuser` in `stage5_generation/backbones.py`), so an interrupted run resumes on the same command, and re-running `--ablations` under a different configuration reuses whatever it shares with a prior run instead of regenerating from scratch. The reported run took 51 min of generation on 8 CPU threads with no GPU offload; expect that order, depending on the accelerator and on how much of the cache is already warm.
 
 ```bash
 python run_all.py --backbone union            # dry run, no model needed
@@ -215,7 +237,7 @@ python run_all.py --backbone primera --model allenai/PRIMERA
 
 ```bash
 # stages 1–5 only. Reads no chronology and no reference.
-python main.py --backbone ollama --backbone-model gemma3:4b
+python main.py --backbone ollama --backbone-model gemma4:26b
 
 # the measured tables  (~12 min on 2 cores, plus generation if abstractive)
 python run_experiments.py --all --tag main --backbone extractive
@@ -279,6 +301,7 @@ TAVERN/
 │   ├── stage5_generation/
 │   ├── stage6_evaluation/
 │   └── baselines/
+├── avaliacao_humana/
 ├── legacy/
 ├── CLAUDE.md
 └── DATA_PROVENANCE.md

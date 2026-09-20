@@ -1,0 +1,102 @@
+diff --git a/tavern/stage2_temporal_annotation/biblical_calendar.py b/tavern/stage2_temporal_annotation/biblical_calendar.py
+index 7c35d86..d736d00 100644
+--- a/tavern/stage2_temporal_annotation/biblical_calendar.py
++++ b/tavern/stage2_temporal_annotation/biblical_calendar.py
+@@ -117,13 +117,13 @@ NUMBER_WORDS: Dict[str, int] = {
+     "one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6,
+     "seven": 7, "eight": 8, "nine": 9, "ten": 10, "eleven": 11,
+     "twelve": 12, "twenty": 20, "thirty": 30, "forty": 40, "fifty": 50,
+-    "a": 1, "an": 1, "half": 0, "several": 0,
++    "a": 1, "an": 1, "half": 0.5, "several": None,
+ }
+ 
+ DURATION_UNITS: Dict[str, str] = {
+     "second": "S", "seconds": "S", "minute": "M", "minutes": "M",
+     "hour": "H", "hours": "H", "day": "D", "days": "D",
+-    "week": "W", "weeks": "W", "month": "M", "months": "M",
++    "week": "W", "weeks": "W", "month": "MO", "months": "MO",
+     "year": "Y", "years": "Y",
+ }
+ 
+@@ -140,7 +140,7 @@ def duration_value(count: Optional[int], unit_code: str) -> str:
+     n = "X" if count is None else str(count)
+     if unit_code in SUB_DAY_UNITS:
+         return f"PT{n}{unit_code}"
+-    if unit_code == "M":            # ambiguous: minutes handled above
++    if unit_code == "MO":           # distinct lexical code for calendar months
+         return f"P{n}M"
+     return f"P{n}{unit_code}"
+ 
+diff --git a/tavern/stage3_anchoring_alignment/event_coref.py b/tavern/stage3_anchoring_alignment/event_coref.py
+index 4acd015..44473b3 100644
+--- a/tavern/stage3_anchoring_alignment/event_coref.py
++++ b/tavern/stage3_anchoring_alignment/event_coref.py
+@@ -443,6 +443,9 @@ def _merge_episodes(profile: List[List[str]], units: Dict[str, EventUnit],
+ def _mergeable(cur: Sequence[str], nxt: Sequence[str],
+                units: Dict[str, EventUnit],
+                succ: Dict[str, Optional[str]]) -> bool:
++    # Adjacency cannot create cross-document identity rejected by alignment.
++    if not ({units[u].book for u in cur} & {units[u].book for u in nxt}):
++        return False
+     last_of: Dict[str, str] = {}
+     verses_of: Dict[str, int] = {}
+     for uid in cur:
+diff --git a/tavern/stage3_anchoring_alignment/scaffold.py b/tavern/stage3_anchoring_alignment/scaffold.py
+index 03fc776..d45fb23 100644
+--- a/tavern/stage3_anchoring_alignment/scaffold.py
++++ b/tavern/stage3_anchoring_alignment/scaffold.py
+@@ -295,7 +295,7 @@ def _solve_document(tl: LocalTimeline, anchors: List[Anchor], sc: Scaffold,
+     # --- phase 1: the day axis from absolute constraints -----------------
+     pins: Dict[int, float] = {}
+     for a in anchors:
+-        if a.absolute_day is None or a.unit_index is None:
++        if not a.in_narration or a.absolute_day is None or a.unit_index is None:
+             continue
+         i = a.unit_index
+         if i not in pins or a.absolute_day < pins[i]:
+@@ -305,7 +305,7 @@ def _solve_document(tl: LocalTimeline, anchors: List[Anchor], sc: Scaffold,
+ 
+     # --- phase 2: within-day anchors -------------------------------------
+     for a in anchors:
+-        if a.within_day is None or a.unit_index is None:
++        if not a.in_narration or a.within_day is None or a.unit_index is None:
+             continue
+         i = a.unit_index
+         day = math.floor(positions[i] + 1e-9)
+@@ -321,7 +321,7 @@ def _solve_document(tl: LocalTimeline, anchors: List[Anchor], sc: Scaffold,
+         sc.day_of_unit[u.unit_id] = d
+         u.day_index = float(d)
+         u.time_position = p - d
+-        if i in pins:
++        if i in pins and abs(positions[i] - pins[i]) < 1e-9:
+             sc.observed.add(u.unit_id)
+ 
+     for a in anchors:
+@@ -405,12 +405,17 @@ def project_timexes(structs: Dict[str, AnnotationStructure], sc: Scaffold,
+     """
+     day_concrete = day_subspecified = 0
+     part_concrete = part_subspecified = 0
++    for u in units.values():
++        u.projected_days.clear(); u.projected_parts.clear()
++    for struct in structs.values():
++        for tx in struct.timexes.values():
++            tx.projected_day = None; tx.projected_part = None
+     for a in sc.anchors:
+         struct = structs.get(a.book)
+         tx = struct.timexes.get(a.anchor_id) if struct is not None else None
+         u = units.get(a.unit_id) if a.unit_id else None
+ 
+-        if a.absolute_day is not None:
++        if a.in_narration and a.absolute_day is not None:
+             day = int(math.floor(a.absolute_day))
+             if tx is not None:
+                 tx.projected_day = day
+@@ -420,7 +425,7 @@ def project_timexes(structs: Dict[str, AnnotationStructure], sc: Scaffold,
+         else:
+             day_subspecified += 1
+ 
+-        if a.kind in ("daypart", "hour") and a.pred:
++        if a.in_narration and a.kind in ("daypart", "hour") and a.pred:
+             if tx is not None:
+                 tx.projected_part = a.pred
+             if u is not None:

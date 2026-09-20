@@ -24,6 +24,8 @@ tavern/
       graph           the typed cross-document event graph
   stage4_gnn/               R-GAT, and the unpropagated baseline it is compared to
   stage5_generation/        micro-abstractive fusion; selection is over DOCUMENTS
+      fidelity      keep every detail / invent none / state each once, measured
+                    against the accounts alone -- hence Stage 5, not Stage 6
   stage6_evaluation/        the only place the chronology may be read
   baselines/                the published ladder, the degradation curve
 run_experiments.py          reproduces every measured table
@@ -83,21 +85,59 @@ token layer, the JSON projection and the consolidated narrative.
   than touching the installed package; also needs `pip install emoji`
   (undeclared dependency) and must run per chapter, not per verse (each
   call starts a JVM) — see that file's module docstring for the rest.
+- **A two-sided requirement needs a guard on both sides, or its gradient
+  points at the failure it exists to prevent.** "Keep every detail" and
+  "state it once" are one requirement; a check on recall alone makes
+  concatenation the optimal answer, and a check on brevity alone makes
+  dropping a witness optimal. `fidelity.check` measures three axes at once
+  for that reason, and the third — repetition — is compared against the
+  accounts' own repetition rather than absolutely, since this corpus
+  narrates a command and then its execution in the same words. Verified the
+  hard way: the two-axis version had gemma3:4b answer a dropped-detail
+  rejection by pasting three accounts end to end at recall 0.91, passing.
+- **A cache key must digest everything that determines the output, and a
+  docstring saying so is not a test.** `CachedFuser._key` covered the
+  backbone, the model, `repeat_penalty` and the accounts, claimed in prose
+  to cover the prompt, and did not — so the first prompt edit would have
+  replayed the old generations under a new label. `PROMPT_VERSION` is now
+  in the key. Bump it whenever the prompt text changes.
 
 ## Consolidation output, and which backbone made it
 
 TAVERN is abstractive by design: `--backbone` fuses **per event**, in induced
 order, so chronology is a property of the loop. `union`/`extractive` need no
 model; `ollama`/`instruct`/`bart`/`pegasus`/`primera` do. What's committed
-under `consolidations/` is `ollama`/gemma3:4b on the `ancoragem` run (R-1
-0.793, R-2 0.734, R-L 0.566, METEOR 0.477, 0/289 glued-word events) —
-regenerate with `python main.py --tag t --backbone ollama --backbone-model
-gemma3:4b && python scripts/make_curation.py outputs/t/curation.json
-consolidations/t/`. `consolidations/curation.md`/`.csv` lay out, per event,
-every source account beside its consolidation, with verse addresses, day
-index, conflict flag, and a blank verdict for **faithful / complete /
-placement** — no event is undetected, 2 are displaced across a day
-boundary, 29 are transposed with a same-day neighbour (ancoragem).
+under `consolidations/` is `ollama`/gemma4:26b on the `ancoragem` run (R-1
+0.824, R-2 0.800, R-L 0.622, METEOR 0.535, 0/289 glued-word events, digest
+`c903b9fd`) — regenerate with `python main.py --tag t --backbone ollama
+--backbone-model gemma4:26b && python scripts/make_curation.py
+outputs/t/curation.json consolidations/t/`. `consolidations/curation.md`/`.csv`
+lay out, per event, every source account beside its consolidation, with verse
+addresses, day index, conflict flag, the **fusion path**, and a blank verdict
+for **faithful / complete / placement** — no event is undetected, 2 are
+displaced across a day boundary, 29 are transposed with a same-day neighbour
+(ancoragem).
+
+**Read the `fusion` column before calling a paragraph abstractive.** Of the
+289, 134 are single-account events emitted verbatim; of the 155
+multi-account ones, 142 are the backbone's first attempt, 9 its strict
+re-ask, and **4 are `UnionFuser`'s deterministic output** after the
+backbone failed the guard twice. The configuration is 97.4% abstractive by
+event, not 100%, and the artifact says so per event rather than leaving it
+to the backbone's name. On gemma3:4b the same three counts were 107 / 18 /
+**30**, i.e. 80.7%: the fallback rate is a property of the model, and it is
+the cheapest single indicator of whether a backbone can do this task.
+
+**Regenerate `consolidations/` and `human_eval/` from ONE run, and record
+the digest.** Stage 4's GNN is not reproducible across runs (§9.6), so a
+second `pipeline.run` of the identical config selects a different account on
+a handful of clusters, which changes the fusion inputs, which changes the
+text. Measured here: two runs of the same config gave digests `63d19e65` and
+`ab6fa2e4`, R-L 0.6045 vs 0.6043, content coverage 0.9864 vs 0.9870.
+`scripts/verify_for_thesis.py` prints the per-event digest; if
+`consolidations/`, `human_eval/` and `outputs/ancoragem/` do not share it,
+they are three different runs and the human evaluation is not of the
+committed artifact.
 
 ## Where the results stand
 
@@ -123,7 +163,8 @@ is replaced by `EntityIDF`, the same IDF construction applied to entities.
 τ = 0.9274 (was 0.9155), pairwise 0.9637 (0.9577), coverage 0.8869/149/168
 (0.8512/143/168), 289 clusters (249). All six consistency checks pass in
 both. 96 inter-document conflicts (94), all three documented divergences
-recovered in both. End-to-end ROUGE-L 0.566 (0.497, Ollama), against the
+recovered in both. End-to-end ROUGE-L **0.622** on gemma4:26b (0.604 on gemma3:4b after
+Addendum 18's Stage 5 fixes, 0.566 before them, 0.497 canonical), against the
 pre-registered 0.795 — **still not met**, closer than before, and Chapter 10
 says so.
 
@@ -216,12 +257,14 @@ Removing the veridicality partition slightly raises τ in both configurations,
 so it is a correctness requirement (check 5) rather than an accuracy gain.
 
 **The reference is itself a selection, and the gap widens as the fusion
-improves.** It covers 88.0% of the sources' content-word vocabulary
-(unchanged); the abstractive consolidation covers 96.4% now (was 95.1%).
+improves.** It covers 87.5% of the sources' content-word vocabulary
+(unchanged); the abstractive consolidation covers **99.1%** now (98.7% on
+gemma3:4b after Addendum 18, 96.4% before it, 95.1% canonical), against the extractive configuration's
+82.3% — `scripts/verify_for_thesis.py`'s fixed definition, 1,693 types.
 Every reference-based metric therefore penalises a fusion for material the
 reference doesn't contain — the strongest form of the thesis's second threat
 to validity, measured rather than argued, and it gets *worse*, not better,
-as Stage 3 improves.
+both as Stage 3 improves and as the fusion stops dropping detail.
 
 **`repeat_penalty` is backend-specific, and reusing the HuggingFace value was
 a real bug, not a tuning target.** llama.cpp's `repeat_penalty` (what Ollama
@@ -271,6 +314,139 @@ that keeps `consolidated.txt` byte-identical. §9.6 needs a sentence saying
 seeding does not eliminate this — the exact figures above are the
 envelope to cite.
 
+**Addendum 18: the fusion was neither keeping every detail nor removing
+redundancy, and nothing measured either.** Stage 5 had one instrument,
+`text_quality.is_glued`, which catches a decoding artefact. Both sides of
+the task's own premise (§8.1) were unmeasured, and an audit of the
+`ancoragem` artifacts found the premise violated on **104 of 289 events**:
+52 dropped a detail the accounts carry (E002 loses Matthew's donkey, the
+prophecy and the cloaks), 49 stated material no account contains, 26
+restated their own wording. The inventions were not subtle — E068 grafts an
+aviation accident onto "Pray that your flight will not take place in
+winter", E165 fabricates two witnesses complete with "Account 2:" headers.
+ROUGE does not punish any of this, which is why it survived four addenda.
+
+Four causes, all in Stage 5, all mechanical:
+
+- **134 of 289 events have one account**, where there is nothing to fuse,
+  and `consolidate` called the generator anyway — on 33 of them the model
+  continued past the source. 37 of those 134 were additionally told "these
+  accounts DISAGREE", there being one.
+- **The prompt stated two objectives in tension** ("keep every detail ... do
+  not omit" against "state it once") with no method and no example. A 4B
+  model under greedy decoding reconciles them by splicing.
+- **`num_predict` was `DECODING["max_new_tokens"]`**, a HuggingFace constant
+  passed to llama.cpp — truncating 9 events mid-word and leaving 250 tokens
+  of room on a one-line account.
+- **`CachedFuser._key` did not digest the prompt**, though its docstring
+  claimed it did. Editing the prompt would have silently replayed the old
+  generations. `PROMPT_VERSION` is now in the key.
+
+The fixes: single-account short-circuit in `consolidate`; `build_prompt`
+stating the method, one worked merge, and the prohibitions; a per-cluster
+`num_predict` with stop sequences; and `fidelity.check` + `RepairingFuser` —
+three axes (detail recall, novel content, internal repetition against the
+sources' own), one strict re-ask naming the failure, then `UnionFuser`.
+
+**The third axis is the load-bearing one.** Built with two (recall and
+invention) the guard's gradient points at the defect it exists to stop:
+told it had dropped detail, gemma3:4b answered by pasting all three accounts
+of E002 end to end — 309 tokens, recall 0.91, passing. Redundancy is
+compared against the accounts' own repetition, never absolutely: this corpus
+narrates a command and then its execution in the same words.
+
+Result, same tag, Stage 3 untouched and verified so — τ 0.9274, pairwise
+0.9637, coverage 0.8869, 289 clusters, `removed_arcs` 0, 96 conflicts, all
+to the digit. 286 of 289 texts changed. **104 → 11 premise failures, and
+all 11 are the union fallback's own repetition**: the abstractive path is
+0/259. R-1 0.793→0.807, R-2 0.734→0.782, R-L 0.566→0.604, METEOR
+0.477→0.525; content coverage 93.3%→98.3% overall. 50 min cold on 8 CPU
+threads, 194 model calls instead of 289.
+
+**What it did NOT buy is compression, and that is the finding.** Verbatim
+copy *rose* (0.897→0.979 median over multi-source events), and the fused
+paragraph is at the median exactly the length of `UnionFuser`'s output for
+the same accounts — only 37 of 155 come in below 0.95 of it. By the
+cross-source instrument, events with *some* residual restatement went
+27.7%→37.4% even as the severe ones fell 28→15. gemma3:4b now retains
+faithfully and merges rarely; where the overlap is lexically literal the
+guard catches it and the re-ask fixes it, where the Evangelists say the same
+thing in different words neither fires. That is a capacity limit, not a
+prompt one — it is what a larger local model would be bought for, and the
+measurement to compare it against is in `scripts/check_text_quality.py`.
+
+Two protocol consequences, both in `scripts/make_human_eval.py`:
+
+- **The pre-registered control items were broken and nobody could have
+  noticed.** §9.3.5's 4 controls are single-account events where all three
+  conditions are "identical by construction"; before this fix **133 of 134
+  differed**, so a control was three-way distinguishable and measured
+  nothing. Check `controls_by_fusion_path` reads `{"single": N}`.
+- **The abstractive condition is not uniformly the backbone** — 9 of the 32
+  sampled comparison items are union fallbacks, over-represented against
+  the population's 19% because a fallback is more likely to differ from the
+  other two conditions. The key now carries `fusion` per item; report the
+  condition with and without them.
+
+**Addendum 19: the prompt was not the constraint; the model was. And the
+bigger model is not slower.** Addendum 18 fixed faithfulness and left
+redundancy untouched — which nothing noticed, because
+`internal_redundancy` compares 5-grams and the fusion's repetition is
+paraphrastic. In E060 the same prophecy arrives three times, once per
+Evangelist: "not one stone here will be left on another; every one will be
+thrown down" beside "not one stone will be left on another; every one of
+them will be thrown down" — Jaccard 1.00 over content terms, almost no
+shared 5-gram. The event passed at 0.24 against a 0.25 threshold while being
+unreadable. `fidelity.excess_repetition` is the missing instrument: content
+terms the fusion states beyond the ceiling any single account sets. By it,
+gemma3:4b's fusion (median 0.115) was **indistinguishable from `UnionFuser`**
+(0.125) — the model had never been merging at all.
+
+Three redrafted prompts (`scripts/fusion_prompt_ab.py`, kept) were measured
+against the production one over the eight worst episodes. Every one bought
+less repetition with lost detail and invention: the most aggressive dropped
+excess repetition to 0.285 but recall from 1.00 to 0.74 and pushed invented
+content from 0.03 to 0.20. `UnionFuser`, which has no prompt, repeated less
+than any of them. **Do not redraft the prompt again without re-running that
+grid** — it is seven minutes and it has already answered this question once.
+
+Changing only the backbone, prompt untouched: **gemma4:26b** gives excess
+repetition 0.067 (over all 155 multi-source events, against 0.115), events
+above 0.10 down 87 → 63, events compressing below `UnionFuser`'s length
+37 → 69, union fallbacks **30 → 4** (97.4% abstractive by event, against
+80.7%), R-L 0.604 → 0.622, content coverage 98.7% → 99.1%. One event now
+loses detail where none did, which is the price of real compression and is
+reported rather than tuned away.
+
+Two things about that model that the arithmetic gets wrong:
+
+- **It is not slower.** 15.65 tok/s against gemma3:4b's 16.3, because it is
+  sparse: an 18 GB file that loads 9.5 GB resident. The dense estimate
+  (bandwidth ÷ weight bytes) predicted ~5x slower and was simply the wrong
+  model of the machine. A full generation pass costs about what the 4b cost.
+- **It is a reasoning model, and `/api/generate` discards its output.** It
+  spends the whole `num_predict` budget in a `thinking` field the endpoint
+  drops, returning `response: ""` with `done_reason: "length"` and no error.
+  Every event would have come back empty, failed the guard twice and landed
+  in the union fallback — a run that looks mediocre rather than broken.
+  `OllamaFuser` now sends `"think": False`. Check this first for any new
+  backbone: an empty-response rate is the symptom.
+
+Still open, and deliberately not closed here: `excess_repetition` is
+implemented but **not wired into `check()`**, because doing so changes which
+events fall back, and `MIN_DETAIL_RECALL = 0.88` was calibrated against a
+model that copied. A model that genuinely compresses dips below it on hard
+episodes. Neither should be adjusted to make the current backbone pass.
+
+`scripts/suspect_positions.py` is new and unrelated in cause: §9.3.5's Part
+B stratifies 30 adjacent pairs half-and-half between the monotone
+subsequence and suspected transpositions, `make_human_eval.py --suspect`
+consumed that list, and **nothing produced it** — `error_analysis.analyse`
+counts the 31 inversions (29 same-day, 2 across a day boundary) and keeps
+one example string, discarding which clusters they were. Without it Part B
+came out `{"monotone": 30}` and the stratum-weighted estimate — the only
+figure comparable with the pairwise τ — could not be computed at all.
+
 ## Known, unfixed, and staying that way
 
 Fixing any of these now would invalidate the `ancoragem` run and force
@@ -289,9 +465,25 @@ re-reconciling the thesis; they are findings, not open bugs to close reflexively
   ablation above — neither touched by Addendum 9, both measurably more
   harmful after it.
 - The fusion cache is global now (keyed by backbone/model/`repeat_penalty`/
-  the exact texts, `outputs/fusion_cache.jsonl`, not per-tag) — this one
-  *was* fixed, because it changed nothing about what gets measured, only how
-  much redundant regeneration an ablation grid does.
+  `PROMPT_VERSION`/the repair pass/the exact texts,
+  `outputs/fusion_cache.jsonl`, not per-tag) — this one *was* fixed, because
+  it changed nothing about what gets measured, only how much redundant
+  regeneration an ablation grid does.
+- **gemma3:4b retains rather than merges** (Addendum 18): median fusion
+  length equals `UnionFuser`'s, 37/155 compress below 0.95 of it, and 30 of
+  155 the backbone could not fuse at all. Do not close this by reweighting
+  the guard or by re-tuning the prompt against the events it fails — that is
+  tuning against the instrument that reported it. It is a capacity question,
+  and the honest way to answer it is a larger local model measured with the
+  same guard. Benchmarked on this machine (8 CPU threads, no GPU offload,
+  100% CPU): gemma3:4b decodes at 16.3 tok/s, a 26–27B at Q4 would be ~5x
+  slower, so ~3 h per generation pass against 50 min — feasible once for the
+  headline run, not inside the ablation grid.
+- **`class_agreement` and `modal_compatibility` were not touched by Addendum
+  18 either.** The per-term ablation predates the fusion fixes and was not
+  re-run against them; nothing in Stage 5 can move a Stage 3 score, but the
+  numbers cited are canonical/ancoragem-pre-18 and should be labelled as
+  such if quoted next to the new ROUGE figures.
 
 ## The one rule
 

@@ -28,6 +28,20 @@ from pathlib import Path
 BOOKS = {"matthew": "Matthew", "mark": "Mark", "luke": "Luke", "john": "John"}
 
 
+#: How each paragraph was produced, in the words a curator needs rather than
+#: the pipeline's internal token. `consolidate` records the token; see
+#: `tavern/stage5_generation/__init__.py`.
+FUSION_LABEL = {
+    "single": "single account, emitted verbatim (nothing to fuse)",
+    "first": "fused by the backbone",
+    "repair": "fused by the backbone, second attempt after the guard "
+              "rejected the first",
+    "union": "deterministic union fallback: the backbone failed twice",
+    "selected": "most representative account, verbatim (conflicted cluster, "
+                "backbone not instructable)",
+}
+
+
 def main(src: str, dest: str) -> int:
     data = json.loads(Path(src).read_text(encoding="utf-8"))
     events = data["events"]
@@ -71,7 +85,9 @@ def main(src: str, dest: str) -> int:
             md.append("")
             md.append("> " + src_acc["text"].replace("\n", " "))
             md.append("")
-        md.append("**Consolidation**")
+        md.append("**Consolidation**"
+                  + (f"  ·  *{FUSION_LABEL.get(e['fusion'], e['fusion'])}*"
+                     if e.get("fusion") else ""))
         md.append("")
         md.append(e["consolidated"])
         md.append("")
@@ -89,6 +105,13 @@ def main(src: str, dest: str) -> int:
             "position": e["position"],
             "scaffold_day": "" if day is None else int(day),
             "conflict": "yes" if e["conflicted"] else "",
+            # what actually produced the paragraph. A curator asked whether a
+            # fusion is faithful needs to know whether a model wrote it at
+            # all: a single-account event is its account verbatim, and an
+            # event the backbone failed twice on carries UnionFuser's
+            # deterministic output, which is detail-preserving but keeps the
+            # seams. Blank for a curation.json written before this existed.
+            "fusion": e.get("fusion", ""),
             "selected_source": e["selected_source"],
             "sources": "; ".join(
                 f"{BOOKS.get(s['gospel'], s['gospel'])} {s['ref']}"

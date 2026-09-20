@@ -6,3 +6,12 @@ models/
 human_eval/
 human_eval_*/
 *KEY_DO_NOT_DISTRIBUTE*
+
+# Avaliação por especialistas: o material operacional entra no repositório
+# (amostragem, geração dos cadernos, digitação, análise), mas o que quebra o
+# cegamento NÃO. Este repositório é público: a chave mapeia X/Y para
+# tavern/longest item a item, e o Guia do pesquisador a imprime.
+avaliacao_humana/chave_cegamento.json
+avaliacao_humana/saida/
+avaliacao_humana/respostas_avaliadores.json
+avaliacao_humana/resultados/

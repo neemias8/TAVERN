@@ -1,0 +1,381 @@
+{
+ "gerado_em": "2026-09-18",
+ "semente": 20260918,
+ "artefato": {
+  "curation": "outputs/ancoragem/curation.json",
+  "tag": "ancoragem",
+  "backbone": "ollama",
+  "digest_por_evento": "c903b9fd573fc0e3771c97645e8baebdee4a9948913434b2008940512011a4cd",
+  "eventos_totais": 289
+ },
+ "populacao": {
+  "multi_fonte": 155,
+  "por_estrato": {
+   "2": 78,
+   "3": 67,
+   "4": 10
+  }
+ },
+ "plano_amostral": {
+  "2": 4,
+  "3": 4,
+  "4": 2
+ },
+ "pesos": {
+  "2": 19.5,
+  "3": 16.75,
+  "4": 5.0
+ },
+ "soma_ponderada": 155.0,
+ "confere_populacao": true,
+ "diagnostico_por_estrato": {
+  "2": {
+   "populacao": 78,
+   "elegiveis": 75,
+   "sorteados": 4
+  },
+  "3": {
+   "populacao": 67,
+   "elegiveis": 67,
+   "sorteados": 4
+  },
+  "4": {
+   "populacao": 10,
+   "elegiveis": 10,
+   "sorteados": 2
+  }
+ },
+ "caminho_de_fusao_na_amostra": {
+  "first": 8,
+  "repair": 2
+ },
+ "piloto": {
+  "codigo": "PA01",
+  "marker": "E047:c047",
+  "posicao": 47,
+  "n_fontes": 2,
+  "estrato": 2,
+  "peso": 0.0,
+  "conflito": true,
+  "fusion": "first",
+  "fontes": [
+   {
+    "evangelho": "Mateus",
+    "referencia": "Mateus 22:46",
+    "texto": "No one could say a word in reply, and from that day on no one dared to ask him any more questions."
+   },
+   {
+    "evangelho": "Marcos",
+    "referencia": "Marcos 12:34",
+    "texto": "When Jesus saw that he had answered wisely, he said to him, \"You are not far from the kingdom of God.\" And from then on no one dared ask him any more questions."
+   }
+  ],
+  "sistemas": {
+   "X": "When Jesus saw that he had answered wisely, he said to him, \"You are not far from the kingdom of God,\" and no one could say a word in reply, although from that day on no one dared to ask him any more questions.",
+   "Y": "When Jesus saw that he had answered wisely, he said to him, \"You are not far from the kingdom of God.\" And from then on no one dared ask him any more questions."
+  },
+  "observacao": "item de nivelamento; não entra em nenhuma estimativa"
+ },
+ "itens": [
+  {
+   "codigo": "A01",
+   "marker": "E054:c054",
+   "posicao": 54,
+   "n_fontes": 2,
+   "estrato": 2,
+   "peso": 19.5,
+   "conflito": true,
+   "fusion": "first",
+   "fontes": [
+    {
+     "evangelho": "Marcos",
+     "referencia": "Marcos 12:35-36",
+     "texto": "While Jesus was teaching in the temple courts, he asked, \"How is it that the teachers of the law say that the Christ is the son of David? David himself, speaking by the Holy Spirit, declared: \"'The Lord said to my Lord: \"Sit at my right hand until I put your enemies under your feet.\"'"
+    },
+    {
+     "evangelho": "Mateus",
+     "referencia": "Mateus 23:22",
+     "texto": "And he who swears by heaven swears by God's throne and by the one who sits on it."
+    }
+   ],
+   "sistemas": {
+    "X": "While Jesus was teaching in the temple courts, he asked, \"How is it that the teachers of the law say that the Christ is the son of David? David himself, speaking by the Holy Spirit, declared: \"'The Lord said to my Lord: \"Sit at my right hand until I put your enemies under your feet.\"'",
+    "Y": "While Jesus was teaching in the temple courts, he asked, \"How is it that the teachers of the law say that the Christ is the son of David? David himself, speaking by the Holy Spirit, declared: \"'The Lord said to my Lord: \"Sit at my right hand until I put your enemies under your feet.\"' and he who swears by heaven swears by God's throne and by the one who sits on it."
+   }
+  },
+  {
+   "codigo": "A02",
+   "marker": "E140:c140",
+   "posicao": 140,
+   "n_fontes": 2,
+   "estrato": 2,
+   "peso": 19.5,
+   "conflito": false,
+   "fusion": "first",
+   "fontes": [
+    {
+     "evangelho": "João",
+     "referencia": "João 13:29",
+     "texto": "Since Judas had charge of the money, some thought Jesus was telling him to buy what was needed for the Feast, or to give something to the poor."
+    },
+    {
+     "evangelho": "Lucas",
+     "referencia": "Lucas 22:29-30",
+     "texto": "And I confer on you a kingdom, just as my Father conferred one on me, so that you may eat and drink at my table in my kingdom and sit on thrones, judging the twelve tribes of Israel."
+    }
+   ],
+   "sistemas": {
+    "X": "Since Judas had charge of the money, some thought Jesus was telling him to buy what was needed for the Feast, or to give something to the poor; and I confer on you a kingdom, just as my Father conferred one on me, so that you may eat and drink at my table in my kingdom and sit on thrones, judging the twelve tribes of Israel.",
+    "Y": "And I confer on you a kingdom, just as my Father conferred one on me, so that you may eat and drink at my table in my kingdom and sit on thrones, judging the twelve tribes of Israel."
+   }
+  },
+  {
+   "codigo": "A03",
+   "marker": "E060:c060",
+   "posicao": 60,
+   "n_fontes": 3,
+   "estrato": 3,
+   "peso": 16.75,
+   "conflito": true,
+   "fusion": "first",
+   "fontes": [
+    {
+     "evangelho": "Mateus",
+     "referencia": "Mateus 24:1-2",
+     "texto": "Jesus left the temple and was walking away when his disciples came up to him to call his attention to its buildings. \"Do you see all these things?\" he asked. \"I tell you the truth, not one stone here will be left on another; every one will be thrown down.\""
+    },
+    {
+     "evangelho": "Marcos",
+     "referencia": "Marcos 13:1-2",
+     "texto": "As he was leaving the temple, one of his disciples said to him, \"Look, Teacher! What massive stones! What magnificent buildings!\" \"Do you see all these great buildings?\" replied Jesus. \"Not one stone here will be left on another; every one will be thrown down.\""
+    },
+    {
+     "evangelho": "Lucas",
+     "referencia": "Lucas 21:6",
+     "texto": "\"As for what you see here, the time will come when not one stone will be left on another; every one of them will be thrown down.\""
+    }
+   ],
+   "sistemas": {
+    "X": "As he was leaving the temple, one of his disciples said to him, \"Look, Teacher! What massive stones! What magnificent buildings!\" \"Do you see all these great buildings?\" replied Jesus. \"Not one stone here will be left on another; every one will be thrown down.\"",
+    "Y": "Jesus left the temple and was walking away when his disciples came up to him to call his attention to its buildings, although one of his disciples said to him, \"Look, Teacher! What massive stones! What magnificent buildings!\" \"Do you see all these things?\" he asked. \"I tell you the truth, as for what you see here, the time will come when not one stone here will be left on another; every one will be thrown down.\""
+   }
+  },
+  {
+   "codigo": "A04",
+   "marker": "E144:c144",
+   "posicao": 144,
+   "n_fontes": 4,
+   "estrato": 4,
+   "peso": 5.0,
+   "conflito": true,
+   "fusion": "first",
+   "fontes": [
+    {
+     "evangelho": "Marcos",
+     "referencia": "Marcos 14:29",
+     "texto": "Peter declared, \"Even if all fall away, I will not.\""
+    },
+    {
+     "evangelho": "Mateus",
+     "referencia": "Mateus 26:33",
+     "texto": "Peter replied, \"Even if all fall away on account of you, I never will.\""
+    },
+    {
+     "evangelho": "Lucas",
+     "referencia": "Lucas 22:32-33",
+     "texto": "But I have prayed for you, Simon, that your faith may not fail. And when you have turned back, strengthen your brothers.\" But he replied, \"Lord, I am ready to go with you to prison and to death.\""
+    },
+    {
+     "evangelho": "João",
+     "referencia": "João 13:31",
+     "texto": "When he was gone, Jesus said, \"Now is the Son of Man glorified and God is glorified in him."
+    }
+   ],
+   "sistemas": {
+    "X": "But I have prayed for you, Simon, that your faith may not fail. And when you have turned back, strengthen your brothers.\" But he replied, \"Lord, I am ready to go with you to prison and to death.\"",
+    "Y": "\"But I have prayed for you, Simon, that your faith may not fail. And when you have turned back, strengthen your brothers.\" But he replied, \"Lord, I am ready to go with you to prison and to death,\" although Peter declared, \"Even if all fall away, I will not,\" while Peter replied, \"Even if all fall away on account of you, I never will.\" When he was gone, Jesus said, \"Now is the Son of Man glorified and God is glorified in him.\""
+   }
+  },
+  {
+   "codigo": "A05",
+   "marker": "E228:c228",
+   "posicao": 228,
+   "n_fontes": 3,
+   "estrato": 3,
+   "peso": 16.75,
+   "conflito": true,
+   "fusion": "first",
+   "fontes": [
+    {
+     "evangelho": "Marcos",
+     "referencia": "Marcos 15:17-19",
+     "texto": "They put a purple robe on him, then twisted together a crown of thorns and set it on him. And they began to call out to him, \"Hail, king of the Jews!\" Again and again they struck him on the head with a staff and spit on him. Falling on their knees, they paid homage to him."
+    },
+    {
+     "evangelho": "Mateus",
+     "referencia": "Mateus 27:27-28",
+     "texto": "Then the governor's soldiers took Jesus into the Praetorium and gathered the whole company of soldiers around him. They stripped him and put a scarlet robe on him,"
+    },
+    {
+     "evangelho": "João",
+     "referencia": "João 19:1-3",
+     "texto": "Then Pilate took Jesus and had him flogged. The soldiers twisted together a crown of thorns and put it on his head. They clothed him in a purple robe and went up to him again and again, saying, \"Hail, king of the Jews!\" And they struck him in the face."
+    }
+   ],
+   "sistemas": {
+    "X": "Then the governor's soldiers took Jesus into the Praetorium and gathered the whole company of soldiers around him; then Pilate took Jesus and had him flogged, although they stripped him and put a scarlet robe on him, or they clothed him in a purple robe, and then twisted together a crown of thorns and set it on him, or put it on his head. And they began to call out to him, \"Hail, king of the Jews!\" again and again, and they struck him on the head with a staff and spit on him, although they went up to him again and again, saying, \"Hail, king of the Jews!\" and they struck him in the face. Falling on their knees, they paid homage to him.",
+    "Y": "They put a purple robe on him, then twisted together a crown of thorns and set it on him. And they began to call out to him, \"Hail, king of the Jews!\" Again and again they struck him on the head with a staff and spit on him. Falling on their knees, they paid homage to him."
+   }
+  },
+  {
+   "codigo": "A06",
+   "marker": "E220:c220",
+   "posicao": 220,
+   "n_fontes": 3,
+   "estrato": 3,
+   "peso": 16.75,
+   "conflito": true,
+   "fusion": "first",
+   "fontes": [
+    {
+     "evangelho": "Mateus",
+     "referencia": "Mateus 27:13-14",
+     "texto": "Then Pilate asked him, \"Don't you hear the testimony they are bringing against you?\" But Jesus made no reply, not even to a single charge--to the great amazement of the governor."
+    },
+    {
+     "evangelho": "Lucas",
+     "referencia": "Lucas 23:13-14",
+     "texto": "Pilate called together the chief priests, the rulers and the people, and said to them, \"You brought me this man as one who was inciting the people to rebellion. I have examined him in your presence and have found no basis for your charges against him."
+    },
+    {
+     "evangelho": "João",
+     "referencia": "João 18:37-38",
+     "texto": "\"You are a king, then!\" said Pilate. Jesus answered, \"You are right in saying I am a king. In fact, for this reason I was born, and for this I came into the world, to testify to the truth. Everyone on the side of truth listens to me.\" \"What is truth?\" Pilate asked. With this he went out again to the Jews and said, \"I find no basis for a charge against him."
+    }
+   ],
+   "sistemas": {
+    "X": "Pilate called together the chief priests, the rulers and the people, and said to them, \"You brought me this man as one who was inciting the people to rebellion. I have examined him in your presence and have found no basis for your charges against him.\" Then Pilate asked him, \"Don't you hear the testimony they are bringing against you?\" But Jesus made no reply, not even to a single charge--to the great amazement of the governor. \"You are a king, then!\" said Pilate. Jesus answered, \"You are right in saying I am a king. In fact, for this reason I was born, and for this I came into the world, to testify to the truth. Everyone on the side of truth listens to me.\" \"What is truth?\" Pilate asked, although with this he went out again to the Jews and said, \"I find no basis for a charge against him.\"",
+    "Y": "\"You are a king, then!\" said Pilate. Jesus answered, \"You are right in saying I am a king. In fact, for this reason I was born, and for this I came into the world, to testify to the truth. Everyone on the side of truth listens to me.\" \"What is truth?\" Pilate asked. With this he went out again to the Jews and said, \"I find no basis for a charge against him."
+   }
+  },
+  {
+   "codigo": "A07",
+   "marker": "E185:c185",
+   "posicao": 185,
+   "n_fontes": 4,
+   "estrato": 4,
+   "peso": 5.0,
+   "conflito": true,
+   "fusion": "repair",
+   "fontes": [
+    {
+     "evangelho": "Mateus",
+     "referencia": "Mateus 26:69-70",
+     "texto": "Now Peter was sitting out in the courtyard, and a servant girl came to him. \"You also were with Jesus of Galilee,\" she said. But he denied it before them all. \"I don't know what you're talking about,\" he said."
+    },
+    {
+     "evangelho": "João",
+     "referencia": "João 16:16",
+     "texto": "\"In a little while you will see me no more, and then after a little while you will see me.\""
+    },
+    {
+     "evangelho": "Marcos",
+     "referencia": "Marcos 14:66",
+     "texto": "While Peter was below in the courtyard, one of the servant girls of the high priest came by."
+    },
+    {
+     "evangelho": "Lucas",
+     "referencia": "Lucas 22:55-57",
+     "texto": "But when they had kindled a fire in the middle of the courtyard and had sat down together, Peter sat down with them. A servant girl saw him seated there in the firelight. She looked closely at him and said, \"This man was with him.\" But he denied it. \"Woman, I don't know him,\" he said."
+    }
+   ],
+   "sistemas": {
+    "X": "When they had kindled a fire in the middle of the courtyard and had sat down together, Peter sat down with them below in the courtyard; a servant girl of the high priest saw him seated there in the firelight, looked closely at him and said, \"You also were with Jesus of Galilee,\" although she said, \"This man was with him,\" while he denied it before them all, saying, \"Woman, I don't know what you're talking about,\" or \"I don't know him,\" and \"In a little while you will see me no more, and then after a little while you will see me.\"",
+    "Y": "But when they had kindled a fire in the middle of the courtyard and had sat down together, Peter sat down with them. A servant girl saw him seated there in the firelight. She looked closely at him and said, \"This man was with him.\" But he denied it. \"Woman, I don't know him,\" he said."
+   }
+  },
+  {
+   "codigo": "A08",
+   "marker": "E223:c223",
+   "posicao": 223,
+   "n_fontes": 2,
+   "estrato": 2,
+   "peso": 19.5,
+   "conflito": true,
+   "fusion": "repair",
+   "fontes": [
+    {
+     "evangelho": "Marcos",
+     "referencia": "Marcos 15:6; Marcos 15:7",
+     "texto": "Now it was the custom at the Feast to release a prisoner whom the people requested. A man called Barabbas was in prison with the insurrectionists who had committed murder in the uprising."
+    },
+    {
+     "evangelho": "Mateus",
+     "referencia": "Mateus 27:15-16",
+     "texto": "Now it was the governor's custom at the Feast to release a prisoner chosen by the crowd. At that time they had a notorious prisoner, called Barabbas."
+    }
+   ],
+   "sistemas": {
+    "X": "Now it was the governor's custom at the Feast to release a prisoner whom the people requested, although at that time they had a notorious prisoner, called Barabbas, who was in prison with the insurrectionists who had committed murder in the uprising, while others say the prisoner was chosen by the crowd.",
+    "Y": "Now it was the custom at the Feast to release a prisoner whom the people requested. A man called Barabbas was in prison with the insurrectionists who had committed murder in the uprising."
+   }
+  },
+  {
+   "codigo": "A09",
+   "marker": "E074:c074",
+   "posicao": 74,
+   "n_fontes": 3,
+   "estrato": 3,
+   "peso": 16.75,
+   "conflito": false,
+   "fusion": "first",
+   "fontes": [
+    {
+     "evangelho": "Mateus",
+     "referencia": "Mateus 24:33-35",
+     "texto": "Even so, when you see all these things, you know that it is near, right at the door. I tell you the truth, this generation will certainly not pass away until all these things have happened. Heaven and earth will pass away, but my words will never pass away."
+    },
+    {
+     "evangelho": "Marcos",
+     "referencia": "Marcos 13:29-31",
+     "texto": "Even so, when you see these things happening, you know that it is near, right at the door. I tell you the truth, this generation will certainly not pass away until all these things have happened. Heaven and earth will pass away, but my words will never pass away."
+    },
+    {
+     "evangelho": "Lucas",
+     "referencia": "Lucas 21:31-33",
+     "texto": "Even so, when you see these things happening, you know that the kingdom of God is near. \"I tell you the truth, this generation will certainly not pass away until all these things have happened. Heaven and earth will pass away, but my words will never pass away."
+    }
+   ],
+   "sistemas": {
+    "X": "Even so, when you see these things happening, you know that it is near, right at the door. I tell you the truth, this generation will certainly not pass away until all these things have happened. Heaven and earth will pass away, but my words will never pass away.",
+    "Y": "Even so, when you see all these things happening, you know that the kingdom of God is near, right at the door. I tell you the truth, this generation will certainly not pass away until all these things have happened. Heaven and earth will pass away, but my words will never pass away."
+   }
+  },
+  {
+   "codigo": "A10",
+   "marker": "E017:c017",
+   "posicao": 17,
+   "n_fontes": 2,
+   "estrato": 2,
+   "peso": 19.5,
+   "conflito": false,
+   "fusion": "first",
+   "fontes": [
+    {
+     "evangelho": "Mateus",
+     "referencia": "Mateus 21:25",
+     "texto": "John's baptism--where did it come from? Was it from heaven, or from men?\""
+    },
+    {
+     "evangelho": "Marcos",
+     "referencia": "Marcos 11:30",
+     "texto": "John's baptism--was it from heaven, or from men? Tell me!\""
+    }
+   ],
+   "sistemas": {
+    "X": "John's baptism--where did it come from? Was it from heaven, or from men?\"",
+    "Y": "John's baptism--where did it come from? Was it from heaven, or from men? Tell me!"
+   }
+  }
+ ]
+}

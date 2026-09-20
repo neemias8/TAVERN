@@ -267,6 +267,14 @@ def build(args) -> int:
                 "conflict": _is_conflict(rec), "kind": kind,
                 "verses": [v for a in _accounts(rec) for v in a[3]],
                 "n_accounts": _n_accounts(rec),
+                # What produced the abstractive condition for this item.
+                # It is not always the model: `RepairingFuser` hands an event
+                # the backbone failed twice on to `UnionFuser`, and on the
+                # gemma3:4b run that is 29 of the 155 multi-account events.
+                # Without this, `score` reports one mean over a condition
+                # that is 81% model and 19% deterministic union, and the
+                # thesis cannot say which it measured.
+                "fusion": rec.get("fusion", "unknown"),
                 "order": order,
             }
             lines += [f"### A{i:02d}", "", "**Source accounts (the only evidence):**",
@@ -309,6 +317,10 @@ def build(args) -> int:
                                     for k, v in sorted(nacc.items())},
         "pairs_by_stratum": {k: v // N_RATERS for k, v in strata.items()},
         "conflict_events": sum(1 for r in events if _is_conflict(r)),
+        "events_by_fusion_path": dict(
+            Counter(r.get("fusion", "unknown") for r in events)),
+        "controls_by_fusion_path": dict(
+            Counter(r.get("fusion", "unknown") for r in controls)),
         "notes": [
             "Condition 'longest' applies Timeline+Longest's selection policy to "
             "the induced clusters. State this exactly in the thesis: it is the "
@@ -319,6 +331,19 @@ def build(args) -> int:
             "The control items are single-account events where all three "
             "conditions are identical by construction. Any rating difference "
             "there is measurement noise and bounds the rest.",
+            "That construction held only from the Stage 5 fusion fixes "
+            "onwards. Before them the abstractive condition of a "
+            "single-account event was a generation, not the account: 133 of "
+            "the 134 differed from their source, several by inventing "
+            "material outright, so a control item would have been three-way "
+            "distinguishable and would have measured nothing. Booklets built "
+            "from a pre-fix curation.json are invalid on that stratum; check "
+            "controls_by_fusion_path reads {'single': N}.",
+            "The abstractive condition is not uniformly the backbone. Each "
+            "key entry carries 'fusion': 'first' and 'repair' are the model, "
+            "'union' is the deterministic fallback after it failed twice. "
+            "Report the abstractive condition with and without the "
+            "fallbacks; events_by_fusion_path gives the split in the sample.",
         ],
     }
     (out / "manifest.json").write_text(json.dumps(manifest, indent=1),

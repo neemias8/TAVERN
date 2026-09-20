@@ -64,24 +64,119 @@ DECODING = dict(
 #: the regression guard.
 OLLAMA_REPEAT_PENALTY = 1.1
 
+#: Bumped whenever the prompt text below changes. `CachedFuser._key` digests
+#: it: the cache is keyed by what determines the output, and the prompt
+#: determines the output. Before this existed the key covered the backbone,
+#: the model, the repeat penalty and the accounts but NOT the prompt, so
+#: editing the prompt silently reused the old generations -- the docstring
+#: claimed otherwise, which is how it went unnoticed.
+PROMPT_VERSION = 3
+
+#: Version 1 stated the two objectives and left the model to reconcile them:
+#: "Keep every detail ... Do not summarise, shorten or omit" against "state it
+#: once". gemma3:4b under greedy decoding reconciles them the cheapest way
+#: available, by copying each account in turn and splicing the results --
+#: measured over the `ancoragem` artifacts, 63% of multi-source events came
+#: out at 80% or more of the summed length of their sources with 60% or more
+#: of their tokens inside verbatim 8-grams, and E118 is three accounts joined
+#: by semicolons with a capitalised "Now" mid-sentence. Version 2 states the
+#: METHOD instead of the goal, shows one worked merge, and closes the two
+#: failure modes the audit found (fabricated continuations, echoed "Account N"
+#: labels) with explicit prohibitions rather than hoping the goal implies them.
+#: Version 3 only reworded REPAIR_PREFIX, once the guard grew its third axis.
 CONSOLIDATION_PROMPT = (
-    "Below are {n} parallel accounts of the same single event, taken from "
-    "different sources.\n\n"
-    "Write ONE paragraph that consolidates them into a single narrative.\n"
-    "Requirements:\n"
-    "- Keep every detail that appears in any account. Do not summarise, "
-    "shorten or omit.\n"
-    "- Where two accounts describe the same thing in different words, state it "
-    "once.\n"
-    "- Add nothing that is not in the accounts. Invent no names, places, "
-    "numbers or motives.\n"
-    "- Write continuous narrative prose. No lists, no headings, no commentary.\n"
+    "You will merge {n} accounts of the same event into a single paragraph.\n"
+    "\n"
+    "Method:\n"
+    "1. Take the longest account as the spine and keep its wording.\n"
+    "2. Read each other account in turn. Wherever it states something the "
+    "spine does not, insert that detail into the spine at the point where it "
+    "belongs.\n"
+    "3. Where two accounts state the same thing in different words, keep the "
+    "spine's wording and do not write it a second time.\n"
+    "\n"
+    "Rules:\n"
+    "- Every detail from every account must appear in your paragraph, once.\n"
+    "- Use only the facts and the wording of the accounts. Invent nothing: no "
+    "names, places, numbers, motives or events.\n"
+    "- Do not continue the story beyond what the accounts say.\n"
+    "- Never write the word \"Account\", never number or attribute the "
+    "accounts, never comment on them.\n"
+    "{conflict}"
+    "- Output the paragraph and nothing else.\n"
+    "\n"
+    "Example\n"
+    "Account 1: He entered the house and sat down.\n"
+    "Account 2: He went into the house, which belonged to Simon, and sat at "
+    "the table.\n"
+    "Paragraph: He entered the house, which belonged to Simon, and sat down "
+    "at the table.\n"
+    "\n"
+    "Now do the same with these accounts.\n"
 )
 
+#: Inserted into the Rules block, not appended after the example: version 1
+#: appended it, which under the current layout would put it after the worked
+#: merge and the hand-off line.
 CONFLICT_CLAUSE = (
-    "- The accounts DISAGREE about the order or circumstances of this event. "
-    "Present both readings explicitly rather than choosing one.\n"
+    "- These accounts DISAGREE about the order or circumstances of the event. "
+    "Keep both readings -- do not choose one and do not drop either -- and "
+    "join them in one sentence with \"while\" or \"although\" rather than "
+    "writing them as two separate accounts.\n"
 )
+
+#: The strict re-ask of the repair pass (`RepairingFuser`). Not a different
+#: task: the same instruction with the failure named, which is the cheapest
+#: intervention that can work and the only one that leaves the first pass's
+#: measurement intact.
+REPAIR_PREFIX = (
+    "Your previous attempt was rejected because {reason}. Follow the method "
+    "exactly: one spine, insert only what the other accounts add, never write "
+    "the same thing twice, invent nothing.\n"
+    "\n"
+)
+
+
+def build_prompt(n: int, conflicted: bool = False, strict: bool = False,
+                 reason: str = "") -> str:
+    """The instruction an instructable backbone receives."""
+    p = CONSOLIDATION_PROMPT.format(
+        n=n, conflict=CONFLICT_CLAUSE if conflicted else "")
+    if strict:
+        p = REPAIR_PREFIX.format(reason=reason or "it was not faithful to the "
+                                 "accounts") + p
+    return p
+
+
+#: Stop sequences for the Ollama call. gemma3:4b given a short single account
+#: continued past it and invented further "Account 2:" / "Account 3:" blocks
+#: (E165 of the `ancoragem` artifacts invents two witnesses that do not
+#: exist); the single-source short-circuit in `consolidate` removes most of
+#: the opportunity and these close the rest, including the commentary the
+#: model likes to add after a blank line.
+OLLAMA_STOP = ["\nAccount", "\nParagraph:", "\n\n"]
+
+#: Hard ceiling on a fusion, whatever the cluster: 4 accounts of the longest
+#: verse span in the corpus come to ~470 tokens, so this cannot bind on a
+#: legitimate merge and only stops a runaway.
+OLLAMA_MAX_PREDICT = 512
+
+
+def _budget(texts: Sequence[str]) -> int:
+    """How many tokens a faithful fusion of `texts` can need.
+
+    `DECODING["max_new_tokens"]` is a fixed 256 for the HuggingFace backbones
+    and was passed straight through to Ollama's `num_predict`. A fixed cap is
+    wrong in both directions here: it truncated 9 of the `ancoragem` events
+    mid-word ("...and all on account of my name. This will result"), and on a
+    one-line account it left 250 tokens of room that gemma3:4b filled with
+    invention. A fusion is bounded by its own sources -- it may not add and
+    should not need much more than the union of them -- so the budget is
+    derived from them, with room for connective tissue and the mild
+    word-to-token expansion of this corpus's proper nouns.
+    """
+    words = sum(len(t.split()) for t in texts)
+    return max(64, min(OLLAMA_MAX_PREDICT, int(1.45 * words) + 48))
 
 
 # ---------------------------------------------------------------------------
@@ -115,7 +210,7 @@ class UnionFuser:
         self.min_new_content = min_new_content
 
     def fuse(self, texts: Sequence[str], conflicted: bool = False,
-             context=None) -> str:
+             context=None, strict: bool = False, reason: str = "") -> str:
         kept: List[str] = []
         kept_content: List[set] = []
         for text in texts:
@@ -200,7 +295,7 @@ class _TransformersFuser:
         return self.separator.join(t.strip() for t in texts)
 
     def fuse(self, texts: Sequence[str], conflicted: bool = False,
-             context=None) -> str:
+             context=None, strict: bool = False, reason: str = "") -> str:
         if not texts:
             return ""
         self._load()
@@ -293,14 +388,12 @@ class InstructFuser:
         self._model.eval()
 
     def fuse(self, texts: Sequence[str], conflicted: bool = False,
-             context=None) -> str:
+             context=None, strict: bool = False, reason: str = "") -> str:
         if not texts:
             return ""
         self._load()
         import torch
-        prompt = CONSOLIDATION_PROMPT.format(n=len(texts))
-        if conflicted:
-            prompt += CONFLICT_CLAUSE
+        prompt = build_prompt(len(texts), conflicted, strict, reason)
         body = "\n\n".join(f"Account {i + 1}: {t.strip()}"
                            for i, t in enumerate(texts))
         messages = [{"role": "user", "content": prompt + "\n" + body}]
@@ -348,22 +441,30 @@ class OllamaFuser:
             return False
 
     def fuse(self, texts: Sequence[str], conflicted: bool = False,
-             context=None) -> str:
+             context=None, strict: bool = False, reason: str = "") -> str:
         if not texts:
             return ""
-        prompt = CONSOLIDATION_PROMPT.format(n=len(texts))
-        if conflicted:
-            prompt += CONFLICT_CLAUSE
+        prompt = build_prompt(len(texts), conflicted, strict, reason)
         body = "\n\n".join(f"Account {i + 1}: {t.strip()}"
                            for i, t in enumerate(texts))
         payload = json.dumps({
             "model": self.model,
             "prompt": prompt + "\n" + body,
             "stream": False,
+            # A reasoning model served through /api/generate spends the whole
+            # `num_predict` budget in a `thinking` field that this endpoint
+            # discards, and returns `response: ""` with `done_reason:
+            # "length"` and no error. gemma4:26b does exactly that: every
+            # event would come back empty, fail the guard twice and land in
+            # the union fallback, and the run would look merely mediocre
+            # rather than broken. Ignored by models that do not reason.
+            "think": False,
             "options": {
-                "num_predict": DECODING["max_new_tokens"],
+                "num_predict": _budget(texts),
                 "repeat_penalty": self.repeat_penalty,
                 "temperature": 0.0,
+                "seed": 0,
+                "stop": OLLAMA_STOP,
             },
         }).encode()
         req = urllib.request.Request(
@@ -384,6 +485,90 @@ def _clean(text: str) -> str:
     text = re.sub(r"^(consolidated (narrative|account|paragraph))\s*:\s*", "",
                   text, flags=re.I)
     return " ".join(text.split())
+
+
+# ---------------------------------------------------------------------------
+class RepairingFuser:
+    """A faithfulness floor under an abstractive backbone.
+
+    The task's premise is checkable against the backbone's own inputs
+    (`fidelity.check`): a fusion that has dropped a detail or invented one can
+    be recognised without the chronology and without the reference. This
+    wrapper does the recognising, and gives a failed fusion two further
+    chances before it gives up on the model for that event:
+
+      1. the same instruction with the failure named (`strict=True`);
+      2. failing that, `UnionFuser`'s output for the same accounts, which is
+         detail-preserving by construction.
+
+    The fallback is not a silent downgrade -- the count is reported, and
+    `consolidate` records per event which of the three produced the paragraph,
+    so the abstractive fraction is always visible. The alternative, letting a
+    fabricated paragraph through because ROUGE does not punish it, is what
+    produced an aviation accident in the middle of the Olivet discourse.
+
+    Single-account clusters never reach here: `consolidate` short-circuits
+    them, since there is nothing to fuse and the account itself is the only
+    faithful answer.
+    """
+
+    def __init__(self, inner, min_recall: float = None,
+                 max_novel: float = None):
+        from . import fidelity
+        self._f = fidelity
+        self.inner = inner
+        self.name = getattr(inner, "name", "unknown")
+        self.instructable = getattr(inner, "instructable", False)
+        self.abstractive = getattr(inner, "abstractive", False)
+        self.min_recall = (fidelity.MIN_DETAIL_RECALL if min_recall is None
+                           else min_recall)
+        self.max_novel = (fidelity.MAX_NOVEL_CONTENT if max_novel is None
+                          else max_novel)
+        self._union = UnionFuser()
+        self.clean = 0
+        self.repaired = 0
+        self.fell_back = 0
+        #: what produced the most recent fusion: "first", "repair" or "union"
+        self.last_action = "first"
+
+    #: the cache lives inside this wrapper, so its counters are read through
+    #: it; `pipeline.run` reports them for the whole Stage 5 pass.
+    @property
+    def hits(self) -> int:
+        return getattr(self.inner, "hits", 0)
+
+    @property
+    def misses(self) -> int:
+        return getattr(self.inner, "misses", 0)
+
+    def _ok(self, out: str, texts: Sequence[str]):
+        return self._f.check(out, texts, self.min_recall, self.max_novel)
+
+    def fuse(self, texts: Sequence[str], conflicted: bool = False,
+             context=None, strict: bool = False, reason: str = "") -> str:
+        out = self.inner.fuse(texts, conflicted=conflicted, context=context)
+        v = self._ok(out, texts)
+        if v.ok:
+            self.clean += 1
+            self.last_action = "first"
+            return out
+        retry = self.inner.fuse(texts, conflicted=conflicted, context=context,
+                                strict=True, reason=v.reason)
+        if self._ok(retry, texts).ok:
+            self.repaired += 1
+            self.last_action = "repair"
+            return retry
+        self.fell_back += 1
+        self.last_action = "union"
+        return self._union.fuse(texts, conflicted=conflicted)
+
+    def report(self) -> dict:
+        total = self.clean + self.repaired + self.fell_back
+        return {"clean": self.clean, "repaired": self.repaired,
+                "union_fallback": self.fell_back, "total": total,
+                "abstractive_fraction":
+                    round((self.clean + self.repaired) / total, 4)
+                    if total else 0.0}
 
 
 # ---------------------------------------------------------------------------
@@ -408,13 +593,20 @@ def build(name: str, cache_path=None, **kw):
     `cache_path` wraps an abstractive backbone in `CachedFuser`, which makes a
     long generation run resumable. The deterministic backbones are not cached:
     recomputing them is cheaper than reading the cache.
+
+    An abstractive backbone is then wrapped in `RepairingFuser`, outside the
+    cache rather than inside it: both the first attempt and the strict re-ask
+    are cached on their own keys, so a resumed run replays the same decisions
+    instead of re-paying for them.
     """
     from . import ExtractiveFuser
 
     def _wrap(f):
-        if cache_path and getattr(f, "abstractive", False):
-            return CachedFuser(f, cache_path)
-        return f
+        if not getattr(f, "abstractive", False):
+            return f
+        if cache_path:
+            f = CachedFuser(f, cache_path)
+        return RepairingFuser(f)
 
     if name == "extractive":
         return ExtractiveFuser(), None
@@ -450,10 +642,15 @@ class CachedFuser:
     the next run.
 
     The key is a digest of the backbone, the model name, the decoding
-    `repeat_penalty` (where the inner fuser has one), the accounts and the
+    `repeat_penalty` (where the inner fuser has one), `PROMPT_VERSION` and the
+    repair pass (where the backbone is instructable), the accounts and the
     conflict flag, so a cache entry can only be reused for the identical call.
     Changing the prompt, the model, the clustering or the repetition penalty
     therefore invalidates exactly the entries it should and no others.
+
+    `PROMPT_VERSION` was not in the key until the prompt was first revised:
+    the docstring asserted the property, nothing tested it, and an edited
+    prompt would have silently replayed the previous generations.
     """
 
     def __init__(self, inner, path):
@@ -477,7 +674,8 @@ class CachedFuser:
                 except (json.JSONDecodeError, KeyError):
                     continue
 
-    def _key(self, texts: Sequence[str], conflicted: bool) -> str:
+    def _key(self, texts: Sequence[str], conflicted: bool,
+             strict: bool = False) -> str:
         import hashlib
         h = hashlib.sha1()
         h.update(self.name.encode())
@@ -485,6 +683,13 @@ class CachedFuser:
                              getattr(self.inner, "model_name", ""))).encode())
         h.update(b"\x00")
         h.update(str(getattr(self.inner, "repeat_penalty", "")).encode())
+        # the prompt determines the output, so it belongs in the key. Only
+        # the instructable backbones see a prompt at all, hence the guard:
+        # adding it unconditionally would needlessly invalidate every cached
+        # BART/PEGASUS/PRIMERA fusion, which are prompt-free by design.
+        if getattr(self.inner, "instructable", False):
+            h.update(f"\x00p{PROMPT_VERSION}".encode())
+            h.update(b"\x00strict" if strict else b"\x00first")
         h.update(b"\x00conflict" if conflicted else b"\x00plain")
         for t in texts:
             h.update(b"\x00")
@@ -492,12 +697,13 @@ class CachedFuser:
         return h.hexdigest()
 
     def fuse(self, texts: Sequence[str], conflicted: bool = False,
-             context=None) -> str:
-        key = self._key(texts, conflicted)
+             context=None, strict: bool = False, reason: str = "") -> str:
+        key = self._key(texts, conflicted, strict)
         if key in self._cache:
             self.hits += 1
             return self._cache[key]
-        text = self.inner.fuse(texts, conflicted=conflicted, context=context)
+        text = self.inner.fuse(texts, conflicted=conflicted, context=context,
+                               strict=strict, reason=reason)
         self._cache[key] = text
         self.misses += 1
         with open(self.path, "a", encoding="utf-8") as fh:

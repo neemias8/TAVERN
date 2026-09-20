@@ -3,7 +3,7 @@
 Run everything and package the results in one file.
 
     python run_all.py                      # abstractive via Ollama + extractive
-    python run_all.py --model gemma3:4b
+    python run_all.py --model gemma4:26b
     python run_all.py --skip-extractive    # if you already have that run
     python run_all.py --backbone union     # no model needed, for a dry run
 
@@ -179,7 +179,7 @@ def main() -> int:
     ap.add_argument("--backbone", default="ollama",
                     choices=("ollama", "instruct", "bart", "pegasus",
                              "primera", "union"))
-    ap.add_argument("--model", default="gemma3:4b",
+    ap.add_argument("--model", default="gemma4:26b",
                     help="Ollama model, or the HF checkpoint for the others")
     ap.add_argument("--skip-extractive", action="store_true")
     ap.add_argument("--skip-abstractive", action="store_true")

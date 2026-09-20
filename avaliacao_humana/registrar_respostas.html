@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Registro das respostas — avaliação por especialistas</title>
+<!--
+  100% offline: nenhuma requisição de rede, nenhuma biblioteca externa.
+  Abra o arquivo direto no navegador (duplo clique). O rascunho é salvo no
+  localStorage a cada mudança, então fechar a aba não perde a digitação;
+  "Exportar" grava respostas_avaliadores.json, que é o que o
+  analisar_respostas.py consome.
+-->
+<style>
+:root{
+  --tinta:#16181d; --papel:#fff; --fundo:#eceef2; --borda:#c9cdd6;
+  --suave:#f6f7f9; --acento:#2d5d8a; --alerta:#a3341f; --ok:#1f7a4d;
+  --fraco:#6b7280;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --tinta:#e6e8ec; --papel:#1b1e24; --fundo:#111318; --borda:#3a3f4a;
+    --suave:#232730; --acento:#7fb0dd; --alerta:#e08a76; --ok:#6fcf9f;
+    --fraco:#9aa3b2;
+  }
+}
+:root[data-theme="dark"]{
+  --tinta:#e6e8ec; --papel:#1b1e24; --fundo:#111318; --borda:#3a3f4a;
+  --suave:#232730; --acento:#7fb0dd; --alerta:#e08a76; --ok:#6fcf9f;
+  --fraco:#9aa3b2;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--fundo);color:var(--tinta);
+  font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.envelope{max-width:1000px;margin:0 auto;padding:16px}
+header{background:var(--papel);border:1px solid var(--borda);border-radius:10px;
+  padding:16px 18px;margin-bottom:14px}
+h1{font-size:19px;margin:0 0 4px}
+.dica{color:var(--fraco);font-size:13px;margin:0}
+fieldset{border:1px solid var(--borda);border-radius:10px;background:var(--papel);
+  margin:0 0 14px;padding:12px 16px 16px}
+legend{font-weight:600;padding:0 6px}
+label{display:block;font-size:13px;margin-bottom:3px;color:var(--fraco)}
+input[type=text],input[type=time],textarea{width:100%;padding:7px 9px;
+  border:1px solid var(--borda);border-radius:6px;background:var(--papel);
+  color:var(--tinta);font:inherit;font-size:14px}
+textarea{min-height:56px;resize:vertical}
+.grade{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+.abas{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.aba{padding:8px 16px;border:1px solid var(--borda);border-radius:8px;
+  background:var(--papel);cursor:pointer;font:inherit;color:var(--tinta)}
+.aba[aria-selected=true]{background:var(--acento);color:#fff;border-color:var(--acento)}
+table{width:100%;border-collapse:collapse;margin-top:6px;font-size:14px}
+th,td{padding:5px 7px;text-align:left;border-bottom:1px solid var(--borda)}
+th{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--fraco);
+  font-weight:600}
+td.crit{width:130px;font-weight:600}
+.pontos{display:flex;gap:10px}
+.pontos label{display:inline-flex;align-items:center;gap:3px;margin:0;
+  font-size:14px;color:var(--tinta);cursor:pointer}
+.item{border:1px solid var(--borda);border-radius:10px;background:var(--papel);
+  margin-bottom:12px;padding:10px 14px 14px}
+.item h3{margin:0 0 2px;font-size:15px}
+.item .estado{float:right;font-size:12px;color:var(--fraco)}
+.item.completo .estado{color:var(--ok);font-weight:600}
+.piloto{border-style:dashed}
+.piloto h3::after{content:" — nivelamento, fora da estatística";
+  font-weight:400;font-size:12px;color:var(--fraco)}
+.barra{position:sticky;bottom:0;background:var(--papel);border-top:1px solid var(--borda);
+  padding:10px 16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;
+  margin:0 -16px -16px}
+button.acao{padding:9px 16px;border-radius:8px;border:1px solid var(--acento);
+  background:var(--acento);color:#fff;font:inherit;font-weight:600;cursor:pointer}
+button.secundaria{background:transparent;color:var(--acento)}
+.contagem{font-size:13px;color:var(--fraco)}
+.aviso{color:var(--alerta);font-size:13px}
+@media(max-width:620px){.pontos{gap:6px}td.crit{width:78px}}
+</style>
+</head>
+<body>
+<div class="envelope">
+<header>
+  <h1>Registro das respostas &mdash; avaliação por especialistas</h1>
+  <p class="dica">Digite aqui as notas dos cadernos preenchidos. Nada sai deste
+  computador: o rascunho fica no navegador e a exportação grava um arquivo
+  local. O item piloto <b>PA01</b> é digitado, mas não entra em nenhuma
+  estimativa.</p>
+</header>
+
+<fieldset>
+  <legend>Identificação da rodada</legend>
+  <div class="grade">
+    <div>
+      <label for="digest">Dígito do artefato (do Guia do pesquisador)</label>
+      <input type="text" id="digest" placeholder="ab6fa2e4e5aa2281…">
+    </div>
+    <div>
+      <label for="coleta">Data da coleta</label>
+      <input type="text" id="coleta" placeholder="2026-09-25">
+    </div>
+  </div>
+</fieldset>
+
+<div class="abas" id="abas" role="tablist"></div>
+<div id="painel"></div>
+
+<div class="barra">
+  <button class="acao" id="exportar">Exportar respostas_avaliadores.json</button>
+  <button class="acao secundaria" id="importar">Importar rascunho…</button>
+  <input type="file" id="arquivo" accept="application/json" hidden>
+  <span class="contagem" id="contagem"></span>
+  <span class="aviso" id="aviso"></span>
+</div>
+</div>
+
+<script>
+"use strict";
+const AVALIADORES = ["E01","E02","E03"];
+const ITENS = ["A01","A02","A03","A04","A05","A06","A07","A08","A09","A10"];
+const PILOTO = "PA01";
+const CRITERIOS = [
+  ["A1","Completude"], ["A2","Fidelidade"],
+  ["A3","Fluência"],   ["A4","Redundância"]
+];
+const QUALITATIVAS = [
+  "Q1 — utilidade no trabalho exegético ou de ensino",
+  "Q2 — defeito mais frequente observado",
+  "Q3 — o que precisaria mudar para usar com confiança"
+];
+const CHAVE_LOCAL = "tavern_avaliacao_v1";
+
+// ---------------------------------------------------------------- estado
+function vazio(){
+  const d = {digest:"", coleta:"", avaliadores:{}};
+  for (const a of AVALIADORES){
+    d.avaliadores[a] = {nome:"", inicio:"", fim:"", itens:{}, qualitativas:{}};
+    for (const c of [PILOTO, ...ITENS]){
+      d.avaliadores[a].itens[c] = {X:{}, Y:{}, A5:"", justificativa:""};
+    }
+    QUALITATIVAS.forEach((_,i)=> d.avaliadores[a].qualitativas["Q"+(i+1)] = "");
+  }
+  return d;
+}
+let dados = vazio();
+try {
+  const salvo = localStorage.getItem(CHAVE_LOCAL);
+  if (salvo) dados = Object.assign(vazio(), JSON.parse(salvo));
+} catch(e) { /* modo privado, armazenamento bloqueado: segue sem rascunho */ }
+
+function salvar(){
+  try { localStorage.setItem(CHAVE_LOCAL, JSON.stringify(dados)); } catch(e){}
+  atualizarContagem();
+}
+
+// ------------------------------------------------------------- desenho
+let atual = AVALIADORES[0];
+
+function completo(it){
+  return CRITERIOS.every(c => it.X[c[0]] && it.Y[c[0]]) && it.A5;
+}
+
+function blocoItem(codigo){
+  const it = dados.avaliadores[atual].itens[codigo];
+  const div = document.createElement("div");
+  div.className = "item" + (codigo===PILOTO ? " piloto":"") +
+                  (completo(it) ? " completo":"");
+  const est = completo(it) ? "completo" : "pendente";
+  div.innerHTML = `<h3>${codigo}<span class="estado">${est}</span></h3>
+    <table><thead><tr><th>Critério</th><th>Sistema X</th>
+    <th>Sistema Y</th></tr></thead><tbody></tbody></table>`;
+  const tb = div.querySelector("tbody");
+  for (const [cod,nome] of CRITERIOS){
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td class="crit">${cod} <span style="font-weight:400;
+      color:var(--fraco)">${nome}</span></td>`;
+    for (const s of ["X","Y"]){
+      const td = document.createElement("td");
+      const cx = document.createElement("div");
+      cx.className = "pontos";
+      for (const v of [1,2,3,4]){
+        const id = `${atual}_${codigo}_${s}_${cod}_${v}`;
+        const lab = document.createElement("label");
+        lab.innerHTML = `<input type="radio" name="${atual}_${codigo}_${s}_${cod}"
+          id="${id}" value="${v}" ${it[s][cod]==v?"checked":""}>${v}`;
+        lab.querySelector("input").addEventListener("change", ()=>{
+          it[s][cod] = v; salvar(); marcarEstado(div, it);
+        });
+        cx.appendChild(lab);
+      }
+      td.appendChild(cx); tr.appendChild(td);
+    }
+    tb.appendChild(tr);
+  }
+  const a5 = document.createElement("div");
+  a5.style.marginTop = "8px";
+  a5.innerHTML = `<label>A5 — preferência global</label><div class="pontos">` +
+    [["X","Prefiro X"],["Y","Prefiro Y"],["indiferente","Indiferente"]]
+      .map(([v,t])=>`<label><input type="radio"
+        name="${atual}_${codigo}_A5" value="${v}"
+        ${it.A5===v?"checked":""}>${t}</label>`).join("") + `</div>`;
+  a5.querySelectorAll("input").forEach(inp => inp.addEventListener("change", ()=>{
+    it.A5 = inp.value; salvar(); marcarEstado(div, it);
+  }));
+  div.appendChild(a5);
+  const just = document.createElement("div");
+  just.style.marginTop = "8px";
+  just.innerHTML = `<label>Justificativa (opcional)</label>`;
+  const ta = document.createElement("textarea");
+  ta.value = it.justificativa || "";
+  ta.addEventListener("input", ()=>{ it.justificativa = ta.value; salvar(); });
+  just.appendChild(ta); div.appendChild(just);
+  return div;
+}
+
+function marcarEstado(div, it){
+  div.classList.toggle("completo", completo(it));
+  div.querySelector(".estado").textContent = completo(it)?"completo":"pendente";
+}
+
+function desenhar(){
+  const abas = document.getElementById("abas");
+  abas.innerHTML = "";
+  for (const a of AVALIADORES){
+    const b = document.createElement("button");
+    b.className = "aba"; b.textContent = "Avaliador " + a;
+    b.setAttribute("role","tab");
+    b.setAttribute("aria-selected", String(a===atual));
+    b.addEventListener("click", ()=>{ atual = a; desenhar(); });
+    abas.appendChild(b);
+  }
+  const p = document.getElementById("painel");
+  p.innerHTML = "";
+  const av = dados.avaliadores[atual];
+
+  const id = document.createElement("fieldset");
+  id.innerHTML = `<legend>Avaliador ${atual}</legend><div class="grade">
+    <div><label>Nome</label><input type="text" id="nome"></div>
+    <div><label>Início</label><input type="text" id="inicio"
+      placeholder="14:05"></div>
+    <div><label>Término</label><input type="text" id="fim"
+      placeholder="15:20"></div></div>`;
+  p.appendChild(id);
+  for (const [campo, el] of [["nome","nome"],["inicio","inicio"],["fim","fim"]]){
+    const inp = id.querySelector("#"+el);
+    inp.value = av[campo] || "";
+    inp.addEventListener("input", ()=>{ av[campo] = inp.value; salvar(); });
+  }
+
+  const fs = document.createElement("fieldset");
+  fs.innerHTML = `<legend>Notas por item</legend>`;
+  fs.appendChild(blocoItem(PILOTO));
+  for (const c of ITENS) fs.appendChild(blocoItem(c));
+  p.appendChild(fs);
+
+  const q = document.createElement("fieldset");
+  q.innerHTML = `<legend>Perguntas finais</legend>`;
+  QUALITATIVAS.forEach((t,i)=>{
+    const k = "Q"+(i+1);
+    const w = document.createElement("div");
+    w.style.marginBottom = "10px";
+    w.innerHTML = `<label>${t}</label>`;
+    const ta = document.createElement("textarea");
+    ta.value = av.qualitativas[k] || "";
+    ta.addEventListener("input", ()=>{ av.qualitativas[k]=ta.value; salvar(); });
+    w.appendChild(ta); q.appendChild(w);
+  });
+  p.appendChild(q);
+  atualizarContagem();
+}
+
+function atualizarContagem(){
+  let feitos = 0, total = AVALIADORES.length * ITENS.length;
+  for (const a of AVALIADORES)
+    for (const c of ITENS)
+      if (completo(dados.avaliadores[a].itens[c])) feitos++;
+  document.getElementById("contagem").textContent =
+    `${feitos} de ${total} itens completos (o piloto não conta)`;
+}
+
+// ------------------------------------------------------------ exportar
+document.getElementById("exportar").addEventListener("click", ()=>{
+  dados.digest = document.getElementById("digest").value.trim();
+  dados.coleta = document.getElementById("coleta").value.trim();
+  const faltam = [];
+  for (const a of AVALIADORES)
+    for (const c of ITENS)
+      if (!completo(dados.avaliadores[a].itens[c])) faltam.push(`${a}/${c}`);
+  const aviso = document.getElementById("aviso");
+  if (faltam.length){
+    aviso.textContent = `Exportado com ${faltam.length} item(ns) incompleto(s): `
+      + faltam.slice(0,6).join(", ") + (faltam.length>6 ? "…" : "");
+  } else {
+    aviso.textContent = "";
+  }
+  dados.gerado_em = new Date().toISOString();
+  dados.incompletos = faltam;
+  const blob = new Blob([JSON.stringify(dados, null, 1)],
+                        {type:"application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "respostas_avaliadores.json";
+  a.click();
+  URL.revokeObjectURL(a.href);
+});
+
+document.getElementById("importar").addEventListener("click", ()=>
+  document.getElementById("arquivo").click());
+document.getElementById("arquivo").addEventListener("change", ev=>{
+  const f = ev.target.files[0]; if (!f) return;
+  const r = new FileReader();
+  r.onload = () => {
+    try {
+      dados = Object.assign(vazio(), JSON.parse(r.result));
+      document.getElementById("digest").value = dados.digest || "";
+      document.getElementById("coleta").value = dados.coleta || "";
+      salvar(); desenhar();
+      document.getElementById("aviso").textContent = "";
+    } catch(e){
+      document.getElementById("aviso").textContent = "arquivo inválido";
+    }
+  };
+  r.readAsText(f);
+});
+
+document.getElementById("digest").value = dados.digest || "";
+document.getElementById("coleta").value = dados.coleta || "";
+document.getElementById("digest").addEventListener("input", e=>{
+  dados.digest = e.target.value; salvar(); });
+document.getElementById("coleta").addEventListener("input", e=>{
+  dados.coleta = e.target.value; salvar(); });
+desenhar();
+</script>
+</body>
+</html>

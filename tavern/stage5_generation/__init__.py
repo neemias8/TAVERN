@@ -16,6 +16,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Callable, Dict, List, Optional, Sequence, Tuple
 
+from . import fidelity
 from ..config import TavernConfig
 from ..stage3_anchoring_alignment.event_coref import Clustering
 from ..stage3_anchoring_alignment.global_timeline import InducedTimeline
@@ -23,7 +24,7 @@ from ..stage3_anchoring_alignment.graph import EventGraph
 from ..stage3_anchoring_alignment.local_timeline import EventUnit
 
 __all__ = ["Consolidation", "consolidate", "ExtractiveFuser",
-           "SelectionStrategy", "build_fuser"]
+           "SelectionStrategy", "build_fuser", "fidelity"]
 
 
 def build_fuser(name: str, **kw):
@@ -149,7 +150,7 @@ class ExtractiveFuser:
     instructable = False
 
     def fuse(self, texts: Sequence[str], conflicted: bool = False,
-             context=None) -> str:
+             context=None, strict: bool = False, reason: str = "") -> str:
         return texts[0] if texts else ""
 
 
@@ -188,15 +189,28 @@ def consolidate(induced: InducedTimeline, clustering: Clustering,
         is_conflicted = cid in conflicted_clusters
         if is_conflicted:
             out.conflicted.append(cid)
-        if is_conflicted and not getattr(fuser, "instructable", False):
+        if len(texts) == 1:
+            # one witness: there is nothing to fuse, and the account is the
+            # only faithful answer. Asking a generator anyway is all cost and
+            # no benefit -- 134 of the 289 `ancoragem` events are
+            # single-account, and on 33 of them gemma3:4b continued past the
+            # source and invented what came next, once an aviation accident
+            # (E068, on "Pray that your flight will not take place in
+            # winter"), twice complete with fabricated "Account 2:" headers.
+            # A no-op for the deterministic backbones, which already return
+            # the account; a correctness fix for every instructable one.
+            para, action = texts[0], "single"
+        elif is_conflicted and not getattr(fuser, "instructable", False):
             # a faithful single account is preferable to a fused paragraph that
             # silently adjudicates a disagreement the system detected
-            para = texts[0]
+            para, action = texts[0], "selected"
         else:
             para = fuser.fuse(texts, conflicted=is_conflicted,
                               context=(cluster_context or {}).get(cid))
+            action = getattr(fuser, "last_action", "first")
         if not para.strip():
             continue
+        verdict = fidelity.check(para, texts)
         marker = f"E{t:03d}:{cid}"
         out.paragraphs.append(para.strip())
         out.markers.append(marker)
@@ -208,6 +222,14 @@ def consolidate(induced: InducedTimeline, clustering: Clustering,
             "cluster": cid,
             "selected_source": chosen,
             "conflicted": is_conflicted,
+            # what produced this paragraph, and how it scores against the
+            # accounts it was built from: "single" (one witness, emitted
+            # verbatim), "first" (the backbone's first attempt), "repair"
+            # (its strict re-ask), "union" (the deterministic fallback, the
+            # backbone having failed twice), "selected" (a conflicted cluster
+            # under a backbone that cannot be instructed).
+            "fusion": action,
+            **verdict.as_row(),
             # the day the anchor scaffold places this event on, and the
             # inter-anchor interval it falls in. Both come from the annotation's
             # own <TIMEX3> values -- not from the held-out harmony.

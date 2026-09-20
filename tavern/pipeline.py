@@ -149,6 +149,11 @@ def run(cfg: TavernConfig, with_gnn: bool = True, write: bool = True,
                          "fallback_note": note,
                          "cache": {"hits": getattr(fuser, "hits", 0),
                                    "misses": getattr(fuser, "misses", 0)},
+                         # RepairingFuser's tally: how many fusions the
+                         # backbone got right first time, how many its strict
+                         # re-ask rescued, and how many fell back to union
+                         "fusion": (fuser.report()
+                                    if hasattr(fuser, "report") else None),
                          "events": cons.records}, indent=1),
             encoding="utf-8")
         from .stage2_temporal_annotation.serializer import (
