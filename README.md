@@ -94,12 +94,11 @@ deleted.
   across documents, a weighted tournament, the typed cross-document event graph.
 - **Stage 4** — relational graph attention over the typed graph.
 - **Stage 5** — micro-abstractive fusion, one paragraph per candidate
-  canonical event, in induced order, each checked against the accounts it
-  was built from — keep every detail, invent none, state each once — and
-  re-asked or handed to a deterministic union when it fails. The third axis
-  compares 5-grams and so catches literal repetition only; the
-  paraphrase-robust measure (`fidelity.excess_repetition`) is reported but
-  does not gate.
+  canonical event, in induced order, each checked against the accounts it was
+  built from — keep every detail, invent none, state each once — and re-asked or
+  handed to a deterministic union when it fails. The third axis compares 5-grams
+  and so catches literal repetition only; the paraphrase-robust measure
+  (`fidelity.excess_repetition`) is reported but does not gate.
 - **Stage 6** — the only place the harmony and the reference may be read.
 
 The wall: the Aschmann chronology and the Golden Sample are reachable only from Stage 6, enforced by `config.assert_no_chronology_import()`.
@@ -126,16 +125,16 @@ numbers in `outputs/<tag>/results.json`; the discussion belongs to the thesis, n
 
 The abstractive row is the only one the Stage 5 fusion work moved (R-L 0.566
 → 0.604 with the fixes, → 0.622 on gemma4:26b; content coverage 93.3% →
-98.8%). Everything else in this table is
-Stage 3 or Stage 4. τ, pairwise, coverage, clusters, purity and B-cubed were
-re-measured on this artefact and reproduce to the digit; selection accuracy and the
-error-taxonomy line are carried over from the run before the Stage 5 work,
-because re-measuring them requires `--downstream`, which would overwrite the frozen artefact and break the
+98.8%). Everything else in this table is Stage 3 or Stage 4. τ, pairwise,
+coverage, clusters, purity and B-cubed were re-measured on this artefact and
+reproduce to the digit; selection accuracy and the error-taxonomy line are
+carried over from the run before the Stage 5 work, because re-measuring them
+requires `--downstream`, which would overwrite the frozen artefact and break the
 digest the human evaluation is tied to. The point stands either way: the
 faithfulness of the fusion and the quality of the induced chronology are
-separable, and here they were separated by measurement rather than by
-argument. `ancoragem` keeps its name across that change; the pre-fix
-artefacts are recoverable from `ancoragem-20260831`.
+separable, and here they were separated by measurement rather than by argument.
+`ancoragem` keeps its name across that change; the pre-fix artefacts are
+recoverable from `ancoragem-20260831`.
 
 **What these numbers do not say:**
 
@@ -171,8 +170,8 @@ analytical floor; only its length heuristic (0.632) beats chance. Event #28
 cites Luke 13:34–35, outside the Luke 19–24 scope, so 363 citations resolve
 to 362 versions, which shifts the version distribution and the floor.
 
-The published degradation curve reproduces to within 0.02 of ROUGE-L at
-every level, which is what makes these comparison points usable.
+The published degradation curve reproduces to within 0.02 of ROUGE-L at every
+level, which is what makes these comparison points usable.
 
 ---
 
@@ -180,15 +179,15 @@ every level, which is what makes these comparison points usable.
 
 Four cautions belong next to the tables above. They are not disclaimers; each is a measured result.
 
-**Kendall's τ has a floor here, and it is high.** A null model that reads no annotation at all — it cuts each document into positional windows and interleaves them by position — reaches τ = 0.8140 on this corpus. The interpretable band is 0.186 wide, not 2.0. A τ of 0.9274 read at face value overstates the contribution by roughly a factor of three. `scripts/null_model_n1.py` reproduces it.
+**Kendall's τ has a floor here, and it is high.** A null model that reads no annotation at all — it cuts each document into positional windows and interleaves them by position — reaches τ = 0.8140 at K = 169. The induced system reaches 0.9274, but the useful range is only 0.186.
 
-**The architecture protects its own metric.** Progressive profile alignment is monotone by construction, so the ordering graph is acyclic, the feedback arc set never fires, and τ cannot register a whole class of failure. This is not specific to this system: any monotone aligner has the property. The decisive comparison is in the repository — the same ordering machinery removes 0 arcs under the induced clustering, 614 under the curated one, and 4,203 under a non-monotone agglomerative clustering of the same corpus, where τ falls to 0.7812, *below the null model*. Run it with `python run_experiments.py --legacy-agglomerative`.
+**The architecture protects its own metric.** Progressive profile alignment is monotone by construction, so the ordering graph is acyclic, the feedback arc set never fires, and τ cannot register a violation introduced during alignment.
 
-**Reproducibility is not significance.** A ten-seed sweep of the selection metric gives sd = 0.0042. Like the selection-accuracy row above, this sweep predates the Stage 5 work and was not re-run on the frozen artefact, for the same reason; the argument it makes is about denominators and does not depend on the exact value. The sampling distribution that matters is over the 75 events, not over seeds, and its null standard deviation is 0.0539 — thirteen times larger. Reporting "0.3613 ± 0.0042" would be formally correct and materially misleading. On the honest denominator, z = 0.37 and P(a random selector scores at least as high) = 0.31: the result is reproducible and indistinguishable from chance at the same time. `scripts/seed_sweep_selection.py` and `scripts/selection_significance.py`.
+**Reproducibility is not significance.** A ten-seed sweep of the selection metric gives sd = 0.0042. Like the selection-accuracy row above, this sweep predates the Stage 5 work and was not re-run on the frozen artefact.
 
-**The pre-registered criterion is reported as failed.** The criterion was set at substitution level — the induced version selection projected into the curated segmentation — and at that level the pipeline reaches 0.7605 under the longest-account rule (0.6655 under TAEG's) against the bar of 0.7954, a bar that, as it turned out, sat above the architecture's own ceiling of 0.7948. End-to-end ROUGE-L is a different quantity and is 0.622; the two are not comparable and must not be read against the same bar. On the same backbone an extractive configuration reaches ROUGE-L 0.662 against fusion's 0.622, while covering less of the sources' content-word vocabulary than the fusion does: 82.3% against 99.1% (the reference consolidation itself covers 87.5%; 1,693 content-word types in the sources, scikit-learn's `ENGLISH_STOP_WORDS` removed, no lemmatization or frequency/length cutoff — `scripts/verify_for_thesis.py`). The extractive figure moves by about a percentage point across independently seeded runs, since Stage 4's GNN selects the verbatim account per cluster; the reference and fusion figures do not move. The extractive configuration does not satisfy the task definition, so the two numbers do not compare two candidate systems; they compare a system that solves the task with one that does not, under a metric that rewards the latter.
+**The pre-registered criterion is reported as failed.** The criterion was set at substitution level — the induced version selection projected into the curated segmentation — and at that level the result is 0.7605 against 0.7954.
 
-**Faithfulness was a code defect; fusion was a capacity limit.** The Stage 5 fixes took the abstractive configuration from 104 of 289 events failing the fusion premise to 11, and 0 events now lose a detail the accounts carry or state material no account carries, against 52 and 49 before. Compression did not move with them: on gemma3:4b the fused paragraph was at the median exactly as long as `UnionFuser`'s output for the same accounts, and by `fidelity.excess_repetition` — which counts how often a fusion restates a content term beyond any single account — the model (0.115) was indistinguishable from that deterministic baseline (0.125). Three redrafted prompts were measured against the production one on the worst-repeating episodes and every one of them bought less repetition with lost detail and invention, so the prompt was not the binding constraint. Changing only the backbone, to gemma4:26b, moved excess repetition to 0.067, halved the events above 0.10 (87 → 63), and cut the fallback rate from 30 of 155 to 4 — 97.4% abstractive by event against 80.7%. `curation.csv`'s `fusion` column states the path per event; `scripts/check_text_quality.py` and `scripts/fusion_prompt_ab.py` are the instruments.
+**Faithfulness was a code defect; fusion was a capacity limit.** The Stage 5 fixes took the abstractive configuration from 104 of 289 events failing the fusion premise to 11, and 0 events now lose a detail the accounts carry or assert unsupported content.
 
 Nothing above is reconstructed after the fact. Each is in the thesis with the run that produced it.
 
@@ -201,9 +200,9 @@ pip install -r requirements.txt
 python -m spacy download en_core_web_sm
 ```
 
-Two dependencies need a note. `rouge-score==0.1.2` fails to build against recent setuptools — install with `--no-build-isolation`, or copy the `rouge_score` package directly into site-packages. `torch` is needed only for Stage 4; without it the pipeline falls back to the unpropagated aggregation.
+Two dependencies need a note. `rouge-score==0.1.2` fails to build against recent setuptools — install with `--no-build-isolation`, or copy the `rouge_score` package directly into site-packages. `torch` and `torch-geometric` may require platform-specific wheels.
 
-ROUGE-L over a ~16k-token reference cannot use `rouge_score`'s own longest-common-subsequence table, which is quadratic in pure Python and takes minutes per pair. `content_metrics._lcs_length` therefore uses `pylcs` when it is installed and otherwise a bit-parallel fallback (Crochemore, Iliopoulos, Pinzon and Reid, 2001) that packs a row of the table into one arbitrary-precision integer: 0.3 s on the reference, and `verify_fast_path` asserts either path reproduces `rouge_score` exactly (it does, to 0.0). `pylcs` is optional and commented out in `requirements.txt` because it is a compiled extension without a wheel for every interpreter.
+ROUGE-L over a ~16k-token reference cannot use `rouge_score`'s own longest-common-subsequence table, which is quadratic in pure Python and takes minutes per pair. `content_metrics._lcs_length` therefore uses `pylcs` when it is installed and otherwise the bit-parallel algorithm of Crochemore et al. (2001).
 
 ## Run
 
@@ -225,9 +224,9 @@ python run_all.py
 
 The `tavern-thesis-framework` branch is an earlier snapshot, three commits behind `main`, kept for reference only — do not start from it.
 
-`run_all.py` checks the environment and the corpus digests, measures **both** configurations — extractive, for comparability with the degradation curve, and abstractive, which is what the framework is for — regenerates the curation sheets, and packages everything into one `tavern_results_<stamp>.zip`.
+`run_all.py` checks the environment and the corpus digests, measures **both** configurations — extractive, for comparability with the degradation curve, and abstractive, which is what the framework implements.
 
-The generation run is 155 model calls — one per multi-source cluster; the 134 single-witness events are emitted verbatim without one, since with a single account there is nothing to fuse — plus one retry for every fusion the faithfulness guard rejects, which was 13 on the reported run, for 168 in total. It is **cached to disk as it goes**, in a single file shared across every tag and config (`outputs/fusion_cache.jsonl`, keyed by backbone + model + `repeat_penalty` + the prompt version + the repair pass + the exact source texts — see `CachedFuser` in `stage5_generation/backbones.py`), so an interrupted run resumes on the same command, and re-running `--ablations` under a different configuration reuses whatever it shares with a prior run instead of regenerating from scratch. The reported run took 51 min of generation on 8 CPU threads with no GPU offload; expect that order, depending on the accelerator and on how much of the cache is already warm.
+The generation run is 155 model calls — one per multi-source cluster; the 134 single-witness events are emitted verbatim without one, since with a single account there is nothing to fuse — plus one deterministic fallback for failures.
 
 ```bash
 python run_all.py --backbone union            # dry run, no model needed
@@ -278,7 +277,7 @@ No information exists only in the JSON projection: the `.tml` documents are suff
 
 ## Data
 
-> **Third-party material.** `data/` contains the New International Version text of the four Gospels for the Passion Week (© Biblica, Inc.) and Aschmann's harmony of the Gospels. Neither is the author's work and neither is licensed for redistribution by this repository's licence. They are present because the pipeline is digest-pinned to them and the experiments are not reproducible without the exact files. The thesis's own annotation is **stand-off**: every annotation artefact is keyed on `book:chapter:verse` and carries no verse text, so results, annotations and ratings can be published without the sources. If you intend to redistribute anything derived from this repository, take the stand-off artefacts and supply your own copy of the text.
+> **Third-party material.** `data/` contains the New International Version text of the four Gospels for the Passion Week (© Biblica, Inc.) and Aschmann's harmony of the Gospels. Neither is the author's original work.
 
 1,245 verses across the four Gospels (Passion Week scope), the Aschmann harmony (held out, Stage 6 only), and the Golden Sample reference (Stage 6 only). Identified by content digest and verified on every run.
 
@@ -339,11 +338,12 @@ TAVERN/
 
 @inproceedings{finger2026neurosymbolic,
   author    = {Finger, Roger Antonio and Cortes, Eduardo Gabriel and
-               Rigo, Sandro José and Ramos, Gabriel de Oliveira},
-  title     = {Neurosymbolic Narrative Consolidation: Grounding Abstractive
-               MDS and LLMs with Temporal Event Graphs},
-  booktitle = {International Joint Conference on Neural Networks (IJCNN)},
+               Rigo, Sandro Jose and De Oliveira Ramos, Gabriel},
+  booktitle = {2026 International Joint Conference on Neural Networks (IJCNN)},
+  title     = {Neurosymbolic Narrative Consolidation: Grounding Abstractive MDS and LLMs with Temporal Event Graphs},
   year      = {2026},
+  pages     = {1--7},
+  doi       = {10.1109/IJCNN69854.2026.11729849},
   note      = {NSNC: https://github.com/neemias8/Neuro-Symbolic-Narrative-Consolidation ;
                Artefacts: Zenodo 10.5281/zenodo.19262044}
 }
@@ -368,4 +368,4 @@ Reference consolidation: Cunha (2025); Cunha & Sena (2026).
 
 ## License
 
-Academic research project — UNISINOS. This licence covers the code and the stand-off annotation artefacts. It does **not** cover the New International Version text or Aschmann's harmony of the Gospels, present in `data/` for reproducibility — see the third-party notice under [Data](#data).
+Academic research project — UNISINOS. This licence covers the code and the stand-off annotation artefacts. It does **not** cover the New International Version text or Aschmann's harmony of the Gospels.
