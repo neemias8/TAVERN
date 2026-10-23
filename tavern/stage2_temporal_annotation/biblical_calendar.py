@@ -117,13 +117,13 @@ NUMBER_WORDS: Dict[str, int] = {
     "one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6,
     "seven": 7, "eight": 8, "nine": 9, "ten": 10, "eleven": 11,
     "twelve": 12, "twenty": 20, "thirty": 30, "forty": 40, "fifty": 50,
-    "a": 1, "an": 1, "half": 0, "several": 0,
+    "a": 1, "an": 1, "half": 0.5, "several": None,
 }
 
 DURATION_UNITS: Dict[str, str] = {
     "second": "S", "seconds": "S", "minute": "M", "minutes": "M",
     "hour": "H", "hours": "H", "day": "D", "days": "D",
-    "week": "W", "weeks": "W", "month": "M", "months": "M",
+    "week": "W", "weeks": "W", "month": "MO", "months": "MO",
     "year": "Y", "years": "Y",
 }
 
@@ -140,7 +140,7 @@ def duration_value(count: Optional[int], unit_code: str) -> str:
     n = "X" if count is None else str(count)
     if unit_code in SUB_DAY_UNITS:
         return f"PT{n}{unit_code}"
-    if unit_code == "M":            # ambiguous: minutes handled above
+    if unit_code == "MO":           # distinct lexical code for calendar months
         return f"P{n}M"
     return f"P{n}{unit_code}"
 

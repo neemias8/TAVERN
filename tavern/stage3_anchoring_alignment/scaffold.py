@@ -295,7 +295,7 @@ def _solve_document(tl: LocalTimeline, anchors: List[Anchor], sc: Scaffold,
     # --- phase 1: the day axis from absolute constraints -----------------
     pins: Dict[int, float] = {}
     for a in anchors:
-        if a.absolute_day is None or a.unit_index is None:
+        if not a.in_narration or a.absolute_day is None or a.unit_index is None:
             continue
         i = a.unit_index
         if i not in pins or a.absolute_day < pins[i]:
@@ -305,7 +305,7 @@ def _solve_document(tl: LocalTimeline, anchors: List[Anchor], sc: Scaffold,
 
     # --- phase 2: within-day anchors -------------------------------------
     for a in anchors:
-        if a.within_day is None or a.unit_index is None:
+        if not a.in_narration or a.within_day is None or a.unit_index is None:
             continue
         i = a.unit_index
         day = math.floor(positions[i] + 1e-9)
@@ -321,7 +321,7 @@ def _solve_document(tl: LocalTimeline, anchors: List[Anchor], sc: Scaffold,
         sc.day_of_unit[u.unit_id] = d
         u.day_index = float(d)
         u.time_position = p - d
-        if i in pins:
+        if i in pins and abs(positions[i] - pins[i]) < 1e-9:
             sc.observed.add(u.unit_id)
 
     for a in anchors:
@@ -405,12 +405,17 @@ def project_timexes(structs: Dict[str, AnnotationStructure], sc: Scaffold,
     """
     day_concrete = day_subspecified = 0
     part_concrete = part_subspecified = 0
+    for u in units.values():
+        u.projected_days.clear(); u.projected_parts.clear()
+    for struct in structs.values():
+        for tx in struct.timexes.values():
+            tx.projected_day = None; tx.projected_part = None
     for a in sc.anchors:
         struct = structs.get(a.book)
         tx = struct.timexes.get(a.anchor_id) if struct is not None else None
         u = units.get(a.unit_id) if a.unit_id else None
 
-        if a.absolute_day is not None:
+        if a.in_narration and a.absolute_day is not None:
             day = int(math.floor(a.absolute_day))
             if tx is not None:
                 tx.projected_day = day
@@ -420,7 +425,7 @@ def project_timexes(structs: Dict[str, AnnotationStructure], sc: Scaffold,
         else:
             day_subspecified += 1
 
-        if a.kind in ("daypart", "hour") and a.pred:
+        if a.in_narration and a.kind in ("daypart", "hour") and a.pred:
             if tx is not None:
                 tx.projected_part = a.pred
             if u is not None:

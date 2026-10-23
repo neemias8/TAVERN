@@ -131,6 +131,80 @@ MAX_EPISODE_VERSES: Optional[int] = 2
 #: Override for the profile seed order (see `cluster_units`); None = default.
 _SEED_ORDER = None
 
+#: Post-hoc Stage 3 grouping refinement (Thesis Section 10.9):
+#: Combines ISO-TimeML predicate/projection IDF with content-word stem/bigram
+#: TF-IDF and 96-dim SVD dense representations in `predicate_similarity`, and
+#: discounts `anchor_compatibility` by `INTERPOLATED_ANCHOR_DISCOUNT` when
+#: either unit's scaffold position is interpolated rather than observed.
+REFINE_GROUPING: bool = True
+INTERPOLATED_ANCHOR_DISCOUNT: float = 0.60
+_SPARSE_LEX_CACHE: Dict[str, Dict[str, float]] = {}
+_SVD_EMB_CACHE: Dict[str, List[float]] = {}
+
+
+def _build_refined_unit_representations(
+    units_seq: Sequence[EventUnit],
+) -> Tuple[Dict[str, List[float]], Dict[str, Dict[str, float]]]:
+    """Compute deterministic content-word + bigram TF-IDF vectors and 96-dim
+    SVD dense unit representations from the source text of the units alone.
+    """
+    import numpy as np
+    from ..stage6_evaluation.redundancy import _STOP, _TOKEN, _stem
+
+    uids = sorted(u.unit_id for u in units_seq)
+    by_id = {u.unit_id: u for u in units_seq}
+    doc_terms: Dict[str, Counter] = {}
+    df: Counter = Counter()
+
+    for uid in uids:
+        text = by_id[uid].text.lower()
+        words = [
+            _stem(m.group(0))
+            for m in _TOKEN.finditer(text)
+            if len(m.group(0)) > 2 and m.group(0).lower() not in _STOP
+        ]
+        c = Counter(words)
+        for w1, w2 in zip(words, words[1:]):
+            c[f"BG:{w1}_{w2}"] += 1
+        doc_terms[uid] = c
+        df.update(set(c.keys()))
+
+    n = max(1, len(uids))
+    vocab = [t for t, count in df.items() if count >= 2]
+    t2i = {t: i for i, t in enumerate(vocab)}
+    mat = np.zeros((n, len(vocab)), dtype=np.float64)
+
+    for r, uid in enumerate(uids):
+        c = doc_terms[uid]
+        for t, cnt in c.items():
+            if t in t2i:
+                idf = math.log((n + 1) / (1 + df[t]))
+                mat[r, t2i[t]] = (1.0 + math.log(cnt)) * idf
+        norm = np.linalg.norm(mat[r])
+        if norm > 0:
+            mat[r] /= norm
+
+    u_svd, s_svd, _ = np.linalg.svd(mat, full_matrices=False)
+    k = min(96, mat.shape[1])
+    dense = u_svd[:, :k] * np.sqrt(s_svd[:k])
+
+    emb: Dict[str, List[float]] = {}
+    for r, uid in enumerate(uids):
+        norm = np.linalg.norm(dense[r])
+        emb[uid] = (dense[r] / norm).tolist() if norm > 0 else dense[r].tolist()
+
+    sparse: Dict[str, Dict[str, float]] = {}
+    for uid in uids:
+        c = doc_terms[uid]
+        vec = {
+            t: (1.0 + math.log(cnt)) * math.log((n + 1) / (1 + df[t]))
+            for t, cnt in c.items()
+        }
+        norm = math.sqrt(sum(v * v for v in vec.values())) or 1.0
+        sparse[uid] = {t: v / norm for t, v in vec.items()}
+
+    return emb, sparse
+
 
 @dataclass
 class Cluster:
@@ -263,6 +337,14 @@ def cluster_units(timelines: Dict[str, LocalTimeline], scaffold: Scaffold,
     idf = PredicateIDF(list(units.values()))
     vectors = {uid: idf.vector(u) for uid, u in units.items()}
     entity_idf = EntityIDF(list(units.values()))
+    if REFINE_GROUPING:
+        svd_emb, sparse_lex = _build_refined_unit_representations(list(units.values()))
+        _SPARSE_LEX_CACHE.clear()
+        _SPARSE_LEX_CACHE.update(sparse_lex)
+        _SVD_EMB_CACHE.clear()
+        _SVD_EMB_CACHE.update(svd_emb)
+        if embeddings is None:
+            embeddings = svd_emb
 
     # Documents enter the profile in canonical order. The choice has a
     # measurable but small effect, reported as a sensitivity analysis in
@@ -443,6 +525,9 @@ def _merge_episodes(profile: List[List[str]], units: Dict[str, EventUnit],
 def _mergeable(cur: Sequence[str], nxt: Sequence[str],
                units: Dict[str, EventUnit],
                succ: Dict[str, Optional[str]]) -> bool:
+    # Adjacency cannot create cross-document identity rejected by alignment.
+    if not ({units[u].book for u in cur} & {units[u].book for u in nxt}):
+        return False
     last_of: Dict[str, str] = {}
     verses_of: Dict[str, int] = {}
     for uid in cur:
@@ -676,12 +761,33 @@ def anchor_compatibility(a: EventUnit, b: EventUnit,
     d = abs(pa - pb)
     if d > ANCHOR_BAND:
         return 0.0
-    return max(0.0, 1.0 - d / ANCHOR_BAND)
+    val = max(0.0, 1.0 - d / ANCHOR_BAND)
+    if REFINE_GROUPING and not (
+        scaffold.is_observed(a.unit_id) and scaffold.is_observed(b.unit_id)
+    ):
+        val *= INTERPOLATED_ANCHOR_DISCOUNT
+    return val
 
 
 def predicate_similarity(a: EventUnit, b: EventUnit, vectors,
                          embeddings=None) -> float:
     val = _cosine(vectors[a.unit_id], vectors[b.unit_id])
+    if REFINE_GROUPING and _SPARSE_LEX_CACHE:
+        lex_v = _cosine(
+            _SPARSE_LEX_CACHE.get(a.unit_id, {}),
+            _SPARSE_LEX_CACHE.get(b.unit_id, {}),
+        )
+        emb_src = embeddings if embeddings is not None else _SVD_EMB_CACHE
+        emb_v = 0.0
+        if emb_src:
+            ea, eb = emb_src.get(a.unit_id), emb_src.get(b.unit_id)
+            if ea is not None and eb is not None:
+                num = sum(x * y for x, y in zip(ea, eb))
+                da = math.sqrt(sum(x * x for x in ea))
+                db = math.sqrt(sum(y * y for y in eb))
+                if da and db:
+                    emb_v = max(0.0, num / (da * db))
+        return 0.35 * val + 0.25 * lex_v + 0.40 * emb_v
     if embeddings is not None:
         ea, eb = embeddings.get(a.unit_id), embeddings.get(b.unit_id)
         if ea is not None and eb is not None:
