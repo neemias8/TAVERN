@@ -36,9 +36,11 @@ from __future__ import annotations
 
 import argparse
 import csv
+import inspect
 import json
 import math
 import re
+import subprocess
 import sys
 import types
 from collections import Counter, defaultdict
@@ -91,6 +93,7 @@ from tavern.stage1_preprocessing.corpus import Corpus
 from tavern.stage1_preprocessing.pericopes import load_pericopes
 from tavern.stage1_preprocessing.segmentation import Token, Sentence, SegmentedDocument
 from tavern.stage2_temporal_annotation import annotate_corpus
+from tavern.stage2_temporal_annotation import biblical_calendar
 from tavern.stage2_temporal_annotation.event_tagger import (
     REPORTING_LEMMAS, PERCEPTION_LEMMAS, ASPECTUAL_LEMMAS, I_STATE_LEMMAS,
     I_ACTION_LEMMAS, NOMINAL_EVENT_LEMMAS, TEMPORAL_NOUNS, COPULA_LEMMAS,
@@ -537,6 +540,37 @@ def load_locked_timelines_from_curation(
     return timelines
 
 
+def package_state(refine_grouping: Optional[bool]) -> dict:
+    """Which checkout of `tavern/` produced a row.
+
+    Every number here depends on package state this script does not control:
+    `scaffold.py`'s projection filters and `biblical_calendar.py`'s unit codes
+    move the *baseline* row, so a table generated from the refinement branch
+    and one generated from the thesis branch are not comparable row by row.
+    Recording it per row is what makes two reports distinguishable after the
+    fact, which cost a day to establish once by bisecting the artifacts.
+
+    `refine_grouping` is the value the package declares, captured before
+    `evaluate_variant` pins it off -- reading it back here would report the
+    pin, not the checkout.
+    """
+    try:
+        head = subprocess.run(
+            ["git", "-C", str(ROOT), "rev-parse", "--short", "HEAD"],
+            capture_output=True, text=True, timeout=10,
+        ).stdout.strip() or None
+    except Exception:
+        head = None
+    return {
+        "git_head": head,
+        "event_coref.REFINE_GROUPING": refine_grouping,
+        "scaffold.in_narration_filter": "in_narration" in inspect.getsource(
+            scaffold_mod.project_timexes),
+        "biblical_calendar.month_code_MO": "MO" in getattr(
+            biblical_calendar, "DURATION_UNITS", {}).values(),
+    }
+
+
 def evaluate_variant(
     label: str,
     structs,
@@ -557,6 +591,7 @@ def evaluate_variant(
     orig_anc = event_coref.anchor_compatibility
     orig_merge = event_coref._mergeable
     orig_thresh = event_coref.MATCH_THRESHOLD
+    orig_refine = getattr(event_coref, "REFINE_GROUPING", False)
 
     if emb_weight > 0.0 or lex_weight > 0.0:
         def custom_pred(a, b, vectors, emb=None):
@@ -599,6 +634,23 @@ def evaluate_variant(
     event_coref.ANCHOR_BAND = 4.0
     event_coref.GAP_COST = 0.06
     event_coref.MAX_EPISODE_VERSES = 2
+    # The refinement this script measures also exists inside the package, on
+    # the branch that carries it (`event_coref.REFINE_GROUPING`). Left on it
+    # double-applies: it swaps out the same three things the variants below
+    # patch -- the unit representations, the interpolated-anchor discount and
+    # the lexical term of `predicate_similarity`. Pinned off, the script owns
+    # the algorithm and every row means what its label says.
+    #
+    # This does NOT make the table branch-independent, and no flag can. The
+    # same branch also changes `scaffold.py` (an `in_narration` filter on both
+    # projection passes, a tolerance on pins, a clear of projected days/parts)
+    # and `biblical_calendar.py` (`half` 0 -> 0.5, `several` 0 -> None, month
+    # code M -> MO), neither of them gated. Those move every row including the
+    # baseline: `0_baseline_unpatched` measures 289 clusters / 44.44% purity
+    # against the thesis package and 317 / 55.88% against the refined one.
+    # Generate the table from one checkout and say in the report which, which
+    # is what `package_state()` below records.
+    event_coref.REFINE_GROUPING = False
 
     sc = scaffold_mod.build(structs, timelines, enabled=True)
     for u in units.values():
@@ -658,9 +710,11 @@ def evaluate_variant(
     event_coref.anchor_compatibility = orig_anc
     event_coref._mergeable = orig_merge
     event_coref.MATCH_THRESHOLD = orig_thresh
+    event_coref.REFINE_GROUPING = orig_refine
 
     row = {
         "config": label,
+        "package_state": package_state(orig_refine),
         "clusters": len(cl.clusters),
         "multi_witness_clusters": pur["multi_witness_clusters"],
         "pure_clusters": pur["pure"],
