@@ -129,13 +129,18 @@ not involve Stage 4 at all.
 
 ## SHA-256
 
-These are hashes of the **git blobs** (LF line endings), not of the files as
-checked out — on Windows the working tree is CRLF and `sha256sum` on the file
-gives a different value. Verify with:
+These are hashes of the **git blobs**, not of the files as checked out. For a
+file git normalises, the working tree on Windows is CRLF and `sha256sum` on
+the file disagrees with the value below. Verify with:
 
 ```bash
 git show HEAD:results/<file> | sha256sum
 ```
+
+The line endings are not uniform across this folder: the six structural files
+were committed from a working tree and are stored LF, while `results.json` and
+`curation.json` were uploaded through the GitHub web interface and are stored
+CRLF. The command above is correct for both.
 
 ```
 d716b4cf18e3a0182b50e3b8cd62c047ab8a2098fc0fbad6b9d01f50588640b7  refinement_report.json
@@ -144,6 +149,6 @@ b0d70a594ee09dd5ffc45b70fba585a62f25cfa1a4470f7c9e1c556de6925bf4  refinement_rep
 5d351a72ec5022fe3ff21663ae447ec1a0cba094623dd9f91923282c13f0d79d  curation_1_porte4_plus_embeddings.json
 2f6ff387a5cada956bb9c567b8ec83098676eefd27ad8f01c303fb80ed849fca  curation_2_posthoc_refinement_th033.json
 8ace1f90c07b5161279ab4e6602ca8d72c08704a7512e49e20d72d7681377580  curation_3_posthoc_refinement_th034.json
-b8df2e882585a875ce12afc1a944479daf9d20f98ce129c5888548614086fce3  results.json
-b6c7cad19ac63ebd645191579041cf44d379d7aca01d8ebab848e33eea98aff9  curation.json
+18a87206eb8eeaae331e09e100c32e455bf5cac6d4121a176a21852ebab77f94  results.json
+b8e35dff3ab887684b00a3405fbd80f9b1e108fe7aa09b17c990e65e6253d8df  curation.json
 ```
