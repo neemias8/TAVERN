@@ -1,0 +1,540 @@
+[
+  {
+    "config": "0_baseline_unpatched",
+    "package_state": {
+      "git_head": "280190f",
+      "event_coref.REFINE_GROUPING": true,
+      "scaffold.in_narration_filter": true,
+      "biblical_calendar.month_code_MO": true
+    },
+    "clusters": 317,
+    "multi_witness_clusters": 136,
+    "pure_clusters": 76,
+    "impure_clusters": 60,
+    "purity": 0.5588,
+    "day_mixing": 0.0882,
+    "tau_plan": 0.9278,
+    "pairwise_accuracy": 0.9639,
+    "matched_events": 152,
+    "total_events": 168,
+    "coverage": 0.9048,
+    "bcubed": {
+      "verses": 1221,
+      "gold_clusters": 165,
+      "system_clusters": 311,
+      "precision": 0.7473,
+      "recall": 0.4108,
+      "f1": 0.5301
+    },
+    "theologian_sample_cases": {
+      "A01 (Mk 12:35-36 vs Mt 23:22)": {
+        "mark:12:35": {
+          "cluster_id": "c058",
+          "members": [
+            "Matthew 23:22",
+            "Mark 12:35-36"
+          ]
+        },
+        "matthew:23:22": {
+          "cluster_id": "c058",
+          "members": [
+            "Matthew 23:22",
+            "Mark 12:35-36"
+          ]
+        }
+      },
+      "A02 (Jn 13:29 vs Lk 22:29-30)": {
+        "john:13:29": {
+          "cluster_id": "c149",
+          "members": [
+            "John 13:29",
+            "John 13:30"
+          ]
+        },
+        "luke:22:29": {
+          "cluster_id": "c150",
+          "members": [
+            "Luke 22:29-30"
+          ]
+        }
+      },
+      "A04 (Mt 26:33 / Mk 14:29 / Lk 22:32-33 vs Jn 13:31)": {
+        "matthew:26:33": {
+          "cluster_id": "c155",
+          "members": [
+            "Matthew 26:32",
+            "Mark 14:28",
+            "Matthew 26:33",
+            "Mark 14:29",
+            "Luke 22:32-33",
+            "John 13:36-37"
+          ]
+        },
+        "mark:14:29": {
+          "cluster_id": "c155",
+          "members": [
+            "Matthew 26:32",
+            "Mark 14:28",
+            "Matthew 26:33",
+            "Mark 14:29",
+            "Luke 22:32-33",
+            "John 13:36-37"
+          ]
+        },
+        "luke:22:33": {
+          "cluster_id": "c155",
+          "members": [
+            "Matthew 26:32",
+            "Mark 14:28",
+            "Matthew 26:33",
+            "Mark 14:29",
+            "Luke 22:32-33",
+            "John 13:36-37"
+          ]
+        },
+        "john:13:31": {
+          "cluster_id": "c152",
+          "members": [
+            "Matthew 26:30",
+            "Matthew 26:31",
+            "Mark 14:26-27",
+            "Luke 22:31",
+            "John 13:31"
+          ]
+        }
+      },
+      "A07 (Mt 26:69-70 / Mk 14:66 / Lk 22:55-57 vs Jn 16:16)": {
+        "matthew:26:69": {
+          "cluster_id": "c196",
+          "members": [
+            "Matthew 26:69-70",
+            "Mark 14:66",
+            "Luke 22:55-57"
+          ]
+        },
+        "mark:14:66": {
+          "cluster_id": "c196",
+          "members": [
+            "Matthew 26:69-70",
+            "Mark 14:66",
+            "Luke 22:55-57"
+          ]
+        },
+        "luke:22:55": {
+          "cluster_id": "c196",
+          "members": [
+            "Matthew 26:69-70",
+            "Mark 14:66",
+            "Luke 22:55-57"
+          ]
+        },
+        "john:16:16": {
+          "cluster_id": "c195",
+          "members": [
+            "John 16:16"
+          ]
+        }
+      }
+    }
+  },
+  {
+    "config": "1_porte4_plus_embeddings",
+    "package_state": {
+      "git_head": "280190f",
+      "event_coref.REFINE_GROUPING": true,
+      "scaffold.in_narration_filter": true,
+      "biblical_calendar.month_code_MO": true
+    },
+    "clusters": 308,
+    "multi_witness_clusters": 141,
+    "pure_clusters": 84,
+    "impure_clusters": 57,
+    "purity": 0.5957,
+    "day_mixing": 0.0426,
+    "tau_plan": 0.9404,
+    "pairwise_accuracy": 0.9702,
+    "matched_events": 150,
+    "total_events": 168,
+    "coverage": 0.8929,
+    "bcubed": {
+      "verses": 1221,
+      "gold_clusters": 165,
+      "system_clusters": 305,
+      "precision": 0.7561,
+      "recall": 0.4277,
+      "f1": 0.5464
+    },
+    "theologian_sample_cases": {
+      "A01 (Mk 12:35-36 vs Mt 23:22)": {
+        "mark:12:35": {
+          "cluster_id": "c047",
+          "members": [
+            "Matthew 22:43-44",
+            "Mark 12:35-36",
+            "Luke 20:41-43"
+          ]
+        },
+        "matthew:23:22": {
+          "cluster_id": "c056",
+          "members": [
+            "Matthew 23:22",
+            "Luke 21:5"
+          ]
+        }
+      },
+      "A02 (Jn 13:29 vs Lk 22:29-30)": {
+        "john:13:29": {
+          "cluster_id": "c144",
+          "members": [
+            "John 13:29",
+            "John 13:30"
+          ]
+        },
+        "luke:22:29": {
+          "cluster_id": "c145",
+          "members": [
+            "Matthew 26:29",
+            "Mark 14:25",
+            "Luke 22:29-30"
+          ]
+        }
+      },
+      "A04 (Mt 26:33 / Mk 14:29 / Lk 22:32-33 vs Jn 13:31)": {
+        "matthew:26:33": {
+          "cluster_id": "c149",
+          "members": [
+            "Matthew 26:32",
+            "Mark 14:28",
+            "Matthew 26:33",
+            "Mark 14:29",
+            "Luke 22:32-33",
+            "John 13:36-37"
+          ]
+        },
+        "mark:14:29": {
+          "cluster_id": "c149",
+          "members": [
+            "Matthew 26:32",
+            "Mark 14:28",
+            "Matthew 26:33",
+            "Mark 14:29",
+            "Luke 22:32-33",
+            "John 13:36-37"
+          ]
+        },
+        "luke:22:33": {
+          "cluster_id": "c149",
+          "members": [
+            "Matthew 26:32",
+            "Mark 14:28",
+            "Matthew 26:33",
+            "Mark 14:29",
+            "Luke 22:32-33",
+            "John 13:36-37"
+          ]
+        },
+        "john:13:31": {
+          "cluster_id": "c146",
+          "members": [
+            "Matthew 26:30",
+            "Matthew 26:31",
+            "Mark 14:26-27",
+            "Luke 22:31",
+            "John 13:31"
+          ]
+        }
+      },
+      "A07 (Mt 26:69-70 / Mk 14:66 / Lk 22:55-57 vs Jn 16:16)": {
+        "matthew:26:69": {
+          "cluster_id": "c210",
+          "members": [
+            "Matthew 26:69-70",
+            "Mark 14:66",
+            "Luke 22:55-57"
+          ]
+        },
+        "mark:14:66": {
+          "cluster_id": "c210",
+          "members": [
+            "Matthew 26:69-70",
+            "Mark 14:66",
+            "Luke 22:55-57"
+          ]
+        },
+        "luke:22:55": {
+          "cluster_id": "c210",
+          "members": [
+            "Matthew 26:69-70",
+            "Mark 14:66",
+            "Luke 22:55-57"
+          ]
+        },
+        "john:16:16": {
+          "cluster_id": "c179",
+          "members": [
+            "John 16:16"
+          ]
+        }
+      }
+    }
+  },
+  {
+    "config": "2_posthoc_refinement_th033",
+    "package_state": {
+      "git_head": "280190f",
+      "event_coref.REFINE_GROUPING": true,
+      "scaffold.in_narration_filter": true,
+      "biblical_calendar.month_code_MO": true
+    },
+    "clusters": 349,
+    "multi_witness_clusters": 115,
+    "pure_clusters": 89,
+    "impure_clusters": 26,
+    "purity": 0.7739,
+    "day_mixing": 0.0174,
+    "tau_plan": 0.9315,
+    "pairwise_accuracy": 0.9658,
+    "matched_events": 156,
+    "total_events": 168,
+    "coverage": 0.9286,
+    "bcubed": {
+      "verses": 1221,
+      "gold_clusters": 165,
+      "system_clusters": 342,
+      "precision": 0.8036,
+      "recall": 0.4263,
+      "f1": 0.5571
+    },
+    "theologian_sample_cases": {
+      "A01 (Mk 12:35-36 vs Mt 23:22)": {
+        "mark:12:35": {
+          "cluster_id": "c052",
+          "members": [
+            "Matthew 22:43-44",
+            "Mark 12:35-36",
+            "Luke 20:41-43"
+          ]
+        },
+        "matthew:23:22": {
+          "cluster_id": "c064",
+          "members": [
+            "Matthew 23:22"
+          ]
+        }
+      },
+      "A02 (Jn 13:29 vs Lk 22:29-30)": {
+        "john:13:29": {
+          "cluster_id": "c166",
+          "members": [
+            "John 13:29",
+            "John 13:30"
+          ]
+        },
+        "luke:22:29": {
+          "cluster_id": "c160",
+          "members": [
+            "Luke 22:29-30"
+          ]
+        }
+      },
+      "A04 (Mt 26:33 / Mk 14:29 / Lk 22:32-33 vs Jn 13:31)": {
+        "matthew:26:33": {
+          "cluster_id": "c163",
+          "members": [
+            "Matthew 26:32",
+            "Mark 14:28",
+            "Matthew 26:33",
+            "Mark 14:29",
+            "Luke 22:31",
+            "John 13:24",
+            "John 13:25"
+          ]
+        },
+        "mark:14:29": {
+          "cluster_id": "c163",
+          "members": [
+            "Matthew 26:32",
+            "Mark 14:28",
+            "Matthew 26:33",
+            "Mark 14:29",
+            "Luke 22:31",
+            "John 13:24",
+            "John 13:25"
+          ]
+        },
+        "luke:22:33": {
+          "cluster_id": "c170",
+          "members": [
+            "Luke 22:32-33",
+            "John 13:36-37"
+          ]
+        },
+        "john:13:31": {
+          "cluster_id": "c167",
+          "members": [
+            "John 13:31"
+          ]
+        }
+      },
+      "A07 (Mt 26:69-70 / Mk 14:66 / Lk 22:55-57 vs Jn 16:16)": {
+        "matthew:26:69": {
+          "cluster_id": "c240",
+          "members": [
+            "Matthew 26:69-70",
+            "Mark 14:67-68",
+            "Luke 22:55-57"
+          ]
+        },
+        "mark:14:66": {
+          "cluster_id": "c236",
+          "members": [
+            "Mark 14:66",
+            "John 18:24"
+          ]
+        },
+        "luke:22:55": {
+          "cluster_id": "c240",
+          "members": [
+            "Matthew 26:69-70",
+            "Mark 14:67-68",
+            "Luke 22:55-57"
+          ]
+        },
+        "john:16:16": {
+          "cluster_id": "c202",
+          "members": [
+            "John 16:16"
+          ]
+        }
+      }
+    }
+  },
+  {
+    "config": "3_posthoc_refinement_th034",
+    "package_state": {
+      "git_head": "280190f",
+      "event_coref.REFINE_GROUPING": true,
+      "scaffold.in_narration_filter": true,
+      "biblical_calendar.month_code_MO": true
+    },
+    "clusters": 347,
+    "multi_witness_clusters": 116,
+    "pure_clusters": 86,
+    "impure_clusters": 30,
+    "purity": 0.7414,
+    "day_mixing": 0.0259,
+    "tau_plan": 0.9383,
+    "pairwise_accuracy": 0.9691,
+    "matched_events": 157,
+    "total_events": 168,
+    "coverage": 0.9345,
+    "bcubed": {
+      "verses": 1221,
+      "gold_clusters": 165,
+      "system_clusters": 340,
+      "precision": 0.8034,
+      "recall": 0.4266,
+      "f1": 0.5572
+    },
+    "theologian_sample_cases": {
+      "A01 (Mk 12:35-36 vs Mt 23:22)": {
+        "mark:12:35": {
+          "cluster_id": "c052",
+          "members": [
+            "Matthew 22:43-44",
+            "Mark 12:35-36",
+            "Luke 20:41-43"
+          ]
+        },
+        "matthew:23:22": {
+          "cluster_id": "c064",
+          "members": [
+            "Matthew 23:22"
+          ]
+        }
+      },
+      "A02 (Jn 13:29 vs Lk 22:29-30)": {
+        "john:13:29": {
+          "cluster_id": "c165",
+          "members": [
+            "John 13:29",
+            "John 13:30"
+          ]
+        },
+        "luke:22:29": {
+          "cluster_id": "c162",
+          "members": [
+            "Luke 22:29-30"
+          ]
+        }
+      },
+      "A04 (Mt 26:33 / Mk 14:29 / Lk 22:32-33 vs Jn 13:31)": {
+        "matthew:26:33": {
+          "cluster_id": "c169",
+          "members": [
+            "Matthew 26:32",
+            "Mark 14:28",
+            "Matthew 26:33",
+            "Mark 14:29",
+            "Luke 22:31",
+            "John 13:36-37"
+          ]
+        },
+        "mark:14:29": {
+          "cluster_id": "c169",
+          "members": [
+            "Matthew 26:32",
+            "Mark 14:28",
+            "Matthew 26:33",
+            "Mark 14:29",
+            "Luke 22:31",
+            "John 13:36-37"
+          ]
+        },
+        "luke:22:33": {
+          "cluster_id": "c170",
+          "members": [
+            "Luke 22:32-33"
+          ]
+        },
+        "john:13:31": {
+          "cluster_id": "c166",
+          "members": [
+            "John 13:31"
+          ]
+        }
+      },
+      "A07 (Mt 26:69-70 / Mk 14:66 / Lk 22:55-57 vs Jn 16:16)": {
+        "matthew:26:69": {
+          "cluster_id": "c239",
+          "members": [
+            "Matthew 26:69-70",
+            "Mark 14:67-68",
+            "Luke 22:55-57"
+          ]
+        },
+        "mark:14:66": {
+          "cluster_id": "c235",
+          "members": [
+            "Mark 14:66",
+            "John 18:24"
+          ]
+        },
+        "luke:22:55": {
+          "cluster_id": "c239",
+          "members": [
+            "Matthew 26:69-70",
+            "Mark 14:67-68",
+            "Luke 22:55-57"
+          ]
+        },
+        "john:16:16": {
+          "cluster_id": "c201",
+          "members": [
+            "John 16:16"
+          ]
+        }
+      }
+    }
+  }
+]

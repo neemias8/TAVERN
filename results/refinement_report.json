@@ -1,6 +1,12 @@
 [
   {
     "config": "0_baseline_unpatched",
+    "package_state": {
+      "git_head": "31c7f24",
+      "event_coref.REFINE_GROUPING": false,
+      "scaffold.in_narration_filter": false,
+      "biblical_calendar.month_code_MO": false
+    },
     "clusters": 289,
     "multi_witness_clusters": 153,
     "pure_clusters": 68,
@@ -133,6 +139,12 @@
   },
   {
     "config": "1_porte4_plus_embeddings",
+    "package_state": {
+      "git_head": "31c7f24",
+      "event_coref.REFINE_GROUPING": false,
+      "scaffold.in_narration_filter": false,
+      "biblical_calendar.month_code_MO": false
+    },
     "clusters": 309,
     "multi_witness_clusters": 141,
     "pure_clusters": 85,
@@ -268,6 +280,12 @@
   },
   {
     "config": "2_posthoc_refinement_th033",
+    "package_state": {
+      "git_head": "31c7f24",
+      "event_coref.REFINE_GROUPING": false,
+      "scaffold.in_narration_filter": false,
+      "biblical_calendar.month_code_MO": false
+    },
     "clusters": 348,
     "multi_witness_clusters": 114,
     "pure_clusters": 88,
@@ -390,6 +408,12 @@
   },
   {
     "config": "3_posthoc_refinement_th034",
+    "package_state": {
+      "git_head": "31c7f24",
+      "event_coref.REFINE_GROUPING": false,
+      "scaffold.in_narration_filter": false,
+      "biblical_calendar.month_code_MO": false
+    },
     "clusters": 347,
     "multi_witness_clusters": 114,
     "pure_clusters": 87,
