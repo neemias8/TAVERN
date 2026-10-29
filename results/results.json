@@ -1,0 +1,917 @@
+{
+ "backbone": {
+  "requested": "ollama",
+  "used": "ollama",
+  "model": "gemma4:26b",
+  "note": null,
+  "ollama_repeat_penalty": 1.1,
+  "no_anchor_credit": false
+ },
+ "corpus": {
+  "verses": {
+   "matthew": 389,
+   "mark": 253,
+   "luke": 285,
+   "john": 318
+  },
+  "total_verses": 1245,
+  "words": 25893,
+  "pericopes": 91,
+  "pericope_repairs": [
+   "matthew: final pericope 'The Resurrection of Christ' extended from 28:15 to 28:20",
+   "mark: final pericope 'The Resurrection of Jesus' extended from 16:8 to 16:20",
+   "luke: final pericope 'The Resurrection of Christ' extended from 24:12 to 24:53",
+   "john: final pericope 'The Appearance to the Hidden Disciples' extended from 20:23 to 20:31"
+  ],
+  "events": 169,
+  "versions": {
+   "matthew": 104,
+   "mark": 98,
+   "luke": 96,
+   "john": 64
+  },
+  "version_distribution": {
+   "3": 51,
+   "1": 73,
+   "4": 24,
+   "2": 20,
+   "0": 1
+  },
+  "day_distribution": {
+   "Saturday": 2,
+   "Palm Sunday": 6,
+   "Monday": 6,
+   "Tuesday": 38,
+   "Wednesday": 1,
+   "Thursday": 47,
+   "Friday": 43,
+   "Dark Saturday": 2,
+   "Sunday": 24
+  },
+  "analytical_floor": 0.3473684210526314,
+  "contested": 95,
+  "discourse": {
+   "rows": [
+    {
+     "book": "matthew",
+     "block": "Woes and lament",
+     "verses": 39,
+     "span": "23:1-23:39"
+    },
+    {
+     "book": "matthew",
+     "block": "Olivet discourse",
+     "verses": 97,
+     "span": "24:1-25:46"
+    },
+    {
+     "book": "matthew",
+     "block": "Parables of the two sons and the tenants",
+     "verses": 17,
+     "span": "21:28-21:44"
+    },
+    {
+     "book": "matthew",
+     "block": "Parable of the banquet",
+     "verses": 14,
+     "span": "22:1-22:14"
+    },
+    {
+     "book": "mark",
+     "block": "Olivet discourse",
+     "verses": 37,
+     "span": "13:1-13:37"
+    },
+    {
+     "book": "mark",
+     "block": "Parable of the vineyard",
+     "verses": 11,
+     "span": "12:1-12:11"
+    },
+    {
+     "book": "luke",
+     "block": "Olivet discourse",
+     "verses": 32,
+     "span": "21:5-21:36"
+    },
+    {
+     "book": "luke",
+     "block": "Parable of the tenants",
+     "verses": 10,
+     "span": "20:9-20:18"
+    },
+    {
+     "book": "john",
+     "block": "Farewell discourse",
+     "verses": 91,
+     "span": "14:1-16:33"
+    },
+    {
+     "book": "john",
+     "block": "High-priestly prayer",
+     "verses": 26,
+     "span": "17:1-17:26"
+    },
+    {
+     "book": "john",
+     "block": "Summary of the message",
+     "verses": 7,
+     "span": "12:44-12:50"
+    }
+   ],
+   "total": 381,
+   "share": 0.3060240963855422
+  },
+  "density": {
+   "rows": [
+    {
+     "book": "matthew",
+     "verses": 389,
+     "cues": 196,
+     "anchorable": 22
+    },
+    {
+     "book": "mark",
+     "verses": 253,
+     "cues": 120,
+     "anchorable": 21
+    },
+    {
+     "book": "luke",
+     "verses": 285,
+     "cues": 130,
+     "anchorable": 20
+    },
+    {
+     "book": "john",
+     "verses": 318,
+     "cues": 139,
+     "anchorable": 17
+    }
+   ],
+   "verses": 1245,
+   "cues": 585,
+   "anchorable": 80,
+   "cue_share": 0.46987951807228917,
+   "anchorable_share": 0.0642570281124498
+  },
+  "md5": {
+   "ChronologyOfTheFourGospels_PW.xml": "OK",
+   "EnglishNIVMatthew40_PW.xml": "OK",
+   "EnglishNIVMark41_PW.xml": "OK",
+   "EnglishNIVLuke42_PW.xml": "OK",
+   "EnglishNIVJohn43_PW.xml": "OK",
+   "Golden_Sample.txt": "OK"
+  }
+ },
+ "annotation": {
+  "counts": {
+   "per_book": {
+    "matthew": {
+     "event_verbal": 1279,
+     "event_nominal": 134,
+     "event_state": 191,
+     "event_total": 1604,
+     "timex": 44,
+     "timex_empty": 255,
+     "signal": 253,
+     "tlink_asserted": 369,
+     "tlink_derived": 741,
+     "slink": 1475,
+     "alink": 12,
+     "mlink": 3,
+     "eligible": 514,
+     "subordinated": 1090
+    },
+    "mark": {
+     "event_verbal": 882,
+     "event_nominal": 91,
+     "event_state": 117,
+     "event_total": 1090,
+     "timex": 40,
+     "timex_empty": 195,
+     "signal": 148,
+     "tlink_asserted": 274,
+     "tlink_derived": 566,
+     "slink": 886,
+     "alink": 9,
+     "mlink": 4,
+     "eligible": 479,
+     "subordinated": 611
+    },
+    "luke": {
+     "event_verbal": 890,
+     "event_nominal": 101,
+     "event_state": 128,
+     "event_total": 1119,
+     "timex": 35,
+     "timex_empty": 196,
+     "signal": 166,
+     "tlink_asserted": 283,
+     "tlink_derived": 1294,
+     "slink": 907,
+     "alink": 9,
+     "mlink": 0,
+     "eligible": 462,
+     "subordinated": 657
+    },
+    "john": {
+     "event_verbal": 1184,
+     "event_nominal": 93,
+     "event_state": 149,
+     "event_total": 1426,
+     "timex": 33,
+     "timex_empty": 240,
+     "signal": 179,
+     "tlink_asserted": 282,
+     "tlink_derived": 859,
+     "slink": 1263,
+     "alink": 13,
+     "mlink": 0,
+     "eligible": 489,
+     "subordinated": 937
+    }
+   },
+   "total": {
+    "event_verbal": 4235,
+    "event_nominal": 419,
+    "event_state": 585,
+    "timex": 152,
+    "timex_empty": 886,
+    "signal": 746,
+    "tlink_asserted": 1208,
+    "tlink_derived": 3460,
+    "slink": 4531,
+    "alink": 43,
+    "mlink": 7,
+    "eligible": 1944,
+    "subordinated": 3295
+   }
+  },
+  "cascade": {
+   "rows": [
+    {
+     "level": 1,
+     "evidence": "Explicit signal",
+     "relations": 512,
+     "share": 0.423841059602649
+    },
+    {
+     "level": 2,
+     "evidence": "Temporal expression",
+     "relations": 73,
+     "share": 0.060430463576158944
+    },
+    {
+     "level": 3,
+     "evidence": "Aspectual predicate",
+     "relations": 33,
+     "share": 0.027317880794701987
+    },
+    {
+     "level": 4,
+     "evidence": "Narrative progression",
+     "relations": 590,
+     "share": 0.48841059602649006
+    }
+   ],
+   "total": 1208,
+   "anchoring_coverage": 0.48427152317880795,
+   "derived": 3460,
+   "nrt_chain": 87
+  }
+ },
+ "consistency": [
+  {
+   "check": "Schema validity",
+   "criterion": "All documents valid; C1-C12 and accessibility satisfied",
+   "result": "pass",
+   "passed": true,
+   "detail": ""
+  },
+  {
+   "check": "Closure consistency",
+   "criterion": "No intra-document unsatisfiable cycle",
+   "result": "pass",
+   "passed": true,
+   "detail": ""
+  },
+  {
+   "check": "Anchoring coverage",
+   "criterion": "Share of eligible events with a level-1 or level-2 relation",
+   "result": "0.239",
+   "passed": null,
+   "detail": ""
+  },
+  {
+   "check": "Normalisation coverage",
+   "criterion": "Share of <TIMEX3> with non-null @value",
+   "result": "1.000",
+   "passed": true,
+   "detail": ""
+  },
+  {
+   "check": "Partition soundness",
+   "criterion": "No event in the discourse blocks is timeline-eligible",
+   "result": "pass",
+   "passed": true,
+   "detail": "introducing reporting events eligible: 29"
+  },
+  {
+   "check": "Known-conflict regression",
+   "criterion": "Fig tree, Passover day, cockcrow all detected",
+   "result": "3/3",
+   "passed": true,
+   "detail": "fig_tree: ['mark', 'matthew']; passover_day: ['luke', 'matthew']; cockcrow: ['luke', 'mark']"
+  }
+ ],
+ "timeline": {
+  "induced": {
+   "tau": 0.9383,
+   "pairwise_accuracy": 0.9691,
+   "coverage": 0.9345,
+   "matched": 157,
+   "total": 168
+  },
+  "stage3": {
+   "units": 567,
+   "units_per_book": {
+    "matthew": 190,
+    "mark": 117,
+    "luke": 130,
+    "john": 130
+   },
+   "clusters": 347,
+   "contested_clusters": 118,
+   "cluster_size_hist": {
+    "1": 229,
+    "2": 63,
+    "3": 50,
+    "4": 5
+   },
+   "anchors": 112,
+   "anchors_positioned": 112,
+   "graph_nodes": 567,
+   "graph_edges": 7025,
+   "edge_types": {
+    "INTRA_BEFORE": 951,
+    "INTER_BEFORE": 950,
+    "INTRA_AFTER": 951,
+    "INTER_AFTER": 950,
+    "SAME_EVENT": 634,
+    "SUBORDINATES": 1881,
+    "CONFLICT": 708
+   },
+   "removed_arcs": 0,
+   "conflicts": 59,
+   "timex_day_concrete": 42,
+   "timex_day_subspecified": 70,
+   "timex_part_concrete": 28,
+   "timex_part_subspecified": 84
+  },
+  "conflicts": [
+   {
+    "class": "Intra-document (annotation error)",
+    "count": 0,
+    "documented": "---"
+   },
+   {
+    "class": "Inter-document (source divergence)",
+    "count": 59,
+    "documented": "fig_tree, passover_day, cockcrow"
+   },
+   {
+    "class": "  of which removed by feedback arc set",
+    "count": 0,
+    "documented": "---"
+   }
+  ],
+  "conflict_examples": [
+   {
+    "kind": "ordering",
+    "books": [
+     "john",
+     "luke"
+    ],
+    "episodes": [
+     "John 13:7-8",
+     "Luke 22:34",
+     "John 13:12-17",
+     "Luke 22:23-28"
+    ],
+    "scores": [
+     0.445,
+     0.396
+    ]
+   },
+   {
+    "kind": "ordering",
+    "books": [
+     "john",
+     "luke"
+    ],
+    "episodes": [
+     "John 13:26",
+     "Luke 22:17-19",
+     "John 13:12-17",
+     "Luke 22:23-28"
+    ],
+    "scores": [
+     0.376,
+     0.396
+    ]
+   },
+   {
+    "kind": "ordering",
+    "books": [
+     "john",
+     "luke"
+    ],
+    "episodes": [
+     "John 13:27",
+     "Luke 22:3",
+     "John 13:12-17",
+     "Luke 22:23-28"
+    ],
+    "scores": [
+     0.629,
+     0.396
+    ]
+   },
+   {
+    "kind": "ordering",
+    "books": [
+     "john",
+     "luke"
+    ],
+    "episodes": [
+     "John 14:6-7",
+     "Luke 23:42-43",
+     "John 14:8",
+     "Luke 22:35-38"
+    ],
+    "scores": [
+     0.398,
+     0.381
+    ]
+   },
+   {
+    "kind": "ordering",
+    "books": [
+     "john",
+     "luke"
+    ],
+    "episodes": [
+     "John 16:16",
+     "Luke 21:27",
+     "John 12:12-15",
+     "Luke 22:1-2"
+    ],
+    "scores": [
+     0.361,
+     0.427
+    ]
+   },
+   {
+    "kind": "ordering",
+    "books": [
+     "john",
+     "luke"
+    ],
+    "episodes": [
+     "John 18:40",
+     "Luke 23:18-19",
+     "John 19:6-7",
+     "Luke 23:4-6"
+    ],
+    "scores": [
+     0.453,
+     0.436
+    ]
+   },
+   {
+    "kind": "ordering",
+    "books": [
+     "john",
+     "luke"
+    ],
+    "episodes": [
+     "John 19:1-3",
+     "Luke 23:11",
+     "John 19:6-7",
+     "Luke 23:4-6"
+    ],
+    "scores": [
+     0.369,
+     0.436
+    ]
+   },
+   {
+    "kind": "ordering",
+    "books": [
+     "john",
+     "luke"
+    ],
+    "episodes": [
+     "John 19:16",
+     "Luke 24:7",
+     "John 19:28-29",
+     "Luke 23:34-39"
+    ],
+    "scores": [
+     0.399,
+     0.37
+    ]
+   },
+   {
+    "kind": "ordering",
+    "books": [
+     "john",
+     "luke"
+    ],
+    "episodes": [
+     "John 19:42",
+     "Luke 23:54-55",
+     "John 20:7",
+     "Luke 23:53"
+    ],
+    "scores": [
+     0.461,
+     0.378
+    ]
+   },
+   {
+    "kind": "ordering",
+    "books": [
+     "john",
+     "luke"
+    ],
+    "episodes": [
+     "John 20:6",
+     "Luke 24:12",
+     "John 20:7",
+     "Luke 23:53"
+    ],
+    "scores": [
+     0.52,
+     0.378
+    ]
+   },
+   {
+    "kind": "ordering",
+    "books": [
+     "john",
+     "mark"
+    ],
+    "episodes": [
+     "John 12:19",
+     "Mark 16:4-6",
+     "John 13:38-14:4",
+     "Mark 14:30"
+    ],
+    "scores": [
+     0.368,
+     0.441
+    ]
+   },
+   {
+    "kind": "ordering",
+    "books": [
+     "john",
+     "mark"
+    ],
+    "episodes": [
+     "John 12:44",
+     "Mark 15:34",
+     "John 13:38-14:4",
+     "Mark 14:30"
+    ],
+    "scores": [
+     0.37,
+     0.441
+    ]
+   },
+   {
+    "kind": "ordering",
+    "books": [
+     "john",
+     "mark"
+    ],
+    "episodes": [
+     "John 13:9",
+     "Mark 14:39",
+     "John 13:38-14:4",
+     "Mark 14:30"
+    ],
+    "scores": [
+     0.39,
+     0.441
+    ]
+   },
+   {
+    "kind": "ordering",
+    "books": [
+     "john",
+     "mark"
+    ],
+    "episodes": [
+     "John 13:24",
+     "Mark 14:31",
+     "John 13:38-14:4",
+     "Mark 14:30"
+    ],
+    "scores": [
+     0.416,
+     0.441
+    ]
+   },
+   {
+    "kind": "ordering",
+    "books": [
+     "john",
+     "mark"
+    ],
+    "episodes": [
+     "John 18:19-21",
+     "Mark 14:60-64",
+     "John 18:24",
+     "Mark 14:53"
+    ],
+    "scores": [
+     0.352,
+     0.406
+    ]
+   },
+   {
+    "kind": "ordering",
+    "books": [
+     "john",
+     "mark"
+    ],
+    "episodes": [
+     "John 19:26-27",
+     "Mark 16:11",
+     "John 19:38-41",
+     "Mark 15:42-44"
+    ],
+    "scores": [
+     0.359,
+     0.399
+    ]
+   },
+   {
+    "kind": "ordering",
+    "books": [
+     "john",
+     "mark"
+    ],
+    "episodes": [
+     "John 20:10",
+     "Mark 16:20",
+     "John 20:29-31",
+     "Mark 16:14-17"
+    ],
+    "scores": [
+     0.486,
+     0.489
+    ]
+   },
+   {
+    "kind": "ordering",
+    "books": [
+     "john",
+     "mark"
+    ],
+    "episodes": [
+     "John 20:19",
+     "Mark 14:17-22",
+     "John 13:38-14:4",
+     "Mark 14:30"
+    ],
+    "scores": [
+     0.376,
+     0.441
+    ]
+   },
+   {
+    "kind": "ordering",
+    "books": [
+     "john",
+     "matthew"
+    ],
+    "episodes": [
+     "John 12:17-18",
+     "Matthew 27:64-66",
+     "John 13:12-17",
+     "Matthew 26:1"
+    ],
+    "scores": [
+     0.363,
+     0.39
+    ]
+   },
+   {
+    "kind": "ordering",
+    "books": [
+     "john",
+     "matthew"
+    ],
+    "episodes": [
+     "John 12:20-25",
+     "Matthew 26:5",
+     "John 13:12-17",
+     "Matthew 26:1"
+    ],
+    "scores": [
+     0.368,
+     0.39
+    ]
+   }
+  ],
+  "documented": [
+   "fig_tree",
+   "passover_day",
+   "cockcrow"
+  ]
+ },
+ "text_quality": {
+  "corrupted": 0,
+  "total": 347,
+  "fraction": 0.0,
+  "examples": [],
+  "chars_per_event": 339.4956772334294
+ },
+ "downstream": {
+  "TAVERN, induced, fusion 'ollama'": {
+   "R-1": 0.831,
+   "R-2": 0.8082,
+   "R-L": 0.6665,
+   "METEOR": 0.5412,
+   "BERTScore": null,
+   "Length": 117805
+  },
+  "TAVERN, induced (graph score)": {
+   "R-1": 0.9404,
+   "R-2": 0.8335,
+   "R-L": 0.6744,
+   "METEOR": 0.5526,
+   "BERTScore": null,
+   "Length": 88026
+  },
+  "  - graph propagation": {
+   "R-1": 0.9139,
+   "R-2": 0.8297,
+   "R-L": 0.6801,
+   "METEOR": 0.5589,
+   "BERTScore": null,
+   "Length": 95987
+  },
+  "  Timeline+Longest rule": {
+   "R-1": 0.907,
+   "R-2": 0.8475,
+   "R-L": 0.6951,
+   "METEOR": 0.5659,
+   "BERTScore": null,
+   "Length": 98726
+  },
+  "  Timeline+Centroid rule": {
+   "R-1": 0.9432,
+   "R-2": 0.8462,
+   "R-L": 0.6875,
+   "METEOR": 0.5526,
+   "BERTScore": null,
+   "Length": 87777
+  },
+  "  Timeline+Priority rule": {
+   "R-1": 0.9419,
+   "R-2": 0.8553,
+   "R-L": 0.7063,
+   "METEOR": 0.5715,
+   "BERTScore": null,
+   "Length": 88953
+  },
+  "  Timeline+Random rule": {
+   "R-1": 0.9354,
+   "R-2": 0.8325,
+   "R-L": 0.6772,
+   "METEOR": 0.5558,
+   "BERTScore": null,
+   "Length": 89145
+  },
+  "Timeline+Longest (curated)": {
+   "R-1": 0.9781,
+   "R-2": 0.9613,
+   "R-L": 0.9701,
+   "METEOR": 0.7989,
+   "BERTScore": null,
+   "Length": 86200
+  },
+  "Timeline+Centroid (curated)": {
+   "R-1": 0.9493,
+   "R-2": 0.872,
+   "R-L": 0.8744,
+   "METEOR": 0.6385,
+   "BERTScore": null,
+   "Length": 79874
+  },
+  "Timeline+Priority (curated)": {
+   "R-1": 0.9388,
+   "R-2": 0.8648,
+   "R-L": 0.8613,
+   "METEOR": 0.594,
+   "BERTScore": null,
+   "Length": 77989
+  },
+  "Timeline+Random (curated)": {
+   "R-1": 0.9403,
+   "R-2": 0.8599,
+   "R-L": 0.8555,
+   "METEOR": 0.5658,
+   "BERTScore": null,
+   "Length": 77857
+  },
+  "TAEG (Algorithm 1, curated)": {
+   "R-1": 0.9218,
+   "R-2": 0.8357,
+   "R-L": 0.829,
+   "METEOR": 0.5262,
+   "BERTScore": null,
+   "Length": 75019
+  }
+ },
+ "selection": {
+  "TAVERN, induced (graph score)": {
+   "accuracy": 0.3485,
+   "events": 66
+  },
+  "  - graph propagation": {
+   "accuracy": 0.2273,
+   "events": 66
+  },
+  "  longest rule": {
+   "accuracy": 0.3636,
+   "events": 66
+  },
+  "  centroid rule": {
+   "accuracy": 0.3788,
+   "events": 66
+  },
+  "Timeline+Longest (curated)": {
+   "accuracy": 0.6316,
+   "events": 95
+  },
+  "Timeline+Centroid (curated)": {
+   "accuracy": 0.4211,
+   "events": 95
+  },
+  "Timeline+Priority (curated)": {
+   "accuracy": 0.3579,
+   "events": 95
+  },
+  "Timeline+Random (curated)": {
+   "accuracy": 0.4632,
+   "events": 95
+  },
+  "TAEG (Algorithm 1, curated)": {
+   "accuracy": 0.2842,
+   "events": 95
+  }
+ },
+ "errors": [
+  {
+   "class": "Event not detected",
+   "count": 0,
+   "example": ""
+  },
+  {
+   "class": "Detected but not aligned across documents",
+   "count": 29,
+   "example": "#39 \"No One Knows That Day or Hour\" (Matthew 24:36, Mark 13:32)"
+  },
+  {
+   "class": "Over-merged cluster (two events joined)",
+   "count": 20,
+   "example": "c015 covers events [8, 13]"
+  },
+  {
+   "class": "Under-merged cluster (one event split)",
+   "count": 87,
+   "example": "#1 \"Mary anoints Jesus\" (Matthew 26:6-13, Mark 14:3-9, John 12:1-8)"
+  },
+  {
+   "class": "Misordered: adjacent transposition",
+   "count": 36,
+   "example": "events 3 and 4 (Palm Sunday) transposed"
+  },
+  {
+   "class": "Misordered: displaced across a day boundary",
+   "count": 2,
+   "example": "event 14 (Monday) placed after 15 (Tuesday)"
+  },
+  {
+   "class": "Subordinated event admitted to the timeline",
+   "count": 0,
+   "example": ""
+  }
+ ]
+}

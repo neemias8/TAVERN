@@ -1,0 +1,5880 @@
+{
+ "events": [
+  {
+   "marker": "E001:c001",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 21:1",
+     "verses": [
+      "matthew:21:1"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E002:c002",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 21:2-7",
+     "verses": [
+      "matthew:21:2",
+      "matthew:21:3",
+      "matthew:21:4",
+      "matthew:21:5",
+      "matthew:21:6",
+      "matthew:21:7"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 11:1-6",
+     "verses": [
+      "mark:11:1",
+      "mark:11:2",
+      "mark:11:3",
+      "mark:11:4",
+      "mark:11:5",
+      "mark:11:6"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 19:29-34",
+     "verses": [
+      "luke:19:29",
+      "luke:19:30",
+      "luke:19:31",
+      "luke:19:32",
+      "luke:19:33",
+      "luke:19:34"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E003:c003",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 21:8",
+     "verses": [
+      "matthew:21:8"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 19:35-36",
+     "verses": [
+      "luke:19:35",
+      "luke:19:36"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E004:c004",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 21:9",
+     "verses": [
+      "matthew:21:9"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 11:7-10",
+     "verses": [
+      "mark:11:7",
+      "mark:11:8",
+      "mark:11:9",
+      "mark:11:10"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 19:37-41",
+     "verses": [
+      "luke:19:37",
+      "luke:19:38",
+      "luke:19:39",
+      "luke:19:40",
+      "luke:19:41"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E005:c005",
+   "sources": [
+    {
+     "gospel": "luke",
+     "ref": "Luke 19:42",
+     "verses": [
+      "luke:19:42"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E006:c006",
+   "sources": [
+    {
+     "gospel": "luke",
+     "ref": "Luke 19:43-44",
+     "verses": [
+      "luke:19:43",
+      "luke:19:44"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 11:11",
+     "verses": [
+      "mark:11:11"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E007:c007",
+   "sources": [
+    {
+     "gospel": "mark",
+     "ref": "Mark 11:12; Mark 11:13",
+     "verses": [
+      "mark:11:12",
+      "mark:11:13"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E008:c008",
+   "sources": [
+    {
+     "gospel": "mark",
+     "ref": "Mark 11:14",
+     "verses": [
+      "mark:11:14"
+     ]
+    },
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 21:10; Matthew 21:11",
+     "verses": [
+      "matthew:21:10",
+      "matthew:21:11"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E009:c009",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 21:12-14",
+     "verses": [
+      "matthew:21:12",
+      "matthew:21:13",
+      "matthew:21:14"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 11:15-17",
+     "verses": [
+      "mark:11:15",
+      "mark:11:16",
+      "mark:11:17"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 19:45-46",
+     "verses": [
+      "luke:19:45",
+      "luke:19:46"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E010:c010",
+   "sources": [
+    {
+     "gospel": "luke",
+     "ref": "Luke 19:47-48",
+     "verses": [
+      "luke:19:47",
+      "luke:19:48"
+     ]
+    },
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 21:15-16",
+     "verses": [
+      "matthew:21:15",
+      "matthew:21:16"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 11:18",
+     "verses": [
+      "mark:11:18"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E011:c011",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 21:17",
+     "verses": [
+      "matthew:21:17"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 11:19",
+     "verses": [
+      "mark:11:19"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E012:c012",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 21:18",
+     "verses": [
+      "matthew:21:18"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E013:c013",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 21:19; Matthew 21:20",
+     "verses": [
+      "matthew:21:19",
+      "matthew:21:20"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 11:20",
+     "verses": [
+      "mark:11:20"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E014:c014",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 21:21-22",
+     "verses": [
+      "matthew:21:21",
+      "matthew:21:22"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 11:21-24",
+     "verses": [
+      "mark:11:21",
+      "mark:11:22",
+      "mark:11:23",
+      "mark:11:24"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E015:c015",
+   "sources": [
+    {
+     "gospel": "mark",
+     "ref": "Mark 11:25-26",
+     "verses": [
+      "mark:11:25",
+      "mark:11:26"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E016:c016",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 21:23-24",
+     "verses": [
+      "matthew:21:23",
+      "matthew:21:24"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 11:27-29",
+     "verses": [
+      "mark:11:27",
+      "mark:11:28",
+      "mark:11:29"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 20:1-3",
+     "verses": [
+      "luke:20:1",
+      "luke:20:2",
+      "luke:20:3"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E017:c017",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 21:25",
+     "verses": [
+      "matthew:21:25"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 11:30",
+     "verses": [
+      "mark:11:30"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E018:c018",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 21:26",
+     "verses": [
+      "matthew:21:26"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 11:31-33",
+     "verses": [
+      "mark:11:31",
+      "mark:11:32",
+      "mark:11:33"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 20:4-7",
+     "verses": [
+      "luke:20:4",
+      "luke:20:5",
+      "luke:20:6",
+      "luke:20:7"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E019:c019",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 21:27-28",
+     "verses": [
+      "matthew:21:27",
+      "matthew:21:28"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 20:8",
+     "verses": [
+      "luke:20:8"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E020:c020",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 21:29",
+     "verses": [
+      "matthew:21:29"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E021:c021",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 21:30-31",
+     "verses": [
+      "matthew:21:30",
+      "matthew:21:31"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E022:c022",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 21:32; Matthew 21:33",
+     "verses": [
+      "matthew:21:32",
+      "matthew:21:33"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 12:1-3",
+     "verses": [
+      "mark:12:1",
+      "mark:12:2",
+      "mark:12:3"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E023:c023",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 21:34-35",
+     "verses": [
+      "matthew:21:34",
+      "matthew:21:35"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 20:9-12",
+     "verses": [
+      "luke:20:9",
+      "luke:20:10",
+      "luke:20:11",
+      "luke:20:12"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E024:c024",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 21:36-37",
+     "verses": [
+      "matthew:21:36",
+      "matthew:21:37"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 20:13",
+     "verses": [
+      "luke:20:13"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E025:c025",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 21:38-39",
+     "verses": [
+      "matthew:21:38",
+      "matthew:21:39"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 12:4-8",
+     "verses": [
+      "mark:12:4",
+      "mark:12:5",
+      "mark:12:6",
+      "mark:12:7",
+      "mark:12:8"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 20:14-15",
+     "verses": [
+      "luke:20:14",
+      "luke:20:15"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E026:c026",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 21:40-44",
+     "verses": [
+      "matthew:21:40",
+      "matthew:21:41",
+      "matthew:21:42",
+      "matthew:21:43",
+      "matthew:21:44"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 12:9-11",
+     "verses": [
+      "mark:12:9",
+      "mark:12:10",
+      "mark:12:11"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 20:16",
+     "verses": [
+      "luke:20:16"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E027:c027",
+   "sources": [
+    {
+     "gospel": "luke",
+     "ref": "Luke 20:17-18",
+     "verses": [
+      "luke:20:17",
+      "luke:20:18"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E028:c028",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 21:45-46",
+     "verses": [
+      "matthew:21:45",
+      "matthew:21:46"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 12:12",
+     "verses": [
+      "mark:12:12"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 20:19",
+     "verses": [
+      "luke:20:19"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E029:c029",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 22:1-3",
+     "verses": [
+      "matthew:22:1",
+      "matthew:22:2",
+      "matthew:22:3"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E030:c030",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 22:4-7",
+     "verses": [
+      "matthew:22:4",
+      "matthew:22:5",
+      "matthew:22:6",
+      "matthew:22:7"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E031:c031",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 22:8-9",
+     "verses": [
+      "matthew:22:8",
+      "matthew:22:9"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E032:c032",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 22:10",
+     "verses": [
+      "matthew:22:10"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E033:c033",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 22:11-12",
+     "verses": [
+      "matthew:22:11",
+      "matthew:22:12"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E034:c034",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 22:13-14",
+     "verses": [
+      "matthew:22:13",
+      "matthew:22:14"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E035:c035",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 22:15-16",
+     "verses": [
+      "matthew:22:15",
+      "matthew:22:16"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 12:13-16",
+     "verses": [
+      "mark:12:13",
+      "mark:12:14",
+      "mark:12:15",
+      "mark:12:16"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E036:c036",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 22:17-20",
+     "verses": [
+      "matthew:22:17",
+      "matthew:22:18",
+      "matthew:22:19",
+      "matthew:22:20"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 20:20-24",
+     "verses": [
+      "luke:20:20",
+      "luke:20:21",
+      "luke:20:22",
+      "luke:20:23",
+      "luke:20:24"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E037:c037",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 22:21; Matthew 22:22",
+     "verses": [
+      "matthew:22:21",
+      "matthew:22:22"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 20:25-26",
+     "verses": [
+      "luke:20:25",
+      "luke:20:26"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 12:17",
+     "verses": [
+      "mark:12:17"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E038:c038",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 22:23-26",
+     "verses": [
+      "matthew:22:23",
+      "matthew:22:24",
+      "matthew:22:25",
+      "matthew:22:26"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 12:18-23",
+     "verses": [
+      "mark:12:18",
+      "mark:12:19",
+      "mark:12:20",
+      "mark:12:21",
+      "mark:12:22",
+      "mark:12:23"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 20:27-30",
+     "verses": [
+      "luke:20:27",
+      "luke:20:28",
+      "luke:20:29",
+      "luke:20:30"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E039:c039",
+   "sources": [
+    {
+     "gospel": "luke",
+     "ref": "Luke 20:31; Luke 20:32",
+     "verses": [
+      "luke:20:31",
+      "luke:20:32"
+     ]
+    },
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 22:27",
+     "verses": [
+      "matthew:22:27"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E040:c040",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 22:28-32",
+     "verses": [
+      "matthew:22:28",
+      "matthew:22:29",
+      "matthew:22:30",
+      "matthew:22:31",
+      "matthew:22:32"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 12:24",
+     "verses": [
+      "mark:12:24"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 20:33-38",
+     "verses": [
+      "luke:20:33",
+      "luke:20:34",
+      "luke:20:35",
+      "luke:20:36",
+      "luke:20:37",
+      "luke:20:38"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E041:c041",
+   "sources": [
+    {
+     "gospel": "luke",
+     "ref": "Luke 20:39-40",
+     "verses": [
+      "luke:20:39",
+      "luke:20:40"
+     ]
+    },
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 22:33",
+     "verses": [
+      "matthew:22:33"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E042:c042",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 22:34-39",
+     "verses": [
+      "matthew:22:34",
+      "matthew:22:35",
+      "matthew:22:36",
+      "matthew:22:37",
+      "matthew:22:38",
+      "matthew:22:39"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 12:25",
+     "verses": [
+      "mark:12:25"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E043:c043",
+   "sources": [
+    {
+     "gospel": "mark",
+     "ref": "Mark 12:26-27",
+     "verses": [
+      "mark:12:26",
+      "mark:12:27"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E044:c044",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 22:40-42",
+     "verses": [
+      "matthew:22:40",
+      "matthew:22:41",
+      "matthew:22:42"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 12:28-33",
+     "verses": [
+      "mark:12:28",
+      "mark:12:29",
+      "mark:12:30",
+      "mark:12:31",
+      "mark:12:32",
+      "mark:12:33"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E045:c045",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 22:43-44",
+     "verses": [
+      "matthew:22:43",
+      "matthew:22:44"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 20:41-43",
+     "verses": [
+      "luke:20:41",
+      "luke:20:42",
+      "luke:20:43"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E046:c046",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 22:45",
+     "verses": [
+      "matthew:22:45"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 20:44",
+     "verses": [
+      "luke:20:44"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E047:c047",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 22:46",
+     "verses": [
+      "matthew:22:46"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 12:34",
+     "verses": [
+      "mark:12:34"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E048:c048",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 23:1",
+     "verses": [
+      "matthew:23:1"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 20:45",
+     "verses": [
+      "luke:20:45"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E049:c049",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 23:2-7",
+     "verses": [
+      "matthew:23:2",
+      "matthew:23:3",
+      "matthew:23:4",
+      "matthew:23:5",
+      "matthew:23:6",
+      "matthew:23:7"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E050:c050",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 23:8-12",
+     "verses": [
+      "matthew:23:8",
+      "matthew:23:9",
+      "matthew:23:10",
+      "matthew:23:11",
+      "matthew:23:12"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E051:c051",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 23:13-14",
+     "verses": [
+      "matthew:23:13",
+      "matthew:23:14"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E052:c052",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 23:15",
+     "verses": [
+      "matthew:23:15"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E053:c053",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 23:16-21",
+     "verses": [
+      "matthew:23:16",
+      "matthew:23:17",
+      "matthew:23:18",
+      "matthew:23:19",
+      "matthew:23:20",
+      "matthew:23:21"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E054:c054",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 23:22",
+     "verses": [
+      "matthew:23:22"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 12:35-36",
+     "verses": [
+      "mark:12:35",
+      "mark:12:36"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E055:c055",
+   "sources": [
+    {
+     "gospel": "mark",
+     "ref": "Mark 12:37-40",
+     "verses": [
+      "mark:12:37",
+      "mark:12:38",
+      "mark:12:39",
+      "mark:12:40"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 20:46-47",
+     "verses": [
+      "luke:20:46",
+      "luke:20:47"
+     ]
+    },
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 23:23-25",
+     "verses": [
+      "matthew:23:23",
+      "matthew:23:24",
+      "matthew:23:25"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E056:c056",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 23:26-31",
+     "verses": [
+      "matthew:23:26",
+      "matthew:23:27",
+      "matthew:23:28",
+      "matthew:23:29",
+      "matthew:23:30",
+      "matthew:23:31"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E057:c057",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 23:32-34",
+     "verses": [
+      "matthew:23:32",
+      "matthew:23:33",
+      "matthew:23:34"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E058:c058",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 23:35-36",
+     "verses": [
+      "matthew:23:35",
+      "matthew:23:36"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 12:41-44",
+     "verses": [
+      "mark:12:41",
+      "mark:12:42",
+      "mark:12:43",
+      "mark:12:44"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 21:1-4",
+     "verses": [
+      "luke:21:1",
+      "luke:21:2",
+      "luke:21:3",
+      "luke:21:4"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E059:c059",
+   "sources": [
+    {
+     "gospel": "luke",
+     "ref": "Luke 21:5",
+     "verses": [
+      "luke:21:5"
+     ]
+    },
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 23:37-39",
+     "verses": [
+      "matthew:23:37",
+      "matthew:23:38",
+      "matthew:23:39"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E060:c060",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 24:1-2",
+     "verses": [
+      "matthew:24:1",
+      "matthew:24:2"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 13:1-2",
+     "verses": [
+      "mark:13:1",
+      "mark:13:2"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 21:6",
+     "verses": [
+      "luke:21:6"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E061:c061",
+   "sources": [
+    {
+     "gospel": "mark",
+     "ref": "Mark 13:3; Mark 13:4",
+     "verses": [
+      "mark:13:3",
+      "mark:13:4"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E062:c062",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 24:3-8",
+     "verses": [
+      "matthew:24:3",
+      "matthew:24:4",
+      "matthew:24:5",
+      "matthew:24:6",
+      "matthew:24:7",
+      "matthew:24:8"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 13:5-6",
+     "verses": [
+      "mark:13:5",
+      "mark:13:6"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 21:7-8",
+     "verses": [
+      "luke:21:7",
+      "luke:21:8"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E063:c063",
+   "sources": [
+    {
+     "gospel": "luke",
+     "ref": "Luke 21:9",
+     "verses": [
+      "luke:21:9"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E064:c064",
+   "sources": [
+    {
+     "gospel": "mark",
+     "ref": "Mark 13:7-12",
+     "verses": [
+      "mark:13:7",
+      "mark:13:8",
+      "mark:13:9",
+      "mark:13:10",
+      "mark:13:11",
+      "mark:13:12"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 21:10-15",
+     "verses": [
+      "luke:21:10",
+      "luke:21:11",
+      "luke:21:12",
+      "luke:21:13",
+      "luke:21:14",
+      "luke:21:15"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E065:c065",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 24:9-13",
+     "verses": [
+      "matthew:24:9",
+      "matthew:24:10",
+      "matthew:24:11",
+      "matthew:24:12",
+      "matthew:24:13"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 13:13",
+     "verses": [
+      "mark:13:13"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 21:16-19",
+     "verses": [
+      "luke:21:16",
+      "luke:21:17",
+      "luke:21:18",
+      "luke:21:19"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E066:c066",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 24:14; Matthew 24:15",
+     "verses": [
+      "matthew:24:14",
+      "matthew:24:15"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 21:20",
+     "verses": [
+      "luke:21:20"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E067:c067",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 24:16-19",
+     "verses": [
+      "matthew:24:16",
+      "matthew:24:17",
+      "matthew:24:18",
+      "matthew:24:19"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 13:14-18",
+     "verses": [
+      "mark:13:14",
+      "mark:13:15",
+      "mark:13:16",
+      "mark:13:17",
+      "mark:13:18"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 21:21-26",
+     "verses": [
+      "luke:21:21",
+      "luke:21:22",
+      "luke:21:23",
+      "luke:21:24",
+      "luke:21:25",
+      "luke:21:26"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E068:c068",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 24:20",
+     "verses": [
+      "matthew:24:20"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E069:c069",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 24:21-26",
+     "verses": [
+      "matthew:24:21",
+      "matthew:24:22",
+      "matthew:24:23",
+      "matthew:24:24",
+      "matthew:24:25",
+      "matthew:24:26"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 13:19-24",
+     "verses": [
+      "mark:13:19",
+      "mark:13:20",
+      "mark:13:21",
+      "mark:13:22",
+      "mark:13:23",
+      "mark:13:24"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E070:c070",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 24:27-28",
+     "verses": [
+      "matthew:24:27",
+      "matthew:24:28"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E071:c071",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 24:29-31",
+     "verses": [
+      "matthew:24:29",
+      "matthew:24:30",
+      "matthew:24:31"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 13:25-27",
+     "verses": [
+      "mark:13:25",
+      "mark:13:26",
+      "mark:13:27"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 21:27",
+     "verses": [
+      "luke:21:27"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E072:c072",
+   "sources": [
+    {
+     "gospel": "luke",
+     "ref": "Luke 21:28-29",
+     "verses": [
+      "luke:21:28",
+      "luke:21:29"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E073:c073",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 24:32",
+     "verses": [
+      "matthew:24:32"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 13:28",
+     "verses": [
+      "mark:13:28"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 21:30",
+     "verses": [
+      "luke:21:30"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E074:c074",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 24:33-35",
+     "verses": [
+      "matthew:24:33",
+      "matthew:24:34",
+      "matthew:24:35"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 13:29-31",
+     "verses": [
+      "mark:13:29",
+      "mark:13:30",
+      "mark:13:31"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 21:31-33",
+     "verses": [
+      "luke:21:31",
+      "luke:21:32",
+      "luke:21:33"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E075:c075",
+   "sources": [
+    {
+     "gospel": "luke",
+     "ref": "Luke 21:34-36",
+     "verses": [
+      "luke:21:34",
+      "luke:21:35",
+      "luke:21:36"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E076:c076",
+   "sources": [
+    {
+     "gospel": "luke",
+     "ref": "Luke 21:37",
+     "verses": [
+      "luke:21:37"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E077:c077",
+   "sources": [
+    {
+     "gospel": "luke",
+     "ref": "Luke 21:38",
+     "verses": [
+      "luke:21:38"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E078:c078",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 24:36-41",
+     "verses": [
+      "matthew:24:36",
+      "matthew:24:37",
+      "matthew:24:38",
+      "matthew:24:39",
+      "matthew:24:40",
+      "matthew:24:41"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 13:32",
+     "verses": [
+      "mark:13:32"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E079:c079",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 24:42-43",
+     "verses": [
+      "matthew:24:42",
+      "matthew:24:43"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 13:33-34",
+     "verses": [
+      "mark:13:33",
+      "mark:13:34"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E080:c080",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 24:44; Matthew 24:45",
+     "verses": [
+      "matthew:24:44",
+      "matthew:24:45"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E081:c081",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 24:46-48",
+     "verses": [
+      "matthew:24:46",
+      "matthew:24:47",
+      "matthew:24:48"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E082:c082",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 24:49",
+     "verses": [
+      "matthew:24:49"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E083:c083",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 24:50-51",
+     "verses": [
+      "matthew:24:50",
+      "matthew:24:51"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E084:c084",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 25:1-5",
+     "verses": [
+      "matthew:25:1",
+      "matthew:25:2",
+      "matthew:25:3",
+      "matthew:25:4",
+      "matthew:25:5"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E085:c085",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 25:6",
+     "verses": [
+      "matthew:25:6"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 13:35-37",
+     "verses": [
+      "mark:13:35",
+      "mark:13:36",
+      "mark:13:37"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E086:c086",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 25:7-10",
+     "verses": [
+      "matthew:25:7",
+      "matthew:25:8",
+      "matthew:25:9",
+      "matthew:25:10"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E087:c087",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 25:11",
+     "verses": [
+      "matthew:25:11"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E088:c088",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 25:12-14",
+     "verses": [
+      "matthew:25:12",
+      "matthew:25:13",
+      "matthew:25:14"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E089:c089",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 25:15",
+     "verses": [
+      "matthew:25:15"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E090:c090",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 25:16-18",
+     "verses": [
+      "matthew:25:16",
+      "matthew:25:17",
+      "matthew:25:18"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E091:c091",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 25:19-23",
+     "verses": [
+      "matthew:25:19",
+      "matthew:25:20",
+      "matthew:25:21",
+      "matthew:25:22",
+      "matthew:25:23"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E092:c092",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 25:24-26",
+     "verses": [
+      "matthew:25:24",
+      "matthew:25:25",
+      "matthew:25:26"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E093:c093",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 25:27-30",
+     "verses": [
+      "matthew:25:27",
+      "matthew:25:28",
+      "matthew:25:29",
+      "matthew:25:30"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E094:c094",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 25:31-33",
+     "verses": [
+      "matthew:25:31",
+      "matthew:25:32",
+      "matthew:25:33"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E095:c095",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 25:34-35",
+     "verses": [
+      "matthew:25:34",
+      "matthew:25:35"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E096:c096",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 25:36; Matthew 25:37",
+     "verses": [
+      "matthew:25:36",
+      "matthew:25:37"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E097:c097",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 25:38",
+     "verses": [
+      "matthew:25:38"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E098:c098",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 12:1-2",
+     "verses": [
+      "john:12:1",
+      "john:12:2"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E099:c099",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 12:3",
+     "verses": [
+      "john:12:3"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E100:c100",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 12:4-6",
+     "verses": [
+      "john:12:4",
+      "john:12:5",
+      "john:12:6"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E101:c101",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 12:7-8",
+     "verses": [
+      "john:12:7",
+      "john:12:8"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E102:c102",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 12:9-11",
+     "verses": [
+      "john:12:9",
+      "john:12:10",
+      "john:12:11"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E103:c103",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 12:12-15",
+     "verses": [
+      "john:12:12",
+      "john:12:13",
+      "john:12:14",
+      "john:12:15"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E104:c104",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 12:16",
+     "verses": [
+      "john:12:16"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E105:c105",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 12:17-18",
+     "verses": [
+      "john:12:17",
+      "john:12:18"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E106:c106",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 25:39-40",
+     "verses": [
+      "matthew:25:39",
+      "matthew:25:40"
+     ]
+    },
+    {
+     "gospel": "john",
+     "ref": "John 12:19",
+     "verses": [
+      "john:12:19"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E107:c107",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 12:20-25",
+     "verses": [
+      "john:12:20",
+      "john:12:21",
+      "john:12:22",
+      "john:12:23",
+      "john:12:24",
+      "john:12:25"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E108:c108",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 12:26-28",
+     "verses": [
+      "john:12:26",
+      "john:12:27",
+      "john:12:28"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E109:c109",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 12:29-30",
+     "verses": [
+      "john:12:29",
+      "john:12:30"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E110:c110",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 12:31",
+     "verses": [
+      "john:12:31"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E111:c111",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 12:32-34",
+     "verses": [
+      "john:12:32",
+      "john:12:33",
+      "john:12:34"
+     ]
+    },
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 25:41-42",
+     "verses": [
+      "matthew:25:41",
+      "matthew:25:42"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E112:c112",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 25:43; Matthew 25:44",
+     "verses": [
+      "matthew:25:43",
+      "matthew:25:44"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E113:c113",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 25:45; Matthew 25:46",
+     "verses": [
+      "matthew:25:45",
+      "matthew:25:46"
+     ]
+    },
+    {
+     "gospel": "john",
+     "ref": "John 12:35",
+     "verses": [
+      "john:12:35"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E114:c114",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 26:1",
+     "verses": [
+      "matthew:26:1"
+     ]
+    },
+    {
+     "gospel": "john",
+     "ref": "John 12:36",
+     "verses": [
+      "john:12:36"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E115:c115",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 12:37-42",
+     "verses": [
+      "john:12:37",
+      "john:12:38",
+      "john:12:39",
+      "john:12:40",
+      "john:12:41",
+      "john:12:42"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E116:c116",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 12:43; John 12:44",
+     "verses": [
+      "john:12:43",
+      "john:12:44"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E117:c117",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 12:45-50",
+     "verses": [
+      "john:12:45",
+      "john:12:46",
+      "john:12:47",
+      "john:12:48",
+      "john:12:49",
+      "john:12:50"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E118:c118",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 26:2",
+     "verses": [
+      "matthew:26:2"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 14:1",
+     "verses": [
+      "mark:14:1"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 22:1-2",
+     "verses": [
+      "luke:22:1",
+      "luke:22:2"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E119:c119",
+   "sources": [
+    {
+     "gospel": "luke",
+     "ref": "Luke 22:3",
+     "verses": [
+      "luke:22:3"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E120:c120",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 26:3-4",
+     "verses": [
+      "matthew:26:3",
+      "matthew:26:4"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 22:4-5",
+     "verses": [
+      "luke:22:4",
+      "luke:22:5"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E121:c121",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 26:5",
+     "verses": [
+      "matthew:26:5"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 14:2",
+     "verses": [
+      "mark:14:2"
+     ]
+    },
+    {
+     "gospel": "john",
+     "ref": "John 13:1",
+     "verses": [
+      "john:13:1"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E122:c122",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 13:2-4",
+     "verses": [
+      "john:13:2",
+      "john:13:3",
+      "john:13:4"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E123:c123",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 13:5-6",
+     "verses": [
+      "john:13:5",
+      "john:13:6"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E124:c124",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 13:7-8",
+     "verses": [
+      "john:13:7",
+      "john:13:8"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E125:c125",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 13:9",
+     "verses": [
+      "john:13:9"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E126:c126",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 13:10-11",
+     "verses": [
+      "john:13:10",
+      "john:13:11"
+     ]
+    },
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 26:6-7",
+     "verses": [
+      "matthew:26:6",
+      "matthew:26:7"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 14:3-8",
+     "verses": [
+      "mark:14:3",
+      "mark:14:4",
+      "mark:14:5",
+      "mark:14:6",
+      "mark:14:7",
+      "mark:14:8"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E127:c127",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 26:8-11",
+     "verses": [
+      "matthew:26:8",
+      "matthew:26:9",
+      "matthew:26:10",
+      "matthew:26:11"
+     ]
+    },
+    {
+     "gospel": "john",
+     "ref": "John 13:12-17",
+     "verses": [
+      "john:13:12",
+      "john:13:13",
+      "john:13:14",
+      "john:13:15",
+      "john:13:16",
+      "john:13:17"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E128:c128",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 13:18",
+     "verses": [
+      "john:13:18"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E129:c129",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 26:12-13",
+     "verses": [
+      "matthew:26:12",
+      "matthew:26:13"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 14:9",
+     "verses": [
+      "mark:14:9"
+     ]
+    },
+    {
+     "gospel": "john",
+     "ref": "John 13:19-20",
+     "verses": [
+      "john:13:19",
+      "john:13:20"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E130:c130",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 26:14-16",
+     "verses": [
+      "matthew:26:14",
+      "matthew:26:15",
+      "matthew:26:16"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 14:10-11",
+     "verses": [
+      "mark:14:10",
+      "mark:14:11"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 22:6",
+     "verses": [
+      "luke:22:6"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E131:c131",
+   "sources": [
+    {
+     "gospel": "luke",
+     "ref": "Luke 22:7-8",
+     "verses": [
+      "luke:22:7",
+      "luke:22:8"
+     ]
+    },
+    {
+     "gospel": "john",
+     "ref": "John 13:21-23",
+     "verses": [
+      "john:13:21",
+      "john:13:22",
+      "john:13:23"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E132:c132",
+   "sources": [
+    {
+     "gospel": "luke",
+     "ref": "Luke 22:9; Luke 22:10",
+     "verses": [
+      "luke:22:9",
+      "luke:22:10"
+     ]
+    },
+    {
+     "gospel": "john",
+     "ref": "John 13:24; John 13:25",
+     "verses": [
+      "john:13:24",
+      "john:13:25"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E133:c133",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 26:17-19",
+     "verses": [
+      "matthew:26:17",
+      "matthew:26:18",
+      "matthew:26:19"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 14:12-16",
+     "verses": [
+      "mark:14:12",
+      "mark:14:13",
+      "mark:14:14",
+      "mark:14:15",
+      "mark:14:16"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 22:11-13",
+     "verses": [
+      "luke:22:11",
+      "luke:22:12",
+      "luke:22:13"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E134:c134",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 26:20-21",
+     "verses": [
+      "matthew:26:20",
+      "matthew:26:21"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 22:14-16",
+     "verses": [
+      "luke:22:14",
+      "luke:22:15",
+      "luke:22:16"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E135:c135",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 26:22-24",
+     "verses": [
+      "matthew:26:22",
+      "matthew:26:23",
+      "matthew:26:24"
+     ]
+    },
+    {
+     "gospel": "john",
+     "ref": "John 13:26",
+     "verses": [
+      "john:13:26"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E136:c136",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 26:25",
+     "verses": [
+      "matthew:26:25"
+     ]
+    },
+    {
+     "gospel": "john",
+     "ref": "John 13:27",
+     "verses": [
+      "john:13:27"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E137:c137",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 26:26",
+     "verses": [
+      "matthew:26:26"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 14:17-22",
+     "verses": [
+      "mark:14:17",
+      "mark:14:18",
+      "mark:14:19",
+      "mark:14:20",
+      "mark:14:21",
+      "mark:14:22"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 22:17-19",
+     "verses": [
+      "luke:22:17",
+      "luke:22:18",
+      "luke:22:19"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E138:c138",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 26:27-28",
+     "verses": [
+      "matthew:26:27",
+      "matthew:26:28"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 14:23-24",
+     "verses": [
+      "mark:14:23",
+      "mark:14:24"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 22:20-22",
+     "verses": [
+      "luke:22:20",
+      "luke:22:21",
+      "luke:22:22"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E139:c139",
+   "sources": [
+    {
+     "gospel": "luke",
+     "ref": "Luke 22:23-28",
+     "verses": [
+      "luke:22:23",
+      "luke:22:24",
+      "luke:22:25",
+      "luke:22:26",
+      "luke:22:27",
+      "luke:22:28"
+     ]
+    },
+    {
+     "gospel": "john",
+     "ref": "John 13:28",
+     "verses": [
+      "john:13:28"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E140:c140",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 13:29",
+     "verses": [
+      "john:13:29"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 22:29-30",
+     "verses": [
+      "luke:22:29",
+      "luke:22:30"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E141:c141",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 26:29",
+     "verses": [
+      "matthew:26:29"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 14:25",
+     "verses": [
+      "mark:14:25"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E142:c142",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 26:30; Matthew 26:31",
+     "verses": [
+      "matthew:26:30",
+      "matthew:26:31"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 14:26-27",
+     "verses": [
+      "mark:14:26",
+      "mark:14:27"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 22:31",
+     "verses": [
+      "luke:22:31"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E143:c143",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 26:32",
+     "verses": [
+      "matthew:26:32"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 14:28",
+     "verses": [
+      "mark:14:28"
+     ]
+    },
+    {
+     "gospel": "john",
+     "ref": "John 13:30",
+     "verses": [
+      "john:13:30"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E144:c144",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 26:33",
+     "verses": [
+      "matthew:26:33"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 14:29",
+     "verses": [
+      "mark:14:29"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 22:32-33",
+     "verses": [
+      "luke:22:32",
+      "luke:22:33"
+     ]
+    },
+    {
+     "gospel": "john",
+     "ref": "John 13:31",
+     "verses": [
+      "john:13:31"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E145:c145",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 13:32-34",
+     "verses": [
+      "john:13:32",
+      "john:13:33",
+      "john:13:34"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E146:c146",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 13:35",
+     "verses": [
+      "john:13:35"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E147:c147",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 26:34",
+     "verses": [
+      "matthew:26:34"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 14:30",
+     "verses": [
+      "mark:14:30"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 22:34",
+     "verses": [
+      "luke:22:34"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E148:c148",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 26:35",
+     "verses": [
+      "matthew:26:35"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 14:31",
+     "verses": [
+      "mark:14:31"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 22:35-38",
+     "verses": [
+      "luke:22:35",
+      "luke:22:36",
+      "luke:22:37",
+      "luke:22:38"
+     ]
+    },
+    {
+     "gospel": "john",
+     "ref": "John 13:36-37",
+     "verses": [
+      "john:13:36",
+      "john:13:37"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E149:c149",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 26:36-37",
+     "verses": [
+      "matthew:26:36",
+      "matthew:26:37"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 14:32",
+     "verses": [
+      "mark:14:32"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 22:39-44",
+     "verses": [
+      "luke:22:39",
+      "luke:22:40",
+      "luke:22:41",
+      "luke:22:42",
+      "luke:22:43",
+      "luke:22:44"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E150:c150",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 26:38-39",
+     "verses": [
+      "matthew:26:38",
+      "matthew:26:39"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 14:33-36",
+     "verses": [
+      "mark:14:33",
+      "mark:14:34",
+      "mark:14:35",
+      "mark:14:36"
+     ]
+    },
+    {
+     "gospel": "john",
+     "ref": "John 13:38-14:4",
+     "verses": [
+      "john:13:38",
+      "john:14:1",
+      "john:14:2",
+      "john:14:3",
+      "john:14:4"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E151:c151",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 26:40-42",
+     "verses": [
+      "matthew:26:40",
+      "matthew:26:41",
+      "matthew:26:42"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 14:37-38",
+     "verses": [
+      "mark:14:37",
+      "mark:14:38"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E152:c152",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 26:43; Matthew 26:44",
+     "verses": [
+      "matthew:26:43",
+      "matthew:26:44"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 14:39",
+     "verses": [
+      "mark:14:39"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 22:45-46",
+     "verses": [
+      "luke:22:45",
+      "luke:22:46"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E153:c153",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 26:45-46",
+     "verses": [
+      "matthew:26:45",
+      "matthew:26:46"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 14:40-42",
+     "verses": [
+      "mark:14:40",
+      "mark:14:41",
+      "mark:14:42"
+     ]
+    },
+    {
+     "gospel": "john",
+     "ref": "John 14:5",
+     "verses": [
+      "john:14:5"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E154:c154",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 14:6-7",
+     "verses": [
+      "john:14:6",
+      "john:14:7"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E155:c155",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 14:8",
+     "verses": [
+      "john:14:8"
+     ]
+    },
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 26:47-48",
+     "verses": [
+      "matthew:26:47",
+      "matthew:26:48"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 14:43-44",
+     "verses": [
+      "mark:14:43",
+      "mark:14:44"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E156:c156",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 26:49-50",
+     "verses": [
+      "matthew:26:49",
+      "matthew:26:50"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 14:45-46",
+     "verses": [
+      "mark:14:45",
+      "mark:14:46"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 22:47-48",
+     "verses": [
+      "luke:22:47",
+      "luke:22:48"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E157:c157",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 26:51-52",
+     "verses": [
+      "matthew:26:51",
+      "matthew:26:52"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 14:47-48",
+     "verses": [
+      "mark:14:47",
+      "mark:14:48"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 22:49-51",
+     "verses": [
+      "luke:22:49",
+      "luke:22:50",
+      "luke:22:51"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E158:c158",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 26:53",
+     "verses": [
+      "matthew:26:53"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E159:c159",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 26:54-55",
+     "verses": [
+      "matthew:26:54",
+      "matthew:26:55"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 14:49",
+     "verses": [
+      "mark:14:49"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 22:52",
+     "verses": [
+      "luke:22:52"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E160:c160",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 26:56",
+     "verses": [
+      "matthew:26:56"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 14:50",
+     "verses": [
+      "mark:14:50"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E161:c161",
+   "sources": [
+    {
+     "gospel": "mark",
+     "ref": "Mark 14:51-52",
+     "verses": [
+      "mark:14:51",
+      "mark:14:52"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E162:c162",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 26:57; Matthew 26:58",
+     "verses": [
+      "matthew:26:57",
+      "matthew:26:58"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 14:53; Mark 14:54",
+     "verses": [
+      "mark:14:53",
+      "mark:14:54"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E163:c163",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 26:59-60",
+     "verses": [
+      "matthew:26:59",
+      "matthew:26:60"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 14:55-56",
+     "verses": [
+      "mark:14:55",
+      "mark:14:56"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E164:c164",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 26:61",
+     "verses": [
+      "matthew:26:61"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 14:57-58",
+     "verses": [
+      "mark:14:57",
+      "mark:14:58"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 22:53",
+     "verses": [
+      "luke:22:53"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E165:c165",
+   "sources": [
+    {
+     "gospel": "mark",
+     "ref": "Mark 14:59",
+     "verses": [
+      "mark:14:59"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E166:c166",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 26:62-64",
+     "verses": [
+      "matthew:26:62",
+      "matthew:26:63",
+      "matthew:26:64"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 14:60-64",
+     "verses": [
+      "mark:14:60",
+      "mark:14:61",
+      "mark:14:62",
+      "mark:14:63",
+      "mark:14:64"
+     ]
+    },
+    {
+     "gospel": "john",
+     "ref": "John 14:9-10",
+     "verses": [
+      "john:14:9",
+      "john:14:10"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E167:c167",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 14:11",
+     "verses": [
+      "john:14:11"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E168:c168",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 14:12-17",
+     "verses": [
+      "john:14:12",
+      "john:14:13",
+      "john:14:14",
+      "john:14:15",
+      "john:14:16",
+      "john:14:17"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E169:c169",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 14:18-19",
+     "verses": [
+      "john:14:18",
+      "john:14:19"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E170:c170",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 14:20-21",
+     "verses": [
+      "john:14:20",
+      "john:14:21"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E171:c171",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 14:22",
+     "verses": [
+      "john:14:22"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E172:c172",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 26:65",
+     "verses": [
+      "matthew:26:65"
+     ]
+    },
+    {
+     "gospel": "john",
+     "ref": "John 14:23-28",
+     "verses": [
+      "john:14:23",
+      "john:14:24",
+      "john:14:25",
+      "john:14:26",
+      "john:14:27",
+      "john:14:28"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E173:c173",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 14:29-15:3",
+     "verses": [
+      "john:14:29",
+      "john:14:30",
+      "john:14:31",
+      "john:15:1",
+      "john:15:2",
+      "john:15:3"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E174:c174",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 26:66",
+     "verses": [
+      "matthew:26:66"
+     ]
+    },
+    {
+     "gospel": "john",
+     "ref": "John 15:4-7",
+     "verses": [
+      "john:15:4",
+      "john:15:5",
+      "john:15:6",
+      "john:15:7"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E175:c175",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 15:8-9",
+     "verses": [
+      "john:15:8",
+      "john:15:9"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E176:c176",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 15:10-15",
+     "verses": [
+      "john:15:10",
+      "john:15:11",
+      "john:15:12",
+      "john:15:13",
+      "john:15:14",
+      "john:15:15"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E177:c177",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 15:16-21",
+     "verses": [
+      "john:15:16",
+      "john:15:17",
+      "john:15:18",
+      "john:15:19",
+      "john:15:20",
+      "john:15:21"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E178:c178",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 15:22; John 15:23",
+     "verses": [
+      "john:15:22",
+      "john:15:23"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E179:c179",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 15:24-25",
+     "verses": [
+      "john:15:24",
+      "john:15:25"
+     ]
+    },
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 26:67",
+     "verses": [
+      "matthew:26:67"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 14:65",
+     "verses": [
+      "mark:14:65"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 22:54",
+     "verses": [
+      "luke:22:54"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E180:c180",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 26:68",
+     "verses": [
+      "matthew:26:68"
+     ]
+    },
+    {
+     "gospel": "john",
+     "ref": "John 15:26-16:1",
+     "verses": [
+      "john:15:26",
+      "john:15:27",
+      "john:16:1"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E181:c181",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 16:2-3",
+     "verses": [
+      "john:16:2",
+      "john:16:3"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E182:c182",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 16:4-7",
+     "verses": [
+      "john:16:4",
+      "john:16:5",
+      "john:16:6",
+      "john:16:7"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E183:c183",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 16:8-12",
+     "verses": [
+      "john:16:8",
+      "john:16:9",
+      "john:16:10",
+      "john:16:11",
+      "john:16:12"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E184:c184",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 16:13-15",
+     "verses": [
+      "john:16:13",
+      "john:16:14",
+      "john:16:15"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E185:c185",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 16:16",
+     "verses": [
+      "john:16:16"
+     ]
+    },
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 26:69-70",
+     "verses": [
+      "matthew:26:69",
+      "matthew:26:70"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 14:66",
+     "verses": [
+      "mark:14:66"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 22:55-57",
+     "verses": [
+      "luke:22:55",
+      "luke:22:56",
+      "luke:22:57"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E186:c186",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 26:71-72",
+     "verses": [
+      "matthew:26:71",
+      "matthew:26:72"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 14:67-68",
+     "verses": [
+      "mark:14:67",
+      "mark:14:68"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 22:58",
+     "verses": [
+      "luke:22:58"
+     ]
+    },
+    {
+     "gospel": "john",
+     "ref": "John 16:17-18",
+     "verses": [
+      "john:16:17",
+      "john:16:18"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E187:c187",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 16:19-20",
+     "verses": [
+      "john:16:19",
+      "john:16:20"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E188:c188",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 16:21; John 16:22",
+     "verses": [
+      "john:16:21",
+      "john:16:22"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E189:c189",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 16:23-24",
+     "verses": [
+      "john:16:23",
+      "john:16:24"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E190:c190",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 16:25",
+     "verses": [
+      "john:16:25"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E191:c191",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 16:26-28",
+     "verses": [
+      "john:16:26",
+      "john:16:27",
+      "john:16:28"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E192:c192",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 16:29-31",
+     "verses": [
+      "john:16:29",
+      "john:16:30",
+      "john:16:31"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E193:c193",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 16:32-33",
+     "verses": [
+      "john:16:32",
+      "john:16:33"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E194:c194",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 17:1-6",
+     "verses": [
+      "john:17:1",
+      "john:17:2",
+      "john:17:3",
+      "john:17:4",
+      "john:17:5",
+      "john:17:6"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E195:c195",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 17:7-12",
+     "verses": [
+      "john:17:7",
+      "john:17:8",
+      "john:17:9",
+      "john:17:10",
+      "john:17:11",
+      "john:17:12"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E196:c196",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 17:13-18",
+     "verses": [
+      "john:17:13",
+      "john:17:14",
+      "john:17:15",
+      "john:17:16",
+      "john:17:17",
+      "john:17:18"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E197:c197",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 17:19-24",
+     "verses": [
+      "john:17:19",
+      "john:17:20",
+      "john:17:21",
+      "john:17:22",
+      "john:17:23",
+      "john:17:24"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E198:c198",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 17:25-26",
+     "verses": [
+      "john:17:25",
+      "john:17:26"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E199:c199",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 18:1-2",
+     "verses": [
+      "john:18:1",
+      "john:18:2"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E200:c200",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 18:3-5",
+     "verses": [
+      "john:18:3",
+      "john:18:4",
+      "john:18:5"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E201:c201",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 26:73",
+     "verses": [
+      "matthew:26:73"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 14:69",
+     "verses": [
+      "mark:14:69"
+     ]
+    },
+    {
+     "gospel": "john",
+     "ref": "John 18:6-7",
+     "verses": [
+      "john:18:6",
+      "john:18:7"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E202:c202",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 18:8-9",
+     "verses": [
+      "john:18:8",
+      "john:18:9"
+     ]
+    },
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 26:74",
+     "verses": [
+      "matthew:26:74"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 14:70-71",
+     "verses": [
+      "mark:14:70",
+      "mark:14:71"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 22:59-60",
+     "verses": [
+      "luke:22:59",
+      "luke:22:60"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E203:c203",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 26:75",
+     "verses": [
+      "matthew:26:75"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 14:72",
+     "verses": [
+      "mark:14:72"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 22:61-62",
+     "verses": [
+      "luke:22:61",
+      "luke:22:62"
+     ]
+    },
+    {
+     "gospel": "john",
+     "ref": "John 18:10-11",
+     "verses": [
+      "john:18:10",
+      "john:18:11"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E204:c204",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 18:12-14",
+     "verses": [
+      "john:18:12",
+      "john:18:13",
+      "john:18:14"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E205:c205",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 18:15-18",
+     "verses": [
+      "john:18:15",
+      "john:18:16",
+      "john:18:17",
+      "john:18:18"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 22:63-65",
+     "verses": [
+      "luke:22:63",
+      "luke:22:64",
+      "luke:22:65"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E206:c206",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 27:1-2",
+     "verses": [
+      "matthew:27:1",
+      "matthew:27:2"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 15:1-5",
+     "verses": [
+      "mark:15:1",
+      "mark:15:2",
+      "mark:15:3",
+      "mark:15:4",
+      "mark:15:5"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 22:66-69",
+     "verses": [
+      "luke:22:66",
+      "luke:22:67",
+      "luke:22:68",
+      "luke:22:69"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E207:c207",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 27:3-4",
+     "verses": [
+      "matthew:27:3",
+      "matthew:27:4"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E208:c208",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 27:5",
+     "verses": [
+      "matthew:27:5"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E209:c209",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 27:6-7",
+     "verses": [
+      "matthew:27:6",
+      "matthew:27:7"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 22:70; Luke 22:71",
+     "verses": [
+      "luke:22:70",
+      "luke:22:71"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E210:c210",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 27:8",
+     "verses": [
+      "matthew:27:8"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E211:c211",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 27:9-10",
+     "verses": [
+      "matthew:27:9",
+      "matthew:27:10"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 23:1-3",
+     "verses": [
+      "luke:23:1",
+      "luke:23:2",
+      "luke:23:3"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E212:c212",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 27:11",
+     "verses": [
+      "matthew:27:11"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 23:4-6",
+     "verses": [
+      "luke:23:4",
+      "luke:23:5",
+      "luke:23:6"
+     ]
+    },
+    {
+     "gospel": "john",
+     "ref": "John 18:19-21",
+     "verses": [
+      "john:18:19",
+      "john:18:20",
+      "john:18:21"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E213:c213",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 18:22-23",
+     "verses": [
+      "john:18:22",
+      "john:18:23"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E214:c214",
+   "sources": [
+    {
+     "gospel": "luke",
+     "ref": "Luke 23:7",
+     "verses": [
+      "luke:23:7"
+     ]
+    },
+    {
+     "gospel": "john",
+     "ref": "John 18:24",
+     "verses": [
+      "john:18:24"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E215:c215",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 18:25-27",
+     "verses": [
+      "john:18:25",
+      "john:18:26",
+      "john:18:27"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E216:c216",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 18:28-32",
+     "verses": [
+      "john:18:28",
+      "john:18:29",
+      "john:18:30",
+      "john:18:31",
+      "john:18:32"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E217:c217",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 18:33-36",
+     "verses": [
+      "john:18:33",
+      "john:18:34",
+      "john:18:35",
+      "john:18:36"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 23:8-9",
+     "verses": [
+      "luke:23:8",
+      "luke:23:9"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E218:c218",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 27:12",
+     "verses": [
+      "matthew:27:12"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 23:10; Luke 23:11",
+     "verses": [
+      "luke:23:10",
+      "luke:23:11"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E219:c219",
+   "sources": [
+    {
+     "gospel": "luke",
+     "ref": "Luke 23:12",
+     "verses": [
+      "luke:23:12"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E220:c220",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 27:13-14",
+     "verses": [
+      "matthew:27:13",
+      "matthew:27:14"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 23:13-14",
+     "verses": [
+      "luke:23:13",
+      "luke:23:14"
+     ]
+    },
+    {
+     "gospel": "john",
+     "ref": "John 18:37-38",
+     "verses": [
+      "john:18:37",
+      "john:18:38"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E221:c221",
+   "sources": [
+    {
+     "gospel": "luke",
+     "ref": "Luke 23:15",
+     "verses": [
+      "luke:23:15"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E222:c222",
+   "sources": [
+    {
+     "gospel": "luke",
+     "ref": "Luke 23:16-17",
+     "verses": [
+      "luke:23:16",
+      "luke:23:17"
+     ]
+    },
+    {
+     "gospel": "john",
+     "ref": "John 18:39",
+     "verses": [
+      "john:18:39"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E223:c223",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 27:15-16",
+     "verses": [
+      "matthew:27:15",
+      "matthew:27:16"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 15:6; Mark 15:7",
+     "verses": [
+      "mark:15:6",
+      "mark:15:7"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E224:c224",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 27:17-21",
+     "verses": [
+      "matthew:27:17",
+      "matthew:27:18",
+      "matthew:27:19",
+      "matthew:27:20",
+      "matthew:27:21"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 15:8-11",
+     "verses": [
+      "mark:15:8",
+      "mark:15:9",
+      "mark:15:10",
+      "mark:15:11"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 23:18-19",
+     "verses": [
+      "luke:23:18",
+      "luke:23:19"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E225:c225",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 27:22-23",
+     "verses": [
+      "matthew:27:22",
+      "matthew:27:23"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 15:12-15",
+     "verses": [
+      "mark:15:12",
+      "mark:15:13",
+      "mark:15:14",
+      "mark:15:15"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 23:20-21",
+     "verses": [
+      "luke:23:20",
+      "luke:23:21"
+     ]
+    },
+    {
+     "gospel": "john",
+     "ref": "John 18:40",
+     "verses": [
+      "john:18:40"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E226:c226",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 27:24-25",
+     "verses": [
+      "matthew:27:24",
+      "matthew:27:25"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 23:22-25",
+     "verses": [
+      "luke:23:22",
+      "luke:23:23",
+      "luke:23:24",
+      "luke:23:25"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E227:c227",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 27:26",
+     "verses": [
+      "matthew:27:26"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 15:16",
+     "verses": [
+      "mark:15:16"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E228:c228",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 27:27-28",
+     "verses": [
+      "matthew:27:27",
+      "matthew:27:28"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 15:17-19",
+     "verses": [
+      "mark:15:17",
+      "mark:15:18",
+      "mark:15:19"
+     ]
+    },
+    {
+     "gospel": "john",
+     "ref": "John 19:1-3",
+     "verses": [
+      "john:19:1",
+      "john:19:2",
+      "john:19:3"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E229:c229",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 19:4; John 19:5",
+     "verses": [
+      "john:19:4",
+      "john:19:5"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E230:c230",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 19:6-7",
+     "verses": [
+      "john:19:6",
+      "john:19:7"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E231:c231",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 19:8-12",
+     "verses": [
+      "john:19:8",
+      "john:19:9",
+      "john:19:10",
+      "john:19:11",
+      "john:19:12"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E232:c232",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 19:13",
+     "verses": [
+      "john:19:13"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E233:c233",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 19:14-15",
+     "verses": [
+      "john:19:14",
+      "john:19:15"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E234:c234",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 27:29-30",
+     "verses": [
+      "matthew:27:29",
+      "matthew:27:30"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 15:20",
+     "verses": [
+      "mark:15:20"
+     ]
+    },
+    {
+     "gospel": "john",
+     "ref": "John 19:16",
+     "verses": [
+      "john:19:16"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E235:c235",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 27:31-33",
+     "verses": [
+      "matthew:27:31",
+      "matthew:27:32",
+      "matthew:27:33"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 15:21",
+     "verses": [
+      "mark:15:21"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 23:26-28",
+     "verses": [
+      "luke:23:26",
+      "luke:23:27",
+      "luke:23:28"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E236:c236",
+   "sources": [
+    {
+     "gospel": "luke",
+     "ref": "Luke 23:29; Luke 23:30",
+     "verses": [
+      "luke:23:29",
+      "luke:23:30"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E237:c237",
+   "sources": [
+    {
+     "gospel": "luke",
+     "ref": "Luke 23:31-32",
+     "verses": [
+      "luke:23:31",
+      "luke:23:32"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 15:22",
+     "verses": [
+      "mark:15:22"
+     ]
+    },
+    {
+     "gospel": "john",
+     "ref": "John 19:17-18",
+     "verses": [
+      "john:19:17",
+      "john:19:18"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E238:c238",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 19:19-22",
+     "verses": [
+      "john:19:19",
+      "john:19:20",
+      "john:19:21",
+      "john:19:22"
+     ]
+    },
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 27:34",
+     "verses": [
+      "matthew:27:34"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 15:23-24",
+     "verses": [
+      "mark:15:23",
+      "mark:15:24"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E239:c239",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 27:35-39",
+     "verses": [
+      "matthew:27:35",
+      "matthew:27:36",
+      "matthew:27:37",
+      "matthew:27:38",
+      "matthew:27:39"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 15:25-30",
+     "verses": [
+      "mark:15:25",
+      "mark:15:26",
+      "mark:15:27",
+      "mark:15:28",
+      "mark:15:29",
+      "mark:15:30"
+     ]
+    },
+    {
+     "gospel": "john",
+     "ref": "John 19:23-24",
+     "verses": [
+      "john:19:23",
+      "john:19:24"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E240:c240",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 27:40",
+     "verses": [
+      "matthew:27:40"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 15:31",
+     "verses": [
+      "mark:15:31"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E241:c241",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 27:41-44",
+     "verses": [
+      "matthew:27:41",
+      "matthew:27:42",
+      "matthew:27:43",
+      "matthew:27:44"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 15:32",
+     "verses": [
+      "mark:15:32"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E242:c242",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 27:45",
+     "verses": [
+      "matthew:27:45"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 15:33",
+     "verses": [
+      "mark:15:33"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E243:c243",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 27:46; Matthew 27:47",
+     "verses": [
+      "matthew:27:46",
+      "matthew:27:47"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 15:34",
+     "verses": [
+      "mark:15:34"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 23:33",
+     "verses": [
+      "luke:23:33"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E244:c244",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 27:48-49",
+     "verses": [
+      "matthew:27:48",
+      "matthew:27:49"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 15:35-37",
+     "verses": [
+      "mark:15:35",
+      "mark:15:36",
+      "mark:15:37"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 23:34-39",
+     "verses": [
+      "luke:23:34",
+      "luke:23:35",
+      "luke:23:36",
+      "luke:23:37",
+      "luke:23:38",
+      "luke:23:39"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E245:c245",
+   "sources": [
+    {
+     "gospel": "luke",
+     "ref": "Luke 23:40-41",
+     "verses": [
+      "luke:23:40",
+      "luke:23:41"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E246:c246",
+   "sources": [
+    {
+     "gospel": "luke",
+     "ref": "Luke 23:42-43",
+     "verses": [
+      "luke:23:42",
+      "luke:23:43"
+     ]
+    },
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 27:50",
+     "verses": [
+      "matthew:27:50"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E247:c247",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 27:51-52",
+     "verses": [
+      "matthew:27:51",
+      "matthew:27:52"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 15:38",
+     "verses": [
+      "mark:15:38"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 23:44-45",
+     "verses": [
+      "luke:23:44",
+      "luke:23:45"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E248:c248",
+   "sources": [
+    {
+     "gospel": "mark",
+     "ref": "Mark 15:39",
+     "verses": [
+      "mark:15:39"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 23:46-47",
+     "verses": [
+      "luke:23:46",
+      "luke:23:47"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E249:c249",
+   "sources": [
+    {
+     "gospel": "luke",
+     "ref": "Luke 23:48; Luke 23:49",
+     "verses": [
+      "luke:23:48",
+      "luke:23:49"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 15:40",
+     "verses": [
+      "mark:15:40"
+     ]
+    },
+    {
+     "gospel": "john",
+     "ref": "John 19:25",
+     "verses": [
+      "john:19:25"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E250:c250",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 19:26-27",
+     "verses": [
+      "john:19:26",
+      "john:19:27"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E251:c251",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 19:28-29",
+     "verses": [
+      "john:19:28",
+      "john:19:29"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E252:c252",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 19:30",
+     "verses": [
+      "john:19:30"
+     ]
+    },
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 27:53",
+     "verses": [
+      "matthew:27:53"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E253:c253",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 27:54-55",
+     "verses": [
+      "matthew:27:54",
+      "matthew:27:55"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 15:41",
+     "verses": [
+      "mark:15:41"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E254:c254",
+   "sources": [
+    {
+     "gospel": "mark",
+     "ref": "Mark 15:42-44",
+     "verses": [
+      "mark:15:42",
+      "mark:15:43",
+      "mark:15:44"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 23:50-51",
+     "verses": [
+      "luke:23:50",
+      "luke:23:51"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E255:c255",
+   "sources": [
+    {
+     "gospel": "luke",
+     "ref": "Luke 23:52",
+     "verses": [
+      "luke:23:52"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 15:45",
+     "verses": [
+      "mark:15:45"
+     ]
+    },
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 27:56",
+     "verses": [
+      "matthew:27:56"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E256:c256",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 27:57-60",
+     "verses": [
+      "matthew:27:57",
+      "matthew:27:58",
+      "matthew:27:59",
+      "matthew:27:60"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 15:46",
+     "verses": [
+      "mark:15:46"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 23:53",
+     "verses": [
+      "luke:23:53"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E257:c257",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 27:61",
+     "verses": [
+      "matthew:27:61"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 15:47",
+     "verses": [
+      "mark:15:47"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 23:54-55",
+     "verses": [
+      "luke:23:54",
+      "luke:23:55"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E258:c258",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 27:62; Matthew 27:63",
+     "verses": [
+      "matthew:27:62",
+      "matthew:27:63"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 16:1",
+     "verses": [
+      "mark:16:1"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 23:56",
+     "verses": [
+      "luke:23:56"
+     ]
+    },
+    {
+     "gospel": "john",
+     "ref": "John 19:31",
+     "verses": [
+      "john:19:31"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E259:c259",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 27:64-66",
+     "verses": [
+      "matthew:27:64",
+      "matthew:27:65",
+      "matthew:27:66"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E260:c260",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 28:1-6",
+     "verses": [
+      "matthew:28:1",
+      "matthew:28:2",
+      "matthew:28:3",
+      "matthew:28:4",
+      "matthew:28:5",
+      "matthew:28:6"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 16:2-3",
+     "verses": [
+      "mark:16:2",
+      "mark:16:3"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 24:1-2",
+     "verses": [
+      "luke:24:1",
+      "luke:24:2"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E261:c261",
+   "sources": [
+    {
+     "gospel": "luke",
+     "ref": "Luke 24:3-6",
+     "verses": [
+      "luke:24:3",
+      "luke:24:4",
+      "luke:24:5",
+      "luke:24:6"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E262:c262",
+   "sources": [
+    {
+     "gospel": "luke",
+     "ref": "Luke 24:7",
+     "verses": [
+      "luke:24:7"
+     ]
+    },
+    {
+     "gospel": "john",
+     "ref": "John 19:32",
+     "verses": [
+      "john:19:32"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E263:c263",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 19:33-37",
+     "verses": [
+      "john:19:33",
+      "john:19:34",
+      "john:19:35",
+      "john:19:36",
+      "john:19:37"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E264:c264",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 19:38-41",
+     "verses": [
+      "john:19:38",
+      "john:19:39",
+      "john:19:40",
+      "john:19:41"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 24:8",
+     "verses": [
+      "luke:24:8"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E265:c265",
+   "sources": [
+    {
+     "gospel": "mark",
+     "ref": "Mark 16:4-6",
+     "verses": [
+      "mark:16:4",
+      "mark:16:5",
+      "mark:16:6"
+     ]
+    },
+    {
+     "gospel": "john",
+     "ref": "John 19:42",
+     "verses": [
+      "john:19:42"
+     ]
+    },
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 28:7-9",
+     "verses": [
+      "matthew:28:7",
+      "matthew:28:8",
+      "matthew:28:9"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E266:c266",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 28:10",
+     "verses": [
+      "matthew:28:10"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 16:7-8",
+     "verses": [
+      "mark:16:7",
+      "mark:16:8"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 24:9",
+     "verses": [
+      "luke:24:9"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E267:c267",
+   "sources": [
+    {
+     "gospel": "mark",
+     "ref": "Mark 16:9-10",
+     "verses": [
+      "mark:16:9",
+      "mark:16:10"
+     ]
+    },
+    {
+     "gospel": "john",
+     "ref": "John 20:1-5",
+     "verses": [
+      "john:20:1",
+      "john:20:2",
+      "john:20:3",
+      "john:20:4",
+      "john:20:5"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E268:c268",
+   "sources": [
+    {
+     "gospel": "mark",
+     "ref": "Mark 16:11",
+     "verses": [
+      "mark:16:11"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 24:10-11",
+     "verses": [
+      "luke:24:10",
+      "luke:24:11"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E269:c269",
+   "sources": [
+    {
+     "gospel": "luke",
+     "ref": "Luke 24:12",
+     "verses": [
+      "luke:24:12"
+     ]
+    },
+    {
+     "gospel": "john",
+     "ref": "John 20:6; John 20:7",
+     "verses": [
+      "john:20:6",
+      "john:20:7"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E270:c270",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 20:8-9",
+     "verses": [
+      "john:20:8",
+      "john:20:9"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E271:c271",
+   "sources": [
+    {
+     "gospel": "luke",
+     "ref": "Luke 24:13-18",
+     "verses": [
+      "luke:24:13",
+      "luke:24:14",
+      "luke:24:15",
+      "luke:24:16",
+      "luke:24:17",
+      "luke:24:18"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E272:c272",
+   "sources": [
+    {
+     "gospel": "luke",
+     "ref": "Luke 24:19; Luke 24:20",
+     "verses": [
+      "luke:24:19",
+      "luke:24:20"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E273:c273",
+   "sources": [
+    {
+     "gospel": "luke",
+     "ref": "Luke 24:21",
+     "verses": [
+      "luke:24:21"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E274:c274",
+   "sources": [
+    {
+     "gospel": "luke",
+     "ref": "Luke 24:22-23",
+     "verses": [
+      "luke:24:22",
+      "luke:24:23"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E275:c275",
+   "sources": [
+    {
+     "gospel": "luke",
+     "ref": "Luke 24:24-25",
+     "verses": [
+      "luke:24:24",
+      "luke:24:25"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E276:c276",
+   "sources": [
+    {
+     "gospel": "luke",
+     "ref": "Luke 24:26-28",
+     "verses": [
+      "luke:24:26",
+      "luke:24:27",
+      "luke:24:28"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E277:c277",
+   "sources": [
+    {
+     "gospel": "luke",
+     "ref": "Luke 24:29; Luke 24:30",
+     "verses": [
+      "luke:24:29",
+      "luke:24:30"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E278:c278",
+   "sources": [
+    {
+     "gospel": "luke",
+     "ref": "Luke 24:31-32",
+     "verses": [
+      "luke:24:31",
+      "luke:24:32"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E279:c279",
+   "sources": [
+    {
+     "gospel": "luke",
+     "ref": "Luke 24:33",
+     "verses": [
+      "luke:24:33"
+     ]
+    },
+    {
+     "gospel": "john",
+     "ref": "John 20:10; John 20:11",
+     "verses": [
+      "john:20:10",
+      "john:20:11"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E280:c280",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 20:12",
+     "verses": [
+      "john:20:12"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 24:34",
+     "verses": [
+      "luke:24:34"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E281:c281",
+   "sources": [
+    {
+     "gospel": "luke",
+     "ref": "Luke 24:35-39",
+     "verses": [
+      "luke:24:35",
+      "luke:24:36",
+      "luke:24:37",
+      "luke:24:38",
+      "luke:24:39"
+     ]
+    },
+    {
+     "gospel": "john",
+     "ref": "John 20:13-18",
+     "verses": [
+      "john:20:13",
+      "john:20:14",
+      "john:20:15",
+      "john:20:16",
+      "john:20:17",
+      "john:20:18"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E282:c282",
+   "sources": [
+    {
+     "gospel": "luke",
+     "ref": "Luke 24:40-44",
+     "verses": [
+      "luke:24:40",
+      "luke:24:41",
+      "luke:24:42",
+      "luke:24:43",
+      "luke:24:44"
+     ]
+    },
+    {
+     "gospel": "john",
+     "ref": "John 20:19",
+     "verses": [
+      "john:20:19"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E283:c283",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 28:11",
+     "verses": [
+      "matthew:28:11"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 16:12-13",
+     "verses": [
+      "mark:16:12",
+      "mark:16:13"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 24:45",
+     "verses": [
+      "luke:24:45"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E284:c284",
+   "sources": [
+    {
+     "gospel": "mark",
+     "ref": "Mark 16:14-17",
+     "verses": [
+      "mark:16:14",
+      "mark:16:15",
+      "mark:16:16",
+      "mark:16:17"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 24:46-49",
+     "verses": [
+      "luke:24:46",
+      "luke:24:47",
+      "luke:24:48",
+      "luke:24:49"
+     ]
+    },
+    {
+     "gospel": "john",
+     "ref": "John 20:20-23",
+     "verses": [
+      "john:20:20",
+      "john:20:21",
+      "john:20:22",
+      "john:20:23"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E285:c285",
+   "sources": [
+    {
+     "gospel": "mark",
+     "ref": "Mark 16:18",
+     "verses": [
+      "mark:16:18"
+     ]
+    },
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 28:12; Matthew 28:13",
+     "verses": [
+      "matthew:28:12",
+      "matthew:28:13"
+     ]
+    },
+    {
+     "gospel": "john",
+     "ref": "John 20:24-25",
+     "verses": [
+      "john:20:24",
+      "john:20:25"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E286:c286",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 20:26",
+     "verses": [
+      "john:20:26"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E287:c287",
+   "sources": [
+    {
+     "gospel": "john",
+     "ref": "John 20:27-28",
+     "verses": [
+      "john:20:27",
+      "john:20:28"
+     ]
+    },
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 28:14; Matthew 28:15",
+     "verses": [
+      "matthew:28:14",
+      "matthew:28:15"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 16:19",
+     "verses": [
+      "mark:16:19"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 24:50-51",
+     "verses": [
+      "luke:24:50",
+      "luke:24:51"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E288:c288",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 28:16; Matthew 28:17",
+     "verses": [
+      "matthew:28:16",
+      "matthew:28:17"
+     ]
+    },
+    {
+     "gospel": "mark",
+     "ref": "Mark 16:20",
+     "verses": [
+      "mark:16:20"
+     ]
+    },
+    {
+     "gospel": "luke",
+     "ref": "Luke 24:52-53",
+     "verses": [
+      "luke:24:52",
+      "luke:24:53"
+     ]
+    }
+   ]
+  },
+  {
+   "marker": "E289:c289",
+   "sources": [
+    {
+     "gospel": "matthew",
+     "ref": "Matthew 28:18-20",
+     "verses": [
+      "matthew:28:18",
+      "matthew:28:19",
+      "matthew:28:20"
+     ]
+    },
+    {
+     "gospel": "john",
+     "ref": "John 20:29-31",
+     "verses": [
+      "john:20:29",
+      "john:20:30",
+      "john:20:31"
+     ]
+    }
+   ]
+  }
+ ]
+}
